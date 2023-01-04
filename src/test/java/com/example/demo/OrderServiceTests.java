@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 public class OrderServiceTests {
@@ -22,6 +23,6 @@ public class OrderServiceTests {
         Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
 
         orderService.add(order1);
-        assertEquals(2, 3-2);
+        assertThat(orderService.get()).isEqualTo(order1);
     }
 }
