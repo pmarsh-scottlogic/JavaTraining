@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.*;
 
@@ -21,8 +23,9 @@ public class OrderServiceTests {
     @Test
     void ItShouldAddOrders() {
         Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
-
+        ArrayList<Order> expected = new ArrayList<>();
+        expected.add(order1);
         orderService.add(order1);
-        assertThat(orderService.get()).isEqualTo(order1);
+        assertThat(orderService.get()).isEqualTo(expected);
     }
 }
