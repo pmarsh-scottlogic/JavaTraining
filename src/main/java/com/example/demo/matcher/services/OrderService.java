@@ -35,9 +35,12 @@ public class OrderService {
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
         ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toCollection(ArrayList::new));
+        return makeOrderbook(filtered, action);
+    }
 
+    private static ArrayList<OrderbookItem> makeOrderbook(ArrayList<Order> orderList, OrderAction action) {
         // aggregate orders
-        ArrayList<OrderbookItem> orderbook = aggregateOrders(filtered);
+        ArrayList<OrderbookItem> orderbook = aggregateOrders(orderList);
 
         // sort increasing / decreasing by price depending on the action
         if (action == OrderAction.BUY) orderbook.sort(Collections.reverseOrder());
