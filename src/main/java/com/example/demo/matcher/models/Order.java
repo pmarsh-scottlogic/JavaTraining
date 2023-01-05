@@ -1,7 +1,11 @@
 package com.example.demo.matcher.models;
 
+import lombok.Getter;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
+@Getter @ToString
 public class Order {
     final String id;
     final String accountId;
@@ -26,41 +30,5 @@ public class Order {
         this.quantity = quantity;
         this.action = action;
         this.datetime = datetime;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public float getQuantity() {
-        return quantity;
-    }
-
-    public OrderAction getAction() {
-        return action;
-    }
-
-    public LocalDateTime getDatetime() {
-        return datetime;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id='" + id + '\'' +
-                ", account='" + accountId + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                ", action=" + action +
-                ", datetime=" + datetime +
-                '}';
     }
 }
