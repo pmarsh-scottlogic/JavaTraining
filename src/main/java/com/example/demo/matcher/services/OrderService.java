@@ -15,13 +15,11 @@ public class OrderService {
         return orders;
     }
 
-    public void add(Order newOrder) {
-        orders.add(newOrder);
+    public void add(Order order) {
+        orders.add(order);
     }
 
     public void remove(Order order) {
 
     }
-
-
 }
