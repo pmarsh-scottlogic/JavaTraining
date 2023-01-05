@@ -76,5 +76,9 @@ public class OrderService {
         return orderDepth;
     }
 
-
+    public static ArrayList<Order> sortAsc(ArrayList<Order> orders) {
+        ArrayList<Order> sorted = new ArrayList<>(orders);
+        Collections.sort(sorted, (order1, order2) -> Math.round(order1.getPrice() - order2.getPrice()));
+        return sorted;
+    }
 }
