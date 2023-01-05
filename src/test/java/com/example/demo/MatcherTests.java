@@ -3,15 +3,19 @@ package com.example.demo;
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
+import com.example.demo.matcher.models.Trade;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class MatcherTests {
@@ -48,5 +52,29 @@ public class MatcherTests {
         matcher.match(newOrder);
 
         Mockito.verify(orderService).add(newOrder);
+    }
+
+    @Test
+    void ItShouldMatchABasicSellOrder() {
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
+
+        Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Order newOrder = new Order("account2", 4, 10, OrderAction.SELL);
+
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
+                Arrays.asList(existingOrder)
+        ));
+
+        matcher.match(newOrder);
+
+        Mockito.verify(tradeService).add(createdTrade.capture());
+
+        // check properties of created trade object that was added to tradeService
+        assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
+        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(10);
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo("account1");
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo("account2");
+        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
+        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
     }
 }

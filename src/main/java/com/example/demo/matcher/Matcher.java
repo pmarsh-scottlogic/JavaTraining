@@ -33,8 +33,8 @@ public class Matcher {
 
             tradeService.add(new Trade(buyOrder.getAccountId(), buyOrder.getId(), sellOrder.getAccountId(), sellOrder.getId(), tradePrice, tradeQuantity));
 
-            newOrder.setQuantity(newOrder.getQuantity() - tradePrice);
-            matchedOrder.setQuantity(matchedOrder.getQuantity() - tradePrice);
+            newOrder.setQuantity(newOrder.getQuantity() - tradeQuantity);
+            matchedOrder.setQuantity(matchedOrder.getQuantity() - tradeQuantity);
 
             if (matchedOrder.getQuantity() <= 0) {
                 orderService.remove(matchedOrder);
