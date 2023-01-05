@@ -71,10 +71,9 @@ public class OrderServiceTests {
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
         OrderbookItem obi3 = new OrderbookItem(10, 17);
-        ArrayList<OrderbookItem> expected = new ArrayList<>();
-        expected.add(obi1);
-        expected.add(obi2);
-        expected.add(obi3);
+        ArrayList<OrderbookItem> expected = new ArrayList<>(
+                Arrays.asList(obi1, obi2, obi3)
+        );
 
         assertThat(orderService.getOrderbook(OrderAction.BUY)).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -96,10 +95,9 @@ public class OrderServiceTests {
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
         OrderbookItem obi3 = new OrderbookItem(10, 17);
-        ArrayList<OrderbookItem> expected = new ArrayList<>();
-        expected.add(obi3);
-        expected.add(obi2);
-        expected.add(obi1);
+        ArrayList<OrderbookItem> expected = new ArrayList<>(
+                Arrays.asList(obi3, obi2, obi1)
+        );
 
         assertThat(orderService.getOrderbook(OrderAction.SELL)).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -107,24 +105,22 @@ public class OrderServiceTests {
     @Test
     void ItShouldGenerateAnOrderbookWithBuyActionAndAccountId() {
         Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account2", 10, 7, OrderAction.BUY);
+        Order order2 = new Order("account1", 10, 7, OrderAction.BUY);
         Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
         Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
         Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
+        Order order6 = new Order("account1", 40, 100, OrderAction.SELL);
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(30, 19);
-        OrderbookItem obi2 = new OrderbookItem(20, 18);
-        OrderbookItem obi3 = new OrderbookItem(10, 17);
-        ArrayList<OrderbookItem> expected = new ArrayList<>();
-        expected.add(obi1);
-        expected.add(obi2);
-        expected.add(obi3);
+        OrderbookItem obi1 = new OrderbookItem(230, 9);
+        OrderbookItem obi2 = new OrderbookItem(10, 7);
+        ArrayList<OrderbookItem> expected = new ArrayList<>(
+                Arrays.asList(obi1, obi2)
+        );
 
-        assertThat(orderService.getOrderbook(OrderAction.BUY)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(orderService.getOrderbook(OrderAction.BUY, "account1")).usingRecursiveComparison().isEqualTo(expected);
     }
 }
