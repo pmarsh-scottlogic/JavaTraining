@@ -28,18 +28,24 @@ public class OrderService {
         orders.remove(order);
     }
 
-    public ArrayList<OrderbookItem> orderbook(OrderAction action, String accountId) {
+    public ArrayList<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
         return new ArrayList<OrderbookItem>();
     }
 
-    public ArrayList<OrderbookItem> orderbook(OrderAction action) {
+    public ArrayList<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
         ArrayList<Order> filtered = new ArrayList<>(
                 this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toList())
         );
-        ArrayList<OrderbookItem> aggregated = aggregateOrders(filtered);
-        Collections.sort(aggregated);
-        return aggregated;
+
+        // aggregate orders
+        ArrayList<OrderbookItem> orderbook = aggregateOrders(filtered);
+
+        // sort increasing / decreasing by price depending on the action
+        if (action == OrderAction.BUY) Collections.sort(orderbook, Collections.reverseOrder());
+        else Collections.sort(orderbook);
+
+        return orderbook;
     }
 
     private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {

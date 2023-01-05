@@ -78,7 +78,7 @@ public class OrderServiceTests {
         expected.add(obi2);
         expected.add(obi3);
 
-        assertThat(orderService.orderbook(OrderAction.BUY)).isEqualTo(expected);
+        assertThat(orderService.getOrderbook(OrderAction.BUY)).isEqualTo(expected);
     }
 
     @Test
@@ -105,6 +105,6 @@ public class OrderServiceTests {
         expected.add(obi2);
         expected.add(obi1);
 
-        assertThat(orderService.orderbook(OrderAction.SELL)).isEqualTo(expected);
+        assertThat(orderService.getOrderbook(OrderAction.SELL)).isEqualTo(expected);
     }
 }
