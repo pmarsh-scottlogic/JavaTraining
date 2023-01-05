@@ -78,7 +78,12 @@ public class OrderService {
 
     public static ArrayList<Order> sortAsc(ArrayList<Order> orders) {
         ArrayList<Order> sorted = new ArrayList<>(orders);
-        Collections.sort(sorted, (order1, order2) -> Math.round(order1.getPrice() - order2.getPrice()));
+        Collections.sort(sorted, (order1, order2) -> {
+            int priceComp = Math.round(order1.getPrice() - order2.getPrice());
+            int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
+            if (priceComp != 0) return priceComp;
+            else return datetimeComp;
+        });
         return sorted;
     }
 }
