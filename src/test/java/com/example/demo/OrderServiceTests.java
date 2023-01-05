@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.spy;
@@ -48,10 +49,10 @@ public class OrderServiceTests {
         assertThat(orderService.get()).isEqualTo(Arrays.asList(order1, order3));
 
         orderService.remove(order3);
-        assertThat(orderService.get()).isEqualTo(Arrays.asList(order1));
+        assertThat(orderService.get()).isEqualTo(List.of(order1));
 
         orderService.remove(order1);
-        assertThat(orderService.get()).isEqualTo(Arrays.asList());
+        assertThat(orderService.get()).isEqualTo(List.of());
     }
 
     @Test
@@ -63,14 +64,14 @@ public class OrderServiceTests {
         Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
         Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
 
-        Mockito.when(orderService.get()).thenReturn(new ArrayList<Order>(
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
         ));
 
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
         OrderbookItem obi3 = new OrderbookItem(10, 17);
-        ArrayList<OrderbookItem> expected = new ArrayList<OrderbookItem>();
+        ArrayList<OrderbookItem> expected = new ArrayList<>();
         expected.add(obi1);
         expected.add(obi2);
         expected.add(obi3);
@@ -88,14 +89,14 @@ public class OrderServiceTests {
         Order order6 = new Order("account6", 40, 100, OrderAction.BUY);
 
 
-        Mockito.when(orderService.get()).thenReturn(new ArrayList<Order>(
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
         ));
 
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
         OrderbookItem obi3 = new OrderbookItem(10, 17);
-        ArrayList<OrderbookItem> expected = new ArrayList<OrderbookItem>();
+        ArrayList<OrderbookItem> expected = new ArrayList<>();
         expected.add(obi3);
         expected.add(obi2);
         expected.add(obi1);
@@ -112,14 +113,14 @@ public class OrderServiceTests {
         Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
         Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
 
-        Mockito.when(orderService.get()).thenReturn(new ArrayList<Order>(
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
         ));
 
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
         OrderbookItem obi3 = new OrderbookItem(10, 17);
-        ArrayList<OrderbookItem> expected = new ArrayList<OrderbookItem>();
+        ArrayList<OrderbookItem> expected = new ArrayList<>();
         expected.add(obi1);
         expected.add(obi2);
         expected.add(obi3);
