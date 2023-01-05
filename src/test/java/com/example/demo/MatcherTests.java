@@ -117,5 +117,32 @@ public class MatcherTests {
         assertThat(createdOrder.getValue().getAction()).isEqualTo(OrderAction.SELL);
     }
 
+    @Test
+    void ItShouldUpdateTheQuantityOfMatchedExistingOrderWhenThereIsExcess() {
+        // setup mock returns
+        Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Mockito.when(orderService.get())
+                .thenReturn(new ArrayList<>(List.of(existingOrder)))
+                .thenReturn(new ArrayList<>(List.of()));
 
+        // run match
+        Order newOrder = new Order("account2", 4, 8, OrderAction.SELL);
+        matcher.match(newOrder);
+
+        // capture the created trade object
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
+        Mockito.verify(tradeService).add(createdTrade.capture());
+
+        // check properties of created trade object that was added to tradeService
+        assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
+        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(8);
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo("account1");
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo("account2");
+        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
+        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
+
+        // check quantity of existing order was updated
+        assertThat(existingOrder.getQuantity()).isEqualTo(2);
+        assertThat(newOrder.getQuantity()).isEqualTo(0);
+    }
 }
