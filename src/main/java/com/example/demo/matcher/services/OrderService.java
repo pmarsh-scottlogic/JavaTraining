@@ -86,4 +86,15 @@ public class OrderService {
         });
         return sorted;
     }
+
+    public static ArrayList<Order> sortDesc(ArrayList<Order> orders) {
+        ArrayList<Order> sorted = new ArrayList<>(orders);
+        Collections.sort(sorted, (order1, order2) -> {
+            int priceComp = Math.round(order2.getPrice() - order1.getPrice());
+            int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
+            if (priceComp != 0) return priceComp;
+            else return datetimeComp;
+        });
+        return sorted;
+    }
 }
