@@ -6,6 +6,7 @@ import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.models.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -14,13 +15,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.spy;
 
 @SpringBootTest
 public class OrderServiceTests {
     OrderService orderService;
     @BeforeEach
     void InitialiseOrderService() {
-        orderService = new OrderService();
+        orderService = spy(new OrderService());
     }
 
     @Test
@@ -63,12 +65,9 @@ public class OrderServiceTests {
         Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
         Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
 
-        orderService.add(order1);
-        orderService.add(order2);
-        orderService.add(order3);
-        orderService.add(order4);
-        orderService.add(order5);
-        orderService.add(order6);
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<Order>(
+                Arrays.asList(order1, order2, order3, order4, order5, order6)
+        ));
 
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
@@ -90,12 +89,10 @@ public class OrderServiceTests {
         Order order5 = new Order("account5", 30, 19, OrderAction.SELL);
         Order order6 = new Order("account6", 40, 100, OrderAction.BUY);
 
-        orderService.add(order1);
-        orderService.add(order2);
-        orderService.add(order3);
-        orderService.add(order4);
-        orderService.add(order5);
-        orderService.add(order6);
+
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<Order>(
+                Arrays.asList(order1, order2, order3, order4, order5, order6)
+        ));
 
         OrderbookItem obi1 = new OrderbookItem(30, 19);
         OrderbookItem obi2 = new OrderbookItem(20, 18);
