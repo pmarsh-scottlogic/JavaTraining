@@ -185,4 +185,22 @@ public class OrderServiceTests {
 
         assertThat(OrderService.sortAsc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
     }
+
+    @Test
+    void ItShouldSortOrdersDescendingByPrice() {
+        Order order1 = new Order("account1", 3, 10, OrderAction.BUY);
+        Order order2 = new Order("account2", 4, 10, OrderAction.BUY);
+        Order order3 = new Order("account3", 2, 10, OrderAction.BUY);
+        Order order4 = new Order("account4", 1, 10, OrderAction.BUY);
+
+        ArrayList<Order> unsorted = new ArrayList<>(
+                Arrays.asList(order1, order2, order3, order4)
+        );
+
+        ArrayList<Order> expected = new ArrayList<>(
+                Arrays.asList(order2, order1, order3, order4)
+        );
+
+        assertThat(OrderService.sortDesc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
+    }
 }
