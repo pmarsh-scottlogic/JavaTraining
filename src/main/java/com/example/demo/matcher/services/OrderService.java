@@ -29,7 +29,9 @@ public class OrderService {
     }
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
-        return new ArrayList<>();
+        // filter the order list by action
+        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action && order.getAccountId() == accountId).collect(Collectors.toCollection(ArrayList::new));
+        return makeOrderbook(filtered, action);
     }
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action) {
@@ -62,5 +64,9 @@ public class OrderService {
             orderbook.add(new OrderbookItem(price, aggregated.get(price)));
         }
         return orderbook;
+    }
+
+    public ArrayList<OrderbookItem> getOrderDepth(OrderAction action) {
+        return new ArrayList<>();
     }
 }
