@@ -1,6 +1,6 @@
 package com.example.demo.matcher.models;
 
-public class OrderbookItem {
+public class OrderbookItem implements Comparable<OrderbookItem>{
     public float price;
     public float quantity;
 
@@ -15,5 +15,10 @@ public class OrderbookItem {
                 "price=" + price +
                 ", quantity=" + quantity +
                 '}';
+    }
+
+    @Override
+    public int compareTo(OrderbookItem obi) {
+        return Float.compare(this.price, obi.price);
     }
 }

@@ -5,6 +5,7 @@ import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,9 @@ public class OrderService {
         ArrayList<Order> filtered = new ArrayList<>(
                 this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toList())
         );
-        return aggregateOrders(filtered);
+        ArrayList<OrderbookItem> aggregated = aggregateOrders(filtered);
+        Collections.sort(aggregated);
+        return aggregated;
     }
 
     private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {
