@@ -5,6 +5,7 @@ import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OrderService {
     private final ArrayList<Order> orders;
@@ -30,10 +31,15 @@ public class OrderService {
     }
 
     public ArrayList<OrderbookItem> orderbook(OrderAction action) {
+
         return new ArrayList<OrderbookItem>();
     }
 
     private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {
+        HashMap<Float, Float> aggregated = new HashMap<Float, Float>();
+        for (Order o : orderList) {
+            aggregated.merge(o.price)
+        }
         return new ArrayList<OrderbookItem>();
     }
 }

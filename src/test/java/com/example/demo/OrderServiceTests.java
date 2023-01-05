@@ -101,9 +101,9 @@ public class OrderServiceTests {
         OrderbookItem obi2 = new OrderbookItem(20, 18);
         OrderbookItem obi3 = new OrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<OrderbookItem>();
-        expected.add(obi1);
-        expected.add(obi2);
         expected.add(obi3);
+        expected.add(obi2);
+        expected.add(obi1);
 
         assertThat(orderService.orderbook(OrderAction.SELL)).isEqualTo(expected);
     }
