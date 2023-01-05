@@ -48,14 +48,14 @@ public class Matcher {
         // match the new order to the best order of opposite action (sorted by price and then time)
 
         ArrayList<Order> eligibleOrders = new ArrayList<>(orderService.get());
-        eligibleOrders.stream().filter(order -> order.getAction() != newOrder.getAction() && order.getAccountId() != newOrder.getAccountId());
+        eligibleOrders = eligibleOrders.stream().filter(order -> order.getAction() != newOrder.getAction() && order.getAccountId() != newOrder.getAccountId()).collect(Collectors.toCollection(ArrayList::new));;
 
         if (newOrder.getAction() == OrderAction.BUY) {
-            eligibleOrders.stream().filter(order -> order.getPrice() <= newOrder.getPrice());
+            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice() <= newOrder.getPrice()).collect(Collectors.toCollection(ArrayList::new));
             eligibleOrders = OrderService.sortDesc(eligibleOrders);
         }
         else {
-            eligibleOrders.stream().filter(order -> order.getPrice() >= newOrder.getPrice());
+            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice() >= newOrder.getPrice()).collect(Collectors.toCollection(ArrayList::new));
             eligibleOrders = OrderService.sortAsc(eligibleOrders);
         }
         return eligibleOrders.size() == 0? null : eligibleOrders.get(0);
