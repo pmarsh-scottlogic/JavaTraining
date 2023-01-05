@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.*;
@@ -23,9 +25,31 @@ public class OrderServiceTests {
     @Test
     void ItShouldAddOrders() {
         Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
-        ArrayList<Order> expected = new ArrayList<>();
-        expected.add(order1);
+        Order order2 = new Order("account1", 1, 1, OrderAction.SELL);
+
         orderService.add(order1);
-        assertThat(orderService.get()).isEqualTo(expected);
+        orderService.add(order2);
+
+        assertThat(orderService.get()).isEqualTo(Arrays.asList(order1, order2));
+    }
+
+    @Test
+    void ItShouldRemoveOrders() {
+        Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
+        Order order2 = new Order("account2", 1, 1, OrderAction.SELL);
+        Order order3 = new Order("account3", 1, 1, OrderAction.SELL);
+
+        orderService.add(order1);
+        orderService.add(order2);
+        orderService.add(order3);
+
+        orderService.remove(order2);
+        assertThat(orderService.get()).isEqualTo(Arrays.asList(order1, order3));
+
+        orderService.remove(order3);
+        assertThat(orderService.get()).isEqualTo(Arrays.asList(order1));
+
+        orderService.remove(order1);
+        assertThat(orderService.get()).isEqualTo(Arrays.asList());
     }
 }
