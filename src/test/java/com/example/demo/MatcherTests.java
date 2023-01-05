@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,17 +57,18 @@ public class MatcherTests {
 
     @Test
     void ItShouldMatchABasicSellOrder() {
-        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
 
+
+        // setup mock returns
         Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(List.of(existingOrder)));
+
+        // run match
         Order newOrder = new Order("account2", 4, 10, OrderAction.SELL);
-
-        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                Arrays.asList(existingOrder)
-        ));
-
         matcher.match(newOrder);
 
+        // capture the created trade object
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
         Mockito.verify(tradeService).add(createdTrade.capture());
 
         // check properties of created trade object that was added to tradeService
@@ -77,4 +79,43 @@ public class MatcherTests {
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
     }
+
+    @Test
+    void ItShouldAddToTheOrderbookWhenThereIsExcessQuantity() {
+        // setup mock returns
+        Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Mockito.when(orderService.get())
+                .thenReturn(new ArrayList<>(List.of(existingOrder)))
+                .thenReturn(new ArrayList<>(List.of()));
+
+        // run match
+        Order newOrder = new Order("account2", 4, 12, OrderAction.SELL);
+        matcher.match(newOrder);
+
+        // capture the created trade object
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
+        Mockito.verify(tradeService).add(createdTrade.capture());
+
+        // check properties of created trade object that was added to tradeService
+        assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
+        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(10);
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo("account1");
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo("account2");
+        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
+        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
+
+        // capture the created order object
+        ArgumentCaptor<Order> createdOrder = ArgumentCaptor.forClass(Order.class);
+        Mockito.verify(orderService).add(createdOrder.capture());
+
+        // check properties of created order object that was added to orderService
+        assertThat(createdOrder.getValue().getId()).isEqualTo(newOrder.getId());
+        assertThat(createdOrder.getValue().getAccountId()).isEqualTo("account2");
+        assertThat(createdOrder.getValue().getPrice()).isEqualTo(4);
+        assertThat(createdOrder.getValue().getQuantity()).isEqualTo(2);
+        assertThat(createdOrder.getValue().getDatetime()).isEqualTo(newOrder.getDatetime());
+        assertThat(createdOrder.getValue().getAction()).isEqualTo(OrderAction.SELL);
+    }
+
+
 }
