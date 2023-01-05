@@ -13,7 +13,7 @@ public class OrderService {
     private final ArrayList<Order> orders;
 
     public OrderService() {
-        orders = new ArrayList<Order>();
+        orders = new ArrayList<>();
     }
 
     public ArrayList<Order> get() {
@@ -29,20 +29,18 @@ public class OrderService {
     }
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
-        return new ArrayList<OrderbookItem>();
+        return new ArrayList<>();
     }
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
-        ArrayList<Order> filtered = new ArrayList<>(
-                this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toList())
-        );
+        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toCollection(ArrayList::new));
 
         // aggregate orders
         ArrayList<OrderbookItem> orderbook = aggregateOrders(filtered);
 
         // sort increasing / decreasing by price depending on the action
-        if (action == OrderAction.BUY) Collections.sort(orderbook, Collections.reverseOrder());
+        if (action == OrderAction.BUY) orderbook.sort(Collections.reverseOrder());
         else Collections.sort(orderbook);
 
         return orderbook;
@@ -50,13 +48,13 @@ public class OrderService {
 
     private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {
         // aggregate orders using hashmap
-        HashMap<Float, Float> aggregated = new HashMap<Float, Float>();
+        HashMap<Float, Float> aggregated = new HashMap<>();
         for (Order order : orderList) {
             aggregated.merge(order.getPrice(), order.getQuantity(), Float::sum);
         }
 
         // convert hashmap to ArrayList
-        ArrayList<OrderbookItem> orderbook = new ArrayList<OrderbookItem>();
+        ArrayList<OrderbookItem> orderbook = new ArrayList<>();
         for (Float price : aggregated.keySet()) {
             orderbook.add(new OrderbookItem(price, aggregated.get(price)));
         }
