@@ -19,6 +19,15 @@ public class Order {
         this.datetime = LocalDateTime.now();
     }
 
+    public Order(String accountId, float price, float quantity, OrderAction action, LocalDateTime datetime) {
+        this.id = "RANDOMID"; // use some sort of UUId generating library later for this
+        this.accountId = accountId;
+        this.price = price;
+        this.quantity = quantity;
+        this.action = action;
+        this.datetime = datetime;
+    }
+
     public String getId() {
         return id;
     }
