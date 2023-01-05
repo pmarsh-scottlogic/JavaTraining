@@ -26,6 +26,14 @@ public class OrderService {
     }
 
     public ArrayList<OrderbookItem> orderbook(OrderAction action, String accountId) {
+        return new ArrayList<OrderbookItem>();
+    }
 
+    public ArrayList<OrderbookItem> orderbook(OrderAction action) {
+        return new ArrayList<OrderbookItem>();
+    }
+
+    private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {
+        return new ArrayList<OrderbookItem>();
     }
 }
