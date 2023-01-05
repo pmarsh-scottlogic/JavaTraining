@@ -15,11 +15,9 @@ public class TradeService {
         trades.add(trade);
     }
 
-    public void remove(Trade trade) {
-        trades.remove(trade);
-    }
-
-    public ArrayList<Trade> getTrades() {
+    public ArrayList<Trade> get() {
         return trades;
     }
+
+
 }
