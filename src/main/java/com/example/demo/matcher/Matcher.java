@@ -7,6 +7,7 @@ import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Matcher {
@@ -48,7 +49,7 @@ public class Matcher {
         // match the new order to the best order of opposite action (sorted by price and then time)
 
         ArrayList<Order> eligibleOrders = new ArrayList<>(orderService.get());
-        eligibleOrders = eligibleOrders.stream().filter(order -> order.getAction() != newOrder.getAction() && order.getAccountId() != newOrder.getAccountId()).collect(Collectors.toCollection(ArrayList::new));;
+        eligibleOrders = eligibleOrders.stream().filter(order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getAccountId(), newOrder.getAccountId())).collect(Collectors.toCollection(ArrayList::new));
 
         if (newOrder.getAction() == OrderAction.BUY) {
             eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice() <= newOrder.getPrice()).collect(Collectors.toCollection(ArrayList::new));
