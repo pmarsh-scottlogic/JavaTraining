@@ -203,4 +203,22 @@ public class OrderServiceTests {
 
         assertThat(OrderService.sortDesc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
     }
+
+    @Test
+    void ItShouldSortOrdersDescendingByPriceThenDatetime() {
+        Order order1 = new Order("account1", 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
+        Order order2 = new Order("account2", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
+        Order order3 = new Order("account3", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
+        Order order4 = new Order("account4", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
+
+        ArrayList<Order> unsorted = new ArrayList<>(
+                Arrays.asList(order1, order2, order3, order4)
+        );
+
+        ArrayList<Order> expected = new ArrayList<>(
+                Arrays.asList(order1, order4, order2, order3)
+        );
+
+        assertThat(OrderService.sortAsc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
+    }
 }
