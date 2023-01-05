@@ -7,6 +7,7 @@ import com.example.demo.matcher.models.OrderbookItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderService {
@@ -30,7 +31,7 @@ public class OrderService {
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
         // filter the order list by action
-        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action && order.getAccountId() == accountId).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId)).collect(Collectors.toCollection(ArrayList::new));
         return makeOrderbook(filtered, action);
     }
 
@@ -78,7 +79,7 @@ public class OrderService {
 
     public static ArrayList<Order> sortAsc(ArrayList<Order> orders) {
         ArrayList<Order> sorted = new ArrayList<>(orders);
-        Collections.sort(sorted, (order1, order2) -> {
+        sorted.sort((order1, order2) -> {
             int priceComp = Math.round(order1.getPrice() - order2.getPrice());
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
             if (priceComp != 0) return priceComp;
@@ -89,7 +90,7 @@ public class OrderService {
 
     public static ArrayList<Order> sortDesc(ArrayList<Order> orders) {
         ArrayList<Order> sorted = new ArrayList<>(orders);
-        Collections.sort(sorted, (order1, order2) -> {
+        sorted.sort((order1, order2) -> {
             int priceComp = Math.round(order2.getPrice() - order1.getPrice());
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
             if (priceComp != 0) return priceComp;
