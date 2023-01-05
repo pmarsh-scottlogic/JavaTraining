@@ -23,6 +23,17 @@ public class Trade {
         this.datetime = datetime;
     }
 
+    public Trade(String accountIdBuyer, String orderIdBuy, String accountIdSeller, String orderIdSell, float price, float quantity) {
+        this.tradeId = "RandomTradeId";
+        this.accountIdBuyer = accountIdBuyer;
+        this.orderIdBuy = orderIdBuy;
+        this.accountIdSeller = accountIdSeller;
+        this.orderIdSell = orderIdSell;
+        this.price = price;
+        this.quantity = quantity;
+        this.datetime = LocalDateTime.now();
+    }
+
     public String getAccountIdBuyer() {
         return accountIdBuyer;
     }

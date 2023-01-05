@@ -6,7 +6,7 @@ public class Order {
     final String id;
     final String accountId;
     final float price;
-    final float quantity;
+    float quantity;
     final OrderAction action;
     final LocalDateTime datetime;
 
@@ -50,6 +50,10 @@ public class Order {
 
     public LocalDateTime getDatetime() {
         return datetime;
+    }
+
+    public void setQuantity(float quantity) {
+        this.quantity = quantity;
     }
 
     @Override
