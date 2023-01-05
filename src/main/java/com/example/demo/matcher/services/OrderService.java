@@ -20,6 +20,6 @@ public class OrderService {
     }
 
     public void remove(Order order) {
-
+        orders.remove(order);
     }
 }
