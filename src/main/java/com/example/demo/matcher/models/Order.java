@@ -11,7 +11,7 @@ public class Order {
     final LocalDateTime datetime;
 
     public Order(String accountId, float price, float quantity, OrderAction action) {
-        this.id = "RANDOMID"; // use some sort of UUId generating library later for this
+        this.id = "RANDOM-ID"; // use some sort of UUId generating library later for this
         this.accountId = accountId;
         this.price = price;
         this.quantity = quantity;
@@ -20,7 +20,7 @@ public class Order {
     }
 
     public Order(String accountId, float price, float quantity, OrderAction action, LocalDateTime datetime) {
-        this.id = "RANDOMID"; // use some sort of UUId generating library later for this
+        this.id = "RANDOM-ID"; // use some sort of UUId generating library later for this
         this.accountId = accountId;
         this.price = price;
         this.quantity = quantity;

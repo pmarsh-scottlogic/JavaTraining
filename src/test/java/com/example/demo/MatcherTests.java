@@ -42,9 +42,9 @@ public class MatcherTests {
     void ItShouldAddAnOrderIfThereAreNoEligibleOrders() {
         Order newOrder = new Order("account3", 5, 10, OrderAction.SELL);
 
-        Order order1 = new Order("account1", 4, 10, OrderAction.BUY); // incompatable price
-        Order order2 = new Order("account2", 6, 10, OrderAction.SELL); // incompatable action
-        Order order3 = new Order("account3", 6, 10, OrderAction.BUY); // incompatable account
+        Order order1 = new Order("account1", 4, 10, OrderAction.BUY); // incompatible price
+        Order order2 = new Order("account2", 6, 10, OrderAction.SELL); // incompatible action
+        Order order3 = new Order("account3", 6, 10, OrderAction.BUY); // incompatible account
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3)
