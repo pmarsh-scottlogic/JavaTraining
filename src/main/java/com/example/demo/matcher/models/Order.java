@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 
 public class Order {
     final String id;
-    final String account;
+    final String accountId;
     final float price;
     final float quantity;
     final OrderAction action;
     final LocalDateTime datetime;
 
-    public Order(String account, float price, float quantity, OrderAction action) {
+    public Order(String accountId, float price, float quantity, OrderAction action) {
         this.id = "RANDOMID"; // use some sort of UUId generating library later for this
-        this.account = account;
+        this.accountId = accountId;
         this.price = price;
         this.quantity = quantity;
         this.action = action;
@@ -23,8 +23,8 @@ public class Order {
         return id;
     }
 
-    public String getAccount() {
-        return account;
+    public String getAccountId() {
+        return accountId;
     }
 
     public float getPrice() {
@@ -47,7 +47,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id='" + id + '\'' +
-                ", account='" + account + '\'' +
+                ", account='" + accountId + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +
                 ", action=" + action +
