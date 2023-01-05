@@ -6,6 +6,7 @@ import com.example.demo.matcher.models.OrderbookItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class OrderService {
     private final ArrayList<Order> orders;
@@ -31,15 +32,25 @@ public class OrderService {
     }
 
     public ArrayList<OrderbookItem> orderbook(OrderAction action) {
-
-        return new ArrayList<OrderbookItem>();
+        // filter the order list by action
+        ArrayList<Order> filtered = new ArrayList<>(
+                this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toList())
+        );
+        return aggregateOrders(filtered);
     }
 
     private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {
+        // aggregate orders using hashmap
         HashMap<Float, Float> aggregated = new HashMap<Float, Float>();
-        for (Order o : orderList) {
-            aggregated.merge(o.price)
+        for (Order order : orderList) {
+            aggregated.merge(order.getPrice(), order.getQuantity(), Float::sum);
         }
-        return new ArrayList<OrderbookItem>();
+
+        // convert hashmap to ArrayList
+        ArrayList<OrderbookItem> orderbook = new ArrayList<OrderbookItem>();
+        for (Float price : aggregated.keySet()) {
+            orderbook.add(new OrderbookItem(price, aggregated.get(price)));
+        }
+        return orderbook;
     }
 }

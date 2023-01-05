@@ -42,4 +42,16 @@ public class Order {
     public LocalDateTime getDatetime() {
         return datetime;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", account='" + account + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", action=" + action +
+                ", datetime=" + datetime +
+                '}';
+    }
 }

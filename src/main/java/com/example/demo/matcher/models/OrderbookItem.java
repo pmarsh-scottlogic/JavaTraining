@@ -8,4 +8,12 @@ public class OrderbookItem {
         this.price = price;
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return "OrderbookItem{" +
+                "price=" + price +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
