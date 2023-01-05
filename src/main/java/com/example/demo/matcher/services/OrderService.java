@@ -1,11 +1,13 @@
 package com.example.demo.matcher.services;
 
 import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderAction;
+import com.example.demo.matcher.models.OrderbookItem;
 
 import java.util.ArrayList;
 
 public class OrderService {
-    private ArrayList<Order> orders;
+    private final ArrayList<Order> orders;
 
     public OrderService() {
         orders = new ArrayList<Order>();
@@ -21,5 +23,9 @@ public class OrderService {
 
     public void remove(Order order) {
         orders.remove(order);
+    }
+
+    public ArrayList<OrderbookItem> orderbook(OrderAction action, String accountId) {
+
     }
 }
