@@ -4,20 +4,17 @@ import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderService {
-    private final ArrayList<Order> orders;
+    private final List<Order> orders;
 
     public OrderService() {
         orders = new ArrayList<>();
     }
 
-    public ArrayList<Order> get() {
+    public List<Order> get() {
         return orders;
     }
 
@@ -29,21 +26,25 @@ public class OrderService {
         orders.remove(order);
     }
 
-    public ArrayList<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
+    public List<OrderbookItem> getOrderbook(OrderAction action, UUID accountId) {
         // filter the order list by action
-        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId)).collect(Collectors.toCollection(ArrayList::new));
+        List<Order> filtered = this.get().stream()
+                .filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId))
+                .collect(Collectors.toCollection(ArrayList::new));
         return makeOrderbook(filtered, action);
     }
 
-    public ArrayList<OrderbookItem> getOrderbook(OrderAction action) {
+    public List<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
-        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Order> filtered = this.get().stream()
+                .filter(order -> order.getAction() == action)
+                .collect(Collectors.toCollection(ArrayList::new));
         return makeOrderbook(filtered, action);
     }
 
-    private static ArrayList<OrderbookItem> makeOrderbook(ArrayList<Order> orderList, OrderAction action) {
+    private static List<OrderbookItem> makeOrderbook(List<Order> orderList, OrderAction action) {
         // aggregate orders
-        ArrayList<OrderbookItem> orderbook = aggregateOrders(orderList);
+        List<OrderbookItem> orderbook = aggregateOrders(orderList);
 
         // sort increasing / decreasing by price depending on the action
         if (action == OrderAction.BUY) orderbook.sort(Collections.reverseOrder());
@@ -52,33 +53,34 @@ public class OrderService {
         return orderbook;
     }
 
-    private static ArrayList<OrderbookItem> aggregateOrders(ArrayList<Order> orderList) {
+    private static List<OrderbookItem> aggregateOrders(List<Order> orderList) {
         // aggregate orders using hashmap
-        HashMap<Float, Float> aggregated = new HashMap<>();
+        Map<Float, Float> aggregated = new HashMap<>();
         for (Order order : orderList) {
             aggregated.merge(order.getPrice(), order.getQuantity(), Float::sum);
         }
 
         // convert hashmap to ArrayList
-        ArrayList<OrderbookItem> orderbook = new ArrayList<>();
+        List<OrderbookItem> orderbook = new ArrayList<>();
         for (Float price : aggregated.keySet()) {
             orderbook.add(new OrderbookItem(price, aggregated.get(price)));
         }
         return orderbook;
     }
 
-    public ArrayList<OrderbookItem> getOrderDepth(OrderAction action) {
-        ArrayList<OrderbookItem> orderDepth = this.getOrderbook(action);
+    public List<OrderbookItem> getOrderDepth(OrderAction action) {
+        List<OrderbookItem> orderBook = this.getOrderbook(action);
+        List<OrderbookItem> orderDepth = new ArrayList<>();
         float runningTotal = 0;
-        for (OrderbookItem obi : orderDepth) {
-            runningTotal += obi.quantity;
-            obi.quantity = runningTotal;
+        for (OrderbookItem obi : orderBook) {
+            runningTotal += obi.getQuantity();
+            orderDepth.add(new OrderbookItem(obi.getPrice(), runningTotal));
         }
         return orderDepth;
     }
 
-    public static ArrayList<Order> sortAsc(ArrayList<Order> orders) {
-        ArrayList<Order> sorted = new ArrayList<>(orders);
+    public static List<Order> sortAsc(List<Order> orders) {
+        List<Order> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
             int priceComp = Math.round(order1.getPrice() - order2.getPrice());
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
@@ -88,8 +90,8 @@ public class OrderService {
         return sorted;
     }
 
-    public static ArrayList<Order> sortDesc(ArrayList<Order> orders) {
-        ArrayList<Order> sorted = new ArrayList<>(orders);
+    public static List<Order> sortDesc(List<Order> orders) {
+        List<Order> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
             int priceComp = Math.round(order2.getPrice() - order1.getPrice());
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());

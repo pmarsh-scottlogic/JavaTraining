@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,18 +34,19 @@ public class MatcherTests {
 
     @Test
     void ItShouldAddAnOrderIfThereAreNoExistingOrders() {
-        Order newOrder = new Order("account1", 1, 1, OrderAction.BUY);
+        Order newOrder = new Order(UUID.randomUUID(), 1, 1, OrderAction.BUY);
         matcher.match(newOrder);
         Mockito.verify(orderService).add(newOrder);
     }
 
     @Test
     void ItShouldAddAnOrderIfThereAreNoEligibleOrders() {
-        Order newOrder = new Order("account3", 5, 10, OrderAction.SELL);
+        UUID specifiedAccount = UUID.randomUUID();
+        Order newOrder = new Order(specifiedAccount, 5, 10, OrderAction.SELL);
 
-        Order order1 = new Order("account1", 4, 10, OrderAction.BUY); // incompatible price
-        Order order2 = new Order("account2", 6, 10, OrderAction.SELL); // incompatible action
-        Order order3 = new Order("account3", 6, 10, OrderAction.BUY); // incompatible account
+        Order order1 = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY); // incompatible price
+        Order order2 = new Order(UUID.randomUUID(), 6, 10, OrderAction.SELL); // incompatible action
+        Order order3 = new Order(specifiedAccount, 6, 10, OrderAction.BUY); // incompatible account
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3)
@@ -60,11 +62,11 @@ public class MatcherTests {
 
 
         // setup mock returns
-        Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Order existingOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(List.of(existingOrder)));
 
         // run match
-        Order newOrder = new Order("account2", 4, 10, OrderAction.SELL);
+        Order newOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.SELL);
         matcher.match(newOrder);
 
         // capture the created trade object
@@ -74,8 +76,8 @@ public class MatcherTests {
         // check properties of created trade object that was added to tradeService
         assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
         assertThat(createdTrade.getValue().getQuantity()).isEqualTo(10);
-        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo("account1");
-        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo("account2");
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
     }
@@ -83,13 +85,13 @@ public class MatcherTests {
     @Test
     void ItShouldAddToTheOrderbookWhenThereIsExcessQuantity() {
         // setup mock returns
-        Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Order existingOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
         Mockito.when(orderService.get())
                 .thenReturn(new ArrayList<>(List.of(existingOrder)))
                 .thenReturn(new ArrayList<>(List.of()));
 
         // run match
-        Order newOrder = new Order("account2", 4, 12, OrderAction.SELL);
+        Order newOrder = new Order(UUID.randomUUID(), 4, 12, OrderAction.SELL);
         matcher.match(newOrder);
 
         // capture the created trade object
@@ -99,8 +101,8 @@ public class MatcherTests {
         // check properties of created trade object that was added to tradeService
         assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
         assertThat(createdTrade.getValue().getQuantity()).isEqualTo(10);
-        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo("account1");
-        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo("account2");
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
 
@@ -110,7 +112,7 @@ public class MatcherTests {
 
         // check properties of created order object that was added to orderService
         assertThat(createdOrder.getValue().getId()).isEqualTo(newOrder.getId());
-        assertThat(createdOrder.getValue().getAccountId()).isEqualTo("account2");
+        assertThat(createdOrder.getValue().getAccountId()).isEqualTo(newOrder.getAccountId());
         assertThat(createdOrder.getValue().getPrice()).isEqualTo(4);
         assertThat(createdOrder.getValue().getQuantity()).isEqualTo(2);
         assertThat(createdOrder.getValue().getDatetime()).isEqualTo(newOrder.getDatetime());
@@ -120,13 +122,13 @@ public class MatcherTests {
     @Test
     void ItShouldUpdateTheQuantityOfMatchedExistingOrderWhenThereIsExcess() {
         // setup mock returns
-        Order existingOrder = new Order("account1", 4, 10, OrderAction.BUY);
+        Order existingOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
         Mockito.when(orderService.get())
                 .thenReturn(new ArrayList<>(List.of(existingOrder)))
                 .thenReturn(new ArrayList<>(List.of()));
 
         // run match
-        Order newOrder = new Order("account2", 4, 8, OrderAction.SELL);
+        Order newOrder = new Order(UUID.randomUUID(), 4, 8, OrderAction.SELL);
         matcher.match(newOrder);
 
         // capture the created trade object
@@ -136,8 +138,8 @@ public class MatcherTests {
         // check properties of created trade object that was added to tradeService
         assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
         assertThat(createdTrade.getValue().getQuantity()).isEqualTo(8);
-        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo("account1");
-        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo("account2");
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
 
