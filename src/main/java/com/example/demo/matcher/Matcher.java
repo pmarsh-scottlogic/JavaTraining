@@ -6,6 +6,8 @@ import com.example.demo.matcher.models.Trade;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,20 +32,26 @@ public class Matcher {
             Order buyOrder = newOrder.getAction() == OrderAction.BUY? newOrder : matchedOrder;
             Order sellOrder = newOrder.getAction() == OrderAction.SELL? newOrder : matchedOrder;
 
-            float tradePrice = matchedOrder.getPrice();
-            float tradeQuantity = Math.min(newOrder.getQuantity(), matchedOrder.getQuantity());
+            BigDecimal tradePrice = matchedOrder.getPrice();
+            BigDecimal tradeQuantity = newOrder.getQuantity().min(matchedOrder.getQuantity());
 
-            tradeService.add(new Trade(buyOrder.getAccountId(), buyOrder.getId(), sellOrder.getAccountId(), sellOrder.getId(), tradePrice, tradeQuantity));
+            tradeService.add(new Trade(buyOrder.getAccountId(),
+                    buyOrder.getOrderId(),
+                    sellOrder.getAccountId(),
+                    sellOrder.getOrderId(),
+                    tradePrice,
+                    tradeQuantity,
+                    LocalDateTime.now()));
 
-            newOrder.setQuantity(newOrder.getQuantity() - tradeQuantity);
-            matchedOrder.setQuantity(matchedOrder.getQuantity() - tradeQuantity);
+            newOrder.setQuantity(newOrder.getQuantity().subtract(tradeQuantity));
+            matchedOrder.setQuantity(matchedOrder.getQuantity().subtract(tradeQuantity));
 
-            if (matchedOrder.getQuantity() <= 0) {
+            if (matchedOrder.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
                 orderService.remove(matchedOrder);
             }
-        } while(newOrder.getQuantity() > 0);
+        } while(newOrder.getQuantity().compareTo(BigDecimal.ZERO) > 0);
 
-        if (newOrder.getQuantity() > 0) orderService.add(newOrder);
+        if (newOrder.getQuantity().compareTo(BigDecimal.ZERO) > 0) orderService.add(newOrder);
     }
 
     private Order getMatchingOrder(Order newOrder) {
@@ -53,11 +61,11 @@ public class Matcher {
         eligibleOrders = eligibleOrders.stream().filter(order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getAccountId(), newOrder.getAccountId())).collect(Collectors.toCollection(ArrayList::new));
 
         if (newOrder.getAction() == OrderAction.BUY) {
-            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice() <= newOrder.getPrice()).collect(Collectors.toCollection(ArrayList::new));
+            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice().compareTo(newOrder.getPrice()) <= 0).collect(Collectors.toCollection(ArrayList::new));
             eligibleOrders = OrderService.sortDesc(eligibleOrders);
         }
         else {
-            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice() >= newOrder.getPrice()).collect(Collectors.toCollection(ArrayList::new));
+            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice().compareTo(newOrder.getPrice()) >= 0).collect(Collectors.toCollection(ArrayList::new));
             eligibleOrders = OrderService.sortAsc(eligibleOrders);
         }
         return eligibleOrders.size() == 0? null : eligibleOrders.get(0);
