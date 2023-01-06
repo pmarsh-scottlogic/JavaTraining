@@ -1,21 +1,14 @@
 package com.example.demo.matcher.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString @Getter @Setter @AllArgsConstructor
 public class OrderbookItem implements Comparable<OrderbookItem>{
-    public float price;
-    public float quantity;
-
-    public OrderbookItem(float price, float quantity) {
-        this.price = price;
-        this.quantity = quantity;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderbookItem{" +
-                "price=" + price +
-                ", quantity=" + quantity +
-                '}';
-    }
+    private final float price;
+    private final float quantity;
 
     @Override
     public int compareTo(OrderbookItem obi) {
