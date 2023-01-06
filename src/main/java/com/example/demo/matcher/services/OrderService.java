@@ -68,11 +68,12 @@ public class OrderService {
     }
 
     public ArrayList<OrderbookItem> getOrderDepth(OrderAction action) {
-        ArrayList<OrderbookItem> orderDepth = this.getOrderbook(action);
+        ArrayList<OrderbookItem> orderBook = this.getOrderbook(action);
+        ArrayList<OrderbookItem> orderDepth = new ArrayList<>();
         float runningTotal = 0;
-        for (OrderbookItem obi : orderDepth) {
-            runningTotal += obi.quantity;
-            obi.quantity = runningTotal;
+        for (OrderbookItem obi : orderBook) {
+            runningTotal += obi.getQuantity();
+            orderDepth.add(new OrderbookItem(obi.getPrice(), runningTotal));
         }
         return orderDepth;
     }
