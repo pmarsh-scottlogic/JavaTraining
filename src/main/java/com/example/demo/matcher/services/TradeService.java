@@ -19,6 +19,4 @@ public class TradeService {
     public List<Trade> get() {
         return trades;
     }
-
-
 }
