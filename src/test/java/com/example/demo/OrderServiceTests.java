@@ -26,21 +26,6 @@ public class OrderServiceTests {
     @Spy
     OrderService orderService;
 
-    public static List<Order> testOrderSet1(String primaryAction) {
-        String secondaryAction = primaryAction.equals("b") ? "s" : "b";
-
-        List<Order> testOrders = new ArrayList<>();
-
-        testOrders.add(makeOrder("account1", 20, 9, primaryAction));
-        testOrders.add(makeOrder("account1", 10, 7, primaryAction));
-        testOrders.add(makeOrder("account2", 20, 9, primaryAction));
-        testOrders.add(makeOrder("account3", 10, 10, primaryAction));
-        testOrders.add(makeOrder("account4", 30, 19, primaryAction));
-        testOrders.add(makeOrder("account1", 40, 100, secondaryAction));
-
-        return testOrders;
-    }
-
     @BeforeEach
     void InitialiseOrderService() {
         orderService = spy(new OrderService());
@@ -55,6 +40,15 @@ public class OrderServiceTests {
         UUID uuid = uuidFromString(strAccount);
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
         return new Order(uuid, new BigDecimal(price), new BigDecimal(quantity), action);
+    }
+
+    private static Order makeOrder(float price, float quantity, String strAction, int datetimeRank) {
+        OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
+        return new Order(UUID.randomUUID(),
+                new BigDecimal(price),
+                new BigDecimal(quantity),
+                action,
+                LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0).plusDays(datetimeRank));
     }
 
     private static UUID uuidFromString(String s) {
@@ -94,6 +88,21 @@ public class OrderServiceTests {
 
         orderService.remove(order1);
         assertThat(orderService.get()).isEqualTo(List.of());
+    }
+
+    public static List<Order> testOrderSet1(String primaryAction) {
+        String secondaryAction = primaryAction.equals("b") ? "s" : "b";
+
+        List<Order> testOrders = new ArrayList<>();
+
+        testOrders.add(makeOrder("account1", 20, 9, primaryAction));
+        testOrders.add(makeOrder("account1", 10, 7, primaryAction));
+        testOrders.add(makeOrder("account2", 20, 9, primaryAction));
+        testOrders.add(makeOrder("account3", 10, 10, primaryAction));
+        testOrders.add(makeOrder("account4", 30, 19, primaryAction));
+        testOrders.add(makeOrder("account1", 40, 100, secondaryAction));
+
+        return testOrders;
     }
 
     @Test
@@ -168,19 +177,34 @@ public class OrderServiceTests {
                 .isEqualTo(expected);
     }
 
+    public static List<Order> testOrderSet2() {
+        List<Order> testOrders = new ArrayList<>();
+
+        testOrders.add(makeOrder(3, 10, "b"));
+        testOrders.add(makeOrder(4, 10, "b"));
+        testOrders.add(makeOrder(2, 10, "b"));
+        testOrders.add(makeOrder(1, 10, "b"));
+
+        return testOrders;
+    }
+
+    public static List<Order> testOrderSet3() {
+        List<Order> testOrders = new ArrayList<>();
+
+        testOrders.add(makeOrder(3, 10, "b", 4));
+        testOrders.add(makeOrder(1, 10, "b", 2));
+        testOrders.add(makeOrder(1, 10, "b", 3));
+        testOrders.add(makeOrder(1, 10, "b", 1));
+
+        return testOrders;
+    }
+
     @Test
     void ItShouldSortOrdersAscendingByPrice() {
-        Order order1 = makeOrder(3, 10, "b");
-        Order order2 = makeOrder(4, 10, "b");
-        Order order3 = makeOrder(2, 10, "b");
-        Order order4 = makeOrder(1, 10, "b");
-
-        ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
-        );
+        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order4, order3, order1, order2)
+                Arrays.asList(unsorted.get(3), unsorted.get(2), unsorted.get(0), unsorted.get(1))
         );
 
         assertThat(OrderService.sortAsc(unsorted))
@@ -190,17 +214,12 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPriceThenDatetime() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(3), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
-
         ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
+                testOrderSet3()
         );
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order4, order2, order3, order1)
+                Arrays.asList(unsorted.get(3), unsorted.get(1) ,unsorted.get(2) ,unsorted.get(0))
         );
 
         assertThat(OrderService.sortAsc(unsorted))
@@ -210,17 +229,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPrice() {
-        Order order1 = makeOrder(3, 10, "b");
-        Order order2 = makeOrder(4, 10, "b");
-        Order order3 = makeOrder(2, 10, "b");
-        Order order4 = makeOrder(1, 10, "b");
-
-        ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
-        );
+        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order2, order1, order3, order4)
+                Arrays.asList(unsorted.get(1), unsorted.get(0), unsorted.get(2), unsorted.get(3))
         );
 
         assertThat(OrderService.sortDesc(unsorted))
@@ -230,17 +242,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPriceThenAscendingByDatetime() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(3), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
-
-        ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
-        );
+        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet3());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order1, order4, order2, order3)
+                Arrays.asList(unsorted.get(0), unsorted.get(3) ,unsorted.get(1) ,unsorted.get(2))
         );
 
         assertThat(OrderService.sortDesc(unsorted))
