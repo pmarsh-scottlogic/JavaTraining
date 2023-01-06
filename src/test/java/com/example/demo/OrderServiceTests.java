@@ -26,15 +26,17 @@ public class OrderServiceTests {
     @Spy
     OrderService orderService;
 
-    public static List<Order> testOrderSet1() {
+    public static List<Order> testOrderSet1(String primaryAction) {
+        String secondaryAction = primaryAction.equals("b") ? "s" : "b";
+
         List<Order> testOrders = new ArrayList<>();
 
-        testOrders.add(makeOrder("account1", 20, 9, "b"));
-        testOrders.add(makeOrder("account1", 10, 7, "b"));
-        testOrders.add(makeOrder("account2", 20, 9, "b"));
-        testOrders.add(makeOrder("account3", 10, 10, "b"));
-        testOrders.add(makeOrder("account4", 30, 19, "b"));
-        testOrders.add(makeOrder("account1", 40, 100, "s"));
+        testOrders.add(makeOrder("account1", 20, 9, primaryAction));
+        testOrders.add(makeOrder("account1", 10, 7, primaryAction));
+        testOrders.add(makeOrder("account2", 20, 9, primaryAction));
+        testOrders.add(makeOrder("account3", 10, 10, primaryAction));
+        testOrders.add(makeOrder("account4", 30, 19, primaryAction));
+        testOrders.add(makeOrder("account1", 40, 100, secondaryAction));
 
         return testOrders;
     }
@@ -57,6 +59,10 @@ public class OrderServiceTests {
 
     private static UUID uuidFromString(String s) {
         return UUID.nameUUIDFromBytes(s.getBytes());
+    }
+
+    private static OrderbookItem makeOrderbookItem(float price, float quantity) {
+        return new OrderbookItem(new BigDecimal(price), new BigDecimal(quantity));
     }
 
     @Test
@@ -93,12 +99,12 @@ public class OrderServiceTests {
     @Test
     void ItShouldGenerateAnOrderbookWithBuyAction() {
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                testOrderSet1()
+                testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(new BigDecimal(30), new BigDecimal(19));
-        OrderbookItem obi2 = new OrderbookItem(new BigDecimal(20), new BigDecimal(18));
-        OrderbookItem obi3 = new OrderbookItem(new BigDecimal(10), new BigDecimal(17));
+        OrderbookItem obi1 = makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = makeOrderbookItem(20, 18);
+        OrderbookItem obi3 = makeOrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2, obi3)
         );
@@ -110,20 +116,13 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithSellAction() {
-        Order order1 = makeOrder("account1", 20, 9, "s");
-        Order order2 = makeOrder("account1", 10, 7, "s");
-        Order order3 = makeOrder("account2", 20, 9, "s");
-        Order order4 = makeOrder("account3", 10, 10, "s");
-        Order order5 = makeOrder("account4", 30, 19, "s");
-        Order order6 = makeOrder("account1", 40, 100, "b");
-
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4, order5, order6)
+                testOrderSet1("s")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(new BigDecimal(30), new BigDecimal(19));
-        OrderbookItem obi2 = new OrderbookItem(new BigDecimal(20), new BigDecimal(18));
-        OrderbookItem obi3 = new OrderbookItem(new BigDecimal(10), new BigDecimal(17));
+        OrderbookItem obi1 = makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = makeOrderbookItem(20, 18);
+        OrderbookItem obi3 = makeOrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi3, obi2, obi1)
         );
@@ -136,11 +135,11 @@ public class OrderServiceTests {
     @Test
     void ItShouldGenerateAnOrderbookWithBuyActionAndAccountId() {
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                testOrderSet1()
+                testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(new BigDecimal(20), new BigDecimal(9));
-        OrderbookItem obi2 = new OrderbookItem(new BigDecimal(10), new BigDecimal(7));
+        OrderbookItem obi1 = makeOrderbookItem(20, 9);
+        OrderbookItem obi2 = makeOrderbookItem(10, 7);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2)
         );
@@ -154,12 +153,12 @@ public class OrderServiceTests {
     @Test
     void ItShouldGenerateOrderDepthWithBuyAction() {
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                testOrderSet1()
+                testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(new BigDecimal(30), new BigDecimal(19));
-        OrderbookItem obi2 = new OrderbookItem(new BigDecimal(20), new BigDecimal(37));
-        OrderbookItem obi3 = new OrderbookItem(new BigDecimal(10), new BigDecimal(54));
+        OrderbookItem obi1 = makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = makeOrderbookItem(20, 37);
+        OrderbookItem obi3 = makeOrderbookItem(10, 54);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2, obi3)
         );
