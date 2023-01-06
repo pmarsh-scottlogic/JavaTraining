@@ -30,15 +30,15 @@ public class OrderService {
         // filter the order list by action
         List<Order> filtered = this.get().stream()
                 .filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toList());
         return makeOrderbook(filtered, action);
     }
 
     public List<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
-        ArrayList<Order> filtered = this.get().stream()
+        List<Order> filtered = this.get().stream()
                 .filter(order -> order.getAction() == action)
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toList());
         return makeOrderbook(filtered, action);
     }
 
@@ -79,7 +79,7 @@ public class OrderService {
         return orderDepth;
     }
 
-    public static List<Order> sortAsc(ArrayList<Order> orders) {
+    public static List<Order> sortAsc(List<Order> orders) {
         List<Order> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
             int priceComp = Math.round(order1.getPrice() - order2.getPrice());
@@ -90,7 +90,7 @@ public class OrderService {
         return sorted;
     }
 
-    public static List<Order> sortDesc(ArrayList<Order> orders) {
+    public static List<Order> sortDesc(List<Order> orders) {
         List<Order> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
             int priceComp = Math.round(order2.getPrice() - order1.getPrice());
