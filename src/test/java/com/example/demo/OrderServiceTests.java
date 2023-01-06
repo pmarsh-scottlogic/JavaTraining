@@ -7,6 +7,7 @@ import com.example.demo.matcher.models.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.spy;
 
 @SpringBootTest
 public class OrderServiceTests {
+    @Spy
     OrderService orderService;
 
     @BeforeEach
