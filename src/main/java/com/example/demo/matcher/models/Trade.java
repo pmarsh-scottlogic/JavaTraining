@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Getter @ToString
 public class Trade {
-    private final String tradeId;
+    private final UUID tradeId;
     private final String accountIdBuyer;
     private final String orderIdBuy;
     private final String accountIdSeller;
@@ -22,7 +24,7 @@ public class Trade {
                  float price,
                  float quantity,
                  LocalDateTime datetime) {
-        this.tradeId = "RandomTradeId";
+        this.tradeId = UUID.randomUUID();
         this.accountIdBuyer = accountIdBuyer;
         this.orderIdBuy = orderIdBuy;
         this.accountIdSeller = accountIdSeller;
