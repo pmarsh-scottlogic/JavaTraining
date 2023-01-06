@@ -4,6 +4,7 @@ import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,14 +56,14 @@ public class OrderService {
 
     private static List<OrderbookItem> aggregateOrders(List<Order> orderList) {
         // aggregate orders using hashmap
-        Map<Float, Float> aggregated = new HashMap<>();
+        Map<BigDecimal, BigDecimal> aggregated = new HashMap<>();
         for (Order order : orderList) {
-            aggregated.merge(order.getPrice(), order.getQuantity(), Float::sum);
+            aggregated.merge(order.getPrice(), order.getQuantity(), BigDecimal::add);
         }
 
         // convert hashmap to ArrayList
         List<OrderbookItem> orderbook = new ArrayList<>();
-        for (Float price : aggregated.keySet()) {
+        for (BigDecimal price : aggregated.keySet()) {
             orderbook.add(new OrderbookItem(price, aggregated.get(price)));
         }
         return orderbook;
@@ -71,9 +72,9 @@ public class OrderService {
     public List<OrderbookItem> getOrderDepth(OrderAction action) {
         List<OrderbookItem> orderBook = this.getOrderbook(action);
         List<OrderbookItem> orderDepth = new ArrayList<>();
-        float runningTotal = 0;
+        BigDecimal runningTotal = new BigDecimal(0);
         for (OrderbookItem obi : orderBook) {
-            runningTotal += obi.getQuantity();
+            runningTotal = runningTotal.add(obi.getQuantity());
             orderDepth.add(new OrderbookItem(obi.getPrice(), runningTotal));
         }
         return orderDepth;
@@ -82,7 +83,7 @@ public class OrderService {
     public static List<Order> sortAsc(List<Order> orders) {
         List<Order> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
-            int priceComp = Math.round(order1.getPrice() - order2.getPrice());
+            int priceComp = order1.getPrice().subtract(order2.getPrice()).signum();
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
             if (priceComp != 0) return priceComp;
             else return datetimeComp;
@@ -93,7 +94,7 @@ public class OrderService {
     public static List<Order> sortDesc(List<Order> orders) {
         List<Order> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
-            int priceComp = Math.round(order2.getPrice() - order1.getPrice());
+            int priceComp = order2.getPrice().subtract(order1.getPrice()).signum();
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
             if (priceComp != 0) return priceComp;
             else return datetimeComp;

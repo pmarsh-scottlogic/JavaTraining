@@ -3,6 +3,7 @@ package com.example.demo.matcher.models;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,12 +11,12 @@ import java.util.UUID;
 public class Order {
     final UUID orderId;
     final UUID accountId;
-    final float price;
-    final float quantity;
+    final BigDecimal price;
+    final BigDecimal quantity;
     final OrderAction action;
     final LocalDateTime datetime;
 
-    public Order(UUID accountId, float price, float quantity, OrderAction action) {
+    public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action) {
         this.orderId = UUID.randomUUID();; // use some sort of UUId generating library later for this
         this.accountId = accountId;
         this.price = price;
@@ -24,7 +25,7 @@ public class Order {
         this.datetime = LocalDateTime.now();
     }
 
-    public Order(UUID accountId, float price, float quantity, OrderAction action, LocalDateTime datetime) {
+    public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action, LocalDateTime datetime) {
         this.orderId = UUID.randomUUID();
         this.accountId = accountId;
         this.price = price;
