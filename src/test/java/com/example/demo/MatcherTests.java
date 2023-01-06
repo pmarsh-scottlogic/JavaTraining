@@ -12,10 +12,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,94 +55,92 @@ public class MatcherTests {
         Mockito.verify(orderService).add(newOrder);
     }
 
-//    @Test
-//    void ItShouldMatchABasicSellOrder() {
-//
-//
-//        // setup mock returns
-//        Order existingOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
-//        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(List.of(existingOrder)));
-//
-//        // run match
-//        Order newOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.SELL);
-//        matcher.match(newOrder);
-//
-//        // capture the created trade object
-//        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
-//        Mockito.verify(tradeService).add(createdTrade.capture());
-//
-//        // check properties of created trade object that was added to tradeService
-//        assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
-//        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(10);
-//        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
-//        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
-//        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
-//        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
-//    }
-//
-//    @Test
-//    void ItShouldAddToTheOrderbookWhenThereIsExcessQuantity() {
-//        // setup mock returns
-//        Order existingOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
-//        Mockito.when(orderService.get())
-//                .thenReturn(new ArrayList<>(List.of(existingOrder)))
-//                .thenReturn(new ArrayList<>(List.of()));
-//
-//        // run match
-//        Order newOrder = new Order(UUID.randomUUID(), 4, 12, OrderAction.SELL);
-//        matcher.match(newOrder);
-//
-//        // capture the created trade object
-//        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
-//        Mockito.verify(tradeService).add(createdTrade.capture());
-//
-//        // check properties of created trade object that was added to tradeService
-//        assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
-//        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(10);
-//        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
-//        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
-//        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
-//        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
-//
-//        // capture the created order object
-//        ArgumentCaptor<Order> createdOrder = ArgumentCaptor.forClass(Order.class);
-//        Mockito.verify(orderService).add(createdOrder.capture());
-//
-//        // check properties of created order object that was added to orderService
-//        assertThat(createdOrder.getValue().getId()).isEqualTo(newOrder.getId());
-//        assertThat(createdOrder.getValue().getAccountId()).isEqualTo(newOrder.getAccountId());
-//        assertThat(createdOrder.getValue().getPrice()).isEqualTo(4);
-//        assertThat(createdOrder.getValue().getQuantity()).isEqualTo(2);
-//        assertThat(createdOrder.getValue().getDatetime()).isEqualTo(newOrder.getDatetime());
-//        assertThat(createdOrder.getValue().getAction()).isEqualTo(OrderAction.SELL);
-//    }
-//
-//    @Test
-//    void ItShouldUpdateTheQuantityOfMatchedExistingOrderWhenThereIsExcess() {
-//        // setup mock returns
-//        Order existingOrder = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
-//        Mockito.when(orderService.get())
-//                .thenReturn(new ArrayList<>(List.of(existingOrder)))
-//                .thenReturn(new ArrayList<>(List.of()));
-//
-//        // run match
-//        Order newOrder = new Order(UUID.randomUUID(), 4, 8, OrderAction.SELL);
-//        matcher.match(newOrder);
-//
-//        // capture the created trade object
-//        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
-//        Mockito.verify(tradeService).add(createdTrade.capture());
-//
-//        // check properties of created trade object that was added to tradeService
-//        assertThat(createdTrade.getValue().getPrice()).isEqualTo(4);
-//        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(8);
-//        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
-//        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
-//        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getId());
-//        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getId());
-//
-//        // check quantity of existing order was updated
-//        assertThat(existingOrder.getQuantity()).isEqualTo(2);
-//        assertThat(newOrder.getQuantity()).isEqualTo(0);
-//    }
+    @Test
+    void ItShouldMatchABasicSellOrder() {
+        // setup mock returns
+        Order existingOrder = TestUtils.makeOrder(4, 10, "b");
+        Mockito.when(orderService.get()).thenReturn(new ArrayList<>(List.of(existingOrder)));
+
+        // run match
+        Order newOrder = TestUtils.makeOrder(4, 10, "s");
+        matcher.match(newOrder);
+
+        // capture the created trade object
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
+        Mockito.verify(tradeService).add(createdTrade.capture());
+
+        // check properties of created trade object that was added to tradeService
+        assertThat(createdTrade.getValue().getPrice()).isEqualTo(new BigDecimal(4));
+        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(new BigDecimal(10));
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getOrderId());
+        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
+    }
+
+    @Test
+    void ItShouldAddToTheOrderbookWhenThereIsExcessQuantity() {
+        // setup mock returns
+        Order existingOrder = TestUtils.makeOrder(4, 10, "b");
+        Mockito.when(orderService.get())
+                .thenReturn(new ArrayList<>(List.of(existingOrder)))
+                .thenReturn(new ArrayList<>(List.of()));
+
+        // run match
+        Order newOrder = TestUtils.makeOrder(4, 12, "s");
+        matcher.match(newOrder);
+
+        // capture the created trade object
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
+        Mockito.verify(tradeService).add(createdTrade.capture());
+
+        // check properties of created trade object that was added to tradeService
+        assertThat(createdTrade.getValue().getPrice()).isEqualTo(new BigDecimal(4));
+        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(new BigDecimal(10));
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getOrderId());
+        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
+
+        // capture the created order object
+        ArgumentCaptor<Order> createdOrder = ArgumentCaptor.forClass(Order.class);
+        Mockito.verify(orderService).add(createdOrder.capture());
+
+        // check properties of created order object that was added to orderService
+        assertThat(createdOrder.getValue().getOrderId()).isEqualTo(newOrder.getOrderId());
+        assertThat(createdOrder.getValue().getAccountId()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdOrder.getValue().getPrice()).isEqualTo(new BigDecimal(4));
+        assertThat(createdOrder.getValue().getQuantity()).isEqualTo(new BigDecimal(2));
+        assertThat(createdOrder.getValue().getDatetime()).isEqualTo(newOrder.getDatetime());
+        assertThat(createdOrder.getValue().getAction()).isEqualTo(OrderAction.SELL);
+    }
+
+    @Test
+    void ItShouldUpdateTheQuantityOfMatchedExistingOrderWhenThereIsExcess() {
+        // setup mock returns
+        Order existingOrder = TestUtils.makeOrder(4, 10 ,"b");
+        Mockito.when(orderService.get())
+                .thenReturn(new ArrayList<>(List.of(existingOrder)))
+                .thenReturn(new ArrayList<>(List.of()));
+
+        // run match
+        Order newOrder = TestUtils.makeOrder(4, 8, "s");
+        matcher.match(newOrder);
+
+        // capture the created trade object
+        ArgumentCaptor<Trade> createdTrade = ArgumentCaptor.forClass(Trade.class);
+        Mockito.verify(tradeService).add(createdTrade.capture());
+
+        // check properties of created trade object that was added to tradeService
+        assertThat(createdTrade.getValue().getPrice()).isEqualTo(new BigDecimal(4));
+        assertThat(createdTrade.getValue().getQuantity()).isEqualTo(new BigDecimal(8));
+        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
+        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getOrderId());
+        assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
+
+        // check quantity of existing order was updated
+        assertThat(existingOrder.getQuantity()).isEqualTo(new BigDecimal(2));
+        assertThat(newOrder.getQuantity()).isEqualTo(new BigDecimal(0));
+    }
 }
