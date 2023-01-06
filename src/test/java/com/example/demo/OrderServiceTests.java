@@ -31,10 +31,15 @@ public class OrderServiceTests {
         orderService = spy(new OrderService());
     }
 
+    Order makeOrder(float price, float quantity, String strAction) {
+        OrderAction action = strAction == "b" ? OrderAction.BUY : OrderAction.SELL;
+        return new Order(UUID.randomUUID(), new BigDecimal(price), new BigDecimal(quantity), action);
+    }
+
     @Test
     void ItShouldAddOrders() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(1), OrderAction.BUY);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(1), OrderAction.SELL);
+        Order order1 = makeOrder(1, 1, "b");
+        Order order2 = makeOrder(1, 1, "s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -44,9 +49,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldRemoveOrders() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(1), OrderAction.BUY);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(1), OrderAction.SELL);
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(1), OrderAction.SELL);
+        Order order1 = makeOrder(1, 1, "b");
+        Order order2 = makeOrder(1, 1 ,"s");
+        Order order3 = makeOrder(1, 1 ,"s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -64,12 +69,12 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithBuyAction() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(20), new BigDecimal(9), OrderAction.BUY);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(10), new BigDecimal(7), OrderAction.BUY);
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(20), new BigDecimal(9), OrderAction.BUY);
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(10), new BigDecimal(10), OrderAction.BUY);
-        Order order5 = new Order(UUID.randomUUID(), new BigDecimal(30), new BigDecimal(19), OrderAction.BUY);
-        Order order6 = new Order(UUID.randomUUID(), new BigDecimal(40), new BigDecimal(100), OrderAction.SELL);
+        Order order1 = makeOrder(20, 9, "b");
+        Order order2 = makeOrder(10, 7, "b");
+        Order order3 = makeOrder(20, 9, "b");
+        Order order4 = makeOrder(10, 10, "b");
+        Order order5 = makeOrder(30, 19, "b");
+        Order order6 = makeOrder(40, 100, "s");
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
@@ -89,13 +94,12 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithSellAction() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(20), new BigDecimal(9), OrderAction.SELL);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(10), new BigDecimal(7), OrderAction.SELL);
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(20), new BigDecimal(9), OrderAction.SELL);
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(10), new BigDecimal(10), OrderAction.SELL);
-        Order order5 = new Order(UUID.randomUUID(), new BigDecimal(30), new BigDecimal(19), OrderAction.SELL);
-        Order order6 = new Order(UUID.randomUUID(), new BigDecimal(40), new BigDecimal(100), OrderAction.BUY);
-
+        Order order1 = makeOrder(20, 9, "s");
+        Order order2 = makeOrder(10, 7, "s");
+        Order order3 = makeOrder(20, 9, "s");
+        Order order4 = makeOrder(10, 10, "s");
+        Order order5 = makeOrder(30, 19, "s");
+        Order order6 = makeOrder(40, 100, "b");
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
@@ -140,12 +144,12 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateOrderDepthWithBuyAction() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(20), new BigDecimal(9), OrderAction.BUY);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(10), new BigDecimal(7), OrderAction.BUY);
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(20), new BigDecimal(9), OrderAction.BUY);
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(10), new BigDecimal(10), OrderAction.BUY);
-        Order order5 = new Order(UUID.randomUUID(), new BigDecimal(30), new BigDecimal(19), OrderAction.BUY);
-        Order order6 = new Order(UUID.randomUUID(), new BigDecimal(40), new BigDecimal(100), OrderAction.SELL);
+        Order order1 = makeOrder(20, 9, "b");
+        Order order2 = makeOrder(10, 7, "b");
+        Order order3 = makeOrder(20, 9, "b");
+        Order order4 = makeOrder(10, 10, "b");
+        Order order5 = makeOrder(30, 19, "b");
+        Order order6 = makeOrder(40, 100, "s");
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
@@ -165,10 +169,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPrice() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(3), new BigDecimal(10), OrderAction.BUY);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(4), new BigDecimal(10), OrderAction.BUY);
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(2), new BigDecimal(10), OrderAction.BUY);
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY);
+        Order order1 = makeOrder(3, 10, "b");
+        Order order2 = makeOrder(4, 10, "b");
+        Order order3 = makeOrder(2, 10, "b");
+        Order order4 = makeOrder(1, 10, "b");
 
         ArrayList<Order> unsorted = new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4)
@@ -205,10 +209,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPrice() {
-        Order order1 = new Order(UUID.randomUUID(), new BigDecimal(3), new BigDecimal(10), OrderAction.BUY);
-        Order order2 = new Order(UUID.randomUUID(), new BigDecimal(4), new BigDecimal(10), OrderAction.BUY);
-        Order order3 = new Order(UUID.randomUUID(), new BigDecimal(2), new BigDecimal(10), OrderAction.BUY);
-        Order order4 = new Order(UUID.randomUUID(), new BigDecimal(1), new BigDecimal(10), OrderAction.BUY);
+        Order order1 = makeOrder(3, 10, "b");
+        Order order2 = makeOrder(4, 10, "b");
+        Order order3 = makeOrder(2, 10, "b");
+        Order order4 = makeOrder(1, 10, "b");
 
         ArrayList<Order> unsorted = new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4)
