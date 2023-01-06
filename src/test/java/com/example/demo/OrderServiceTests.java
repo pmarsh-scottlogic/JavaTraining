@@ -20,7 +20,7 @@ import static org.mockito.Mockito.spy;
 
 @SpringBootTest
 public class OrderServiceTests {
-    @Spy
+
     OrderService orderService;
 
     @BeforeEach
