@@ -31,13 +31,17 @@ public class OrderService {
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
         // filter the order list by action
-        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId)).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Order> filtered = this.get().stream()
+                .filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId))
+                .collect(Collectors.toCollection(ArrayList::new));
         return makeOrderbook(filtered, action);
     }
 
     public ArrayList<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
-        ArrayList<Order> filtered = this.get().stream().filter(order -> order.getAction() == action).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Order> filtered = this.get().stream()
+                .filter(order -> order.getAction() == action)
+                .collect(Collectors.toCollection(ArrayList::new));
         return makeOrderbook(filtered, action);
     }
 

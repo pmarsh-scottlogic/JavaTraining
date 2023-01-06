@@ -78,7 +78,9 @@ public class OrderServiceTests {
                 Arrays.asList(obi1, obi2, obi3)
         );
 
-        assertThat(orderService.getOrderbook(OrderAction.BUY)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(orderService.getOrderbook(OrderAction.BUY))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -102,7 +104,9 @@ public class OrderServiceTests {
                 Arrays.asList(obi3, obi2, obi1)
         );
 
-        assertThat(orderService.getOrderbook(OrderAction.SELL)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(orderService.getOrderbook(OrderAction.SELL))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -124,7 +128,9 @@ public class OrderServiceTests {
                 Arrays.asList(obi1, obi2)
         );
 
-        assertThat(orderService.getOrderbook(OrderAction.BUY, "account1")).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(orderService.getOrderbook(OrderAction.BUY, "account1"))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -147,7 +153,9 @@ public class OrderServiceTests {
                 Arrays.asList(obi1, obi2, obi3)
         );
 
-        assertThat(orderService.getOrderDepth(OrderAction.BUY)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(orderService.getOrderDepth(OrderAction.BUY))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -165,7 +173,9 @@ public class OrderServiceTests {
                 Arrays.asList(order4, order3, order1, order2)
         );
 
-        assertThat(OrderService.sortAsc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(OrderService.sortAsc(unsorted))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -183,7 +193,9 @@ public class OrderServiceTests {
                 Arrays.asList(order4, order2, order3, order1)
         );
 
-        assertThat(OrderService.sortAsc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(OrderService.sortAsc(unsorted))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -201,7 +213,9 @@ public class OrderServiceTests {
                 Arrays.asList(order2, order1, order3, order4)
         );
 
-        assertThat(OrderService.sortDesc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(OrderService.sortDesc(unsorted))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
@@ -219,6 +233,8 @@ public class OrderServiceTests {
                 Arrays.asList(order1, order4, order2, order3)
         );
 
-        assertThat(OrderService.sortDesc(unsorted)).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(OrderService.sortDesc(unsorted))
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 }

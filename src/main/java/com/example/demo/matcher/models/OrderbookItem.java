@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString @Getter @Setter @AllArgsConstructor
+@ToString @Getter @AllArgsConstructor
 public class OrderbookItem implements Comparable<OrderbookItem>{
     private final float price;
     private final float quantity;
