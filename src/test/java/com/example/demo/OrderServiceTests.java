@@ -98,12 +98,12 @@ public class OrderServiceTests {
                 testOrderSet1("s")
         ));
 
-        OrderbookItem obi1 = TestUtils.makeOrderbookItem(30, 19);
-        OrderbookItem obi2 = TestUtils.makeOrderbookItem(20, 18);
-        OrderbookItem obi3 = TestUtils.makeOrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
-                Arrays.asList(obi3, obi2, obi1)
-        );
+                Arrays.asList(
+                        TestUtils.makeOrderbookItem(10, 17),
+                        TestUtils.makeOrderbookItem(20, 18),
+                        TestUtils.makeOrderbookItem(30, 19)
+                ));
 
         assertThat(orderService.getOrderbook(OrderAction.SELL))
                 .usingRecursiveComparison()
@@ -116,11 +116,11 @@ public class OrderServiceTests {
                 testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = TestUtils.makeOrderbookItem(20, 9);
-        OrderbookItem obi2 = TestUtils.makeOrderbookItem(10, 7);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
-                Arrays.asList(obi1, obi2)
-        );
+                Arrays.asList(
+                        TestUtils.makeOrderbookItem(20, 9),
+                        TestUtils.makeOrderbookItem(10, 7)
+                ));
 
         UUID specifiedAccount = TestUtils.uuidFromString("account1");
         assertThat(orderService.getOrderbook(OrderAction.BUY, specifiedAccount))
@@ -134,12 +134,12 @@ public class OrderServiceTests {
                 testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = TestUtils.makeOrderbookItem(30, 19);
-        OrderbookItem obi2 = TestUtils.makeOrderbookItem(20, 37);
-        OrderbookItem obi3 = TestUtils.makeOrderbookItem(10, 54);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
-                Arrays.asList(obi1, obi2, obi3)
-        );
+                Arrays.asList(
+                        TestUtils.makeOrderbookItem(30, 19),
+                        TestUtils.makeOrderbookItem(20, 37),
+                        TestUtils.makeOrderbookItem(10, 54)
+                ));
 
         assertThat(orderService.getOrderDepth(OrderAction.BUY))
                 .usingRecursiveComparison()
@@ -173,8 +173,11 @@ public class OrderServiceTests {
         ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(unsorted.get(3), unsorted.get(2), unsorted.get(0), unsorted.get(1))
-        );
+                Arrays.asList(
+                        unsorted.get(3),
+                        unsorted.get(2),
+                        unsorted.get(0),
+                        unsorted.get(1)));
 
         assertThat(OrderService.sortAsc(unsorted))
                 .usingRecursiveComparison()
@@ -188,8 +191,12 @@ public class OrderServiceTests {
         );
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(unsorted.get(3), unsorted.get(1) ,unsorted.get(2) ,unsorted.get(0))
-        );
+                Arrays.asList(
+                        unsorted.get(3),
+                        unsorted.get(1),
+                        unsorted.get(2),
+                        unsorted.get(0)
+                ));
 
         assertThat(OrderService.sortAsc(unsorted))
                 .usingRecursiveComparison()
@@ -201,8 +208,11 @@ public class OrderServiceTests {
         ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(unsorted.get(1), unsorted.get(0), unsorted.get(2), unsorted.get(3))
-        );
+                Arrays.asList(unsorted.get(1),
+                        unsorted.get(0),
+                        unsorted.get(2),
+                        unsorted.get(3)
+                ));
 
         assertThat(OrderService.sortDesc(unsorted))
                 .usingRecursiveComparison()
@@ -214,8 +224,12 @@ public class OrderServiceTests {
         ArrayList<Order> unsorted = new ArrayList<>(testOrderSet3());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(unsorted.get(0), unsorted.get(3) ,unsorted.get(1) ,unsorted.get(2))
-        );
+                Arrays.asList(
+                        unsorted.get(0),
+                        unsorted.get(3),
+                        unsorted.get(1),
+                        unsorted.get(2)
+                ));
 
         assertThat(OrderService.sortDesc(unsorted))
                 .usingRecursiveComparison()
