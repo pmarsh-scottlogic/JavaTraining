@@ -9,13 +9,13 @@ import java.util.UUID;
 @Getter @ToString
 public class Order {
     final UUID orderId;
-    final String accountId;
+    final UUID accountId;
     final float price;
     final float quantity;
     final OrderAction action;
     final LocalDateTime datetime;
 
-    public Order(String accountId, float price, float quantity, OrderAction action) {
+    public Order(UUID accountId, float price, float quantity, OrderAction action) {
         this.orderId = UUID.randomUUID();; // use some sort of UUId generating library later for this
         this.accountId = accountId;
         this.price = price;
@@ -24,7 +24,7 @@ public class Order {
         this.datetime = LocalDateTime.now();
     }
 
-    public Order(String accountId, float price, float quantity, OrderAction action, LocalDateTime datetime) {
+    public Order(UUID accountId, float price, float quantity, OrderAction action, LocalDateTime datetime) {
         this.orderId = UUID.randomUUID();
         this.accountId = accountId;
         this.price = price;

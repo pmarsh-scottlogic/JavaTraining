@@ -26,7 +26,7 @@ public class OrderService {
         orders.remove(order);
     }
 
-    public List<OrderbookItem> getOrderbook(OrderAction action, String accountId) {
+    public List<OrderbookItem> getOrderbook(OrderAction action, UUID accountId) {
         // filter the order list by action
         List<Order> filtered = this.get().stream()
                 .filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId))

@@ -14,6 +14,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.spy;
@@ -29,8 +30,8 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldAddOrders() {
-        Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
-        Order order2 = new Order("account1", 1, 1, OrderAction.SELL);
+        Order order1 = new Order(UUID.randomUUID(), 1, 1, OrderAction.BUY);
+        Order order2 = new Order(UUID.randomUUID(), 1, 1, OrderAction.SELL);
 
         orderService.add(order1);
         orderService.add(order2);
@@ -40,9 +41,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldRemoveOrders() {
-        Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
-        Order order2 = new Order("account2", 1, 1, OrderAction.SELL);
-        Order order3 = new Order("account3", 1, 1, OrderAction.SELL);
+        Order order1 = new Order(UUID.randomUUID(), 1, 1, OrderAction.BUY);
+        Order order2 = new Order(UUID.randomUUID(), 1, 1, OrderAction.SELL);
+        Order order3 = new Order(UUID.randomUUID(), 1, 1, OrderAction.SELL);
 
         orderService.add(order1);
         orderService.add(order2);
@@ -60,12 +61,12 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithBuyAction() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account2", 10, 7, OrderAction.BUY);
-        Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
-        Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
-        Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
+        Order order1 = new Order(UUID.randomUUID(), 20, 9, OrderAction.BUY);
+        Order order2 = new Order(UUID.randomUUID(), 10, 7, OrderAction.BUY);
+        Order order3 = new Order(UUID.randomUUID(), 20, 9, OrderAction.BUY);
+        Order order4 = new Order(UUID.randomUUID(), 10, 10, OrderAction.BUY);
+        Order order5 = new Order(UUID.randomUUID(), 30, 19, OrderAction.BUY);
+        Order order6 = new Order(UUID.randomUUID(), 40, 100, OrderAction.SELL);
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
@@ -85,12 +86,12 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithSellAction() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.SELL);
-        Order order2 = new Order("account2", 10, 7, OrderAction.SELL);
-        Order order3 = new Order("account3", 20, 9, OrderAction.SELL);
-        Order order4 = new Order("account4", 10, 10, OrderAction.SELL);
-        Order order5 = new Order("account5", 30, 19, OrderAction.SELL);
-        Order order6 = new Order("account6", 40, 100, OrderAction.BUY);
+        Order order1 = new Order(UUID.randomUUID(), 20, 9, OrderAction.SELL);
+        Order order2 = new Order(UUID.randomUUID(), 10, 7, OrderAction.SELL);
+        Order order3 = new Order(UUID.randomUUID(), 20, 9, OrderAction.SELL);
+        Order order4 = new Order(UUID.randomUUID(), 10, 10, OrderAction.SELL);
+        Order order5 = new Order(UUID.randomUUID(), 30, 19, OrderAction.SELL);
+        Order order6 = new Order(UUID.randomUUID(), 40, 100, OrderAction.BUY);
 
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
@@ -111,12 +112,13 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithBuyActionAndAccountId() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account1", 10, 7, OrderAction.BUY);
-        Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
-        Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
-        Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account1", 40, 100, OrderAction.SELL);
+        UUID specifiedAccount = UUID.randomUUID();
+        Order order1 = new Order(specifiedAccount, 20, 9, OrderAction.BUY);
+        Order order2 = new Order(specifiedAccount, 10, 7, OrderAction.BUY);
+        Order order3 = new Order(UUID.randomUUID(), 20, 9, OrderAction.BUY);
+        Order order4 = new Order(UUID.randomUUID(), 10, 10, OrderAction.BUY);
+        Order order5 = new Order(UUID.randomUUID(), 30, 19, OrderAction.BUY);
+        Order order6 = new Order(specifiedAccount, 40, 100, OrderAction.SELL);
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
@@ -128,19 +130,19 @@ public class OrderServiceTests {
                 Arrays.asList(obi1, obi2)
         );
 
-        assertThat(orderService.getOrderbook(OrderAction.BUY, "account1"))
+        assertThat(orderService.getOrderbook(OrderAction.BUY, specifiedAccount))
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
     }
 
     @Test
     void ItShouldGenerateOrderDepthWithBuyAction() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account2", 10, 7, OrderAction.BUY);
-        Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
-        Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
-        Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
+        Order order1 = new Order(UUID.randomUUID(), 20, 9, OrderAction.BUY);
+        Order order2 = new Order(UUID.randomUUID(), 10, 7, OrderAction.BUY);
+        Order order3 = new Order(UUID.randomUUID(), 20, 9, OrderAction.BUY);
+        Order order4 = new Order(UUID.randomUUID(), 10, 10, OrderAction.BUY);
+        Order order5 = new Order(UUID.randomUUID(), 30, 19, OrderAction.BUY);
+        Order order6 = new Order(UUID.randomUUID(), 40, 100, OrderAction.SELL);
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4, order5, order6)
@@ -160,10 +162,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPrice() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY);
-        Order order2 = new Order("account2", 4, 10, OrderAction.BUY);
-        Order order3 = new Order("account3", 2, 10, OrderAction.BUY);
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY);
+        Order order1 = new Order(UUID.randomUUID(), 3, 10, OrderAction.BUY);
+        Order order2 = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
+        Order order3 = new Order(UUID.randomUUID(), 2, 10, OrderAction.BUY);
+        Order order4 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY);
 
         ArrayList<Order> unsorted = new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4)
@@ -180,10 +182,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPriceThenDatetime() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
-        Order order2 = new Order("account2", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
-        Order order3 = new Order("account3", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
+        Order order1 = new Order(UUID.randomUUID(), 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
+        Order order2 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
+        Order order3 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
+        Order order4 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
 
         ArrayList<Order> unsorted = new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4)
@@ -200,10 +202,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPrice() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY);
-        Order order2 = new Order("account2", 4, 10, OrderAction.BUY);
-        Order order3 = new Order("account3", 2, 10, OrderAction.BUY);
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY);
+        Order order1 = new Order(UUID.randomUUID(), 3, 10, OrderAction.BUY);
+        Order order2 = new Order(UUID.randomUUID(), 4, 10, OrderAction.BUY);
+        Order order3 = new Order(UUID.randomUUID(), 2, 10, OrderAction.BUY);
+        Order order4 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY);
 
         ArrayList<Order> unsorted = new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4)
@@ -220,10 +222,10 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPriceThenAscendingByDatetime() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
-        Order order2 = new Order("account2", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
-        Order order3 = new Order("account3", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
+        Order order1 = new Order(UUID.randomUUID(), 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
+        Order order2 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
+        Order order3 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
+        Order order4 = new Order(UUID.randomUUID(), 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
 
         ArrayList<Order> unsorted = new ArrayList<>(
                 Arrays.asList(order1, order2, order3, order4)
