@@ -1,11 +1,13 @@
 package com.example.demo.matcher.services;
 
 import com.example.demo.matcher.models.Trade;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TradeService {
+    @Getter
     List<Trade> trades;
 
     public TradeService() {
@@ -16,7 +18,4 @@ public class TradeService {
         trades.add(trade);
     }
 
-    public List<Trade> get() {
-        return trades;
-    }
 }

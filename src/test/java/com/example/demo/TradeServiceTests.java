@@ -32,6 +32,6 @@ public class TradeServiceTests {
         tradeService.add(trade1);
         tradeService.add(trade2);
 
-        assertThat(tradeService.get()).isEqualTo(Arrays.asList(trade1, trade2));
+        assertThat(tradeService.getTrades()).isEqualTo(Arrays.asList(trade1, trade2));
     }
 }
