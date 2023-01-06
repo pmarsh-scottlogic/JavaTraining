@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
@@ -25,8 +26,8 @@ public class TradeServiceTests {
 
     @Test
     void ItShouldAddAddTrades() {
-        Trade trade1 = new Trade(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 1, 1, LocalDateTime.now());
-        Trade trade2 = new Trade(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 1, 1, LocalDateTime.now());
+        Trade trade1 = TestUtils.randomTrade();
+        Trade trade2 = TestUtils.randomTrade();
 
         tradeService.add(trade1);
         tradeService.add(trade2);
