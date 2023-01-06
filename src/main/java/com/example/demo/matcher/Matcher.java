@@ -57,15 +57,28 @@ public class Matcher {
     private Order getMatchingOrder(Order newOrder) {
         // match the new order to the best order of opposite action (sorted by price and then time)
 
+        // get all orders
         List<Order> eligibleOrders = new ArrayList<>(orderService.get());
-        eligibleOrders = eligibleOrders.stream().filter(order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getAccountId(), newOrder.getAccountId())).collect(Collectors.toCollection(ArrayList::new));
+
+        // filter incompatible actions and accounts
+        eligibleOrders = eligibleOrders.stream()
+                .filter(
+                        order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getAccountId(),
+                                newOrder.getAccountId()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         if (newOrder.getAction() == OrderAction.BUY) {
-            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice().compareTo(newOrder.getPrice()) <= 0).collect(Collectors.toCollection(ArrayList::new));
+            // filter out sell orders that are being sold for more than the buy price of the new order
+            eligibleOrders = eligibleOrders.stream()
+                    .filter(order -> order.getPrice().compareTo(newOrder.getPrice()) <= 0)
+                    .collect(Collectors.toCollection(ArrayList::new));
             eligibleOrders = OrderService.sortDesc(eligibleOrders);
         }
         else {
-            eligibleOrders = eligibleOrders.stream().filter(order -> order.getPrice().compareTo(newOrder.getPrice()) >= 0).collect(Collectors.toCollection(ArrayList::new));
+            // filter out buy orders that are buying for less than the sell price of the new order
+            eligibleOrders = eligibleOrders.stream()
+                    .filter(order -> order.getPrice().compareTo(newOrder.getPrice()) >= 0)
+                    .collect(Collectors.toCollection(ArrayList::new));
             eligibleOrders = OrderService.sortAsc(eligibleOrders);
         }
         return eligibleOrders.size() == 0? null : eligibleOrders.get(0);
