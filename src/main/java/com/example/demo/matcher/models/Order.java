@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter @ToString
 public class Order {
-    final String id;
+    final UUID id;
     final String accountId;
     final float price;
     final float quantity;
@@ -15,7 +16,7 @@ public class Order {
     final LocalDateTime datetime;
 
     public Order(String accountId, float price, float quantity, OrderAction action) {
-        this.id = "RANDOMID"; // use some sort of UUId generating library later for this
+        this.id = UUID.randomUUID();; // use some sort of UUId generating library later for this
         this.accountId = accountId;
         this.price = price;
         this.quantity = quantity;
@@ -24,7 +25,7 @@ public class Order {
     }
 
     public Order(String accountId, float price, float quantity, OrderAction action, LocalDateTime datetime) {
-        this.id = "RANDOMID"; // use some sort of UUId generating library later for this
+        this.id = UUID.randomUUID();
         this.accountId = accountId;
         this.price = price;
         this.quantity = quantity;
