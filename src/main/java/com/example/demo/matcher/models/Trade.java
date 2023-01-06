@@ -9,18 +9,18 @@ import java.util.UUID;
 @Getter @ToString
 public class Trade {
     private final UUID tradeId;
-    private final String accountIdBuyer;
-    private final String orderIdBuy;
-    private final String accountIdSeller;
-    private final String orderIdSell;
+    private final UUID accountIdBuyer;
+    private final UUID orderIdBuy;
+    private final UUID accountIdSeller;
+    private final UUID orderIdSell;
     private final float price;
     private final float quantity;
     private final LocalDateTime datetime;
 
-    public Trade(String accountIdBuyer,
-                 String orderIdBuy,
-                 String accountIdSeller,
-                 String orderIdSell,
+    public Trade(UUID accountIdBuyer,
+                 UUID orderIdBuy,
+                 UUID accountIdSeller,
+                 UUID orderIdSell,
                  float price,
                  float quantity,
                  LocalDateTime datetime) {
