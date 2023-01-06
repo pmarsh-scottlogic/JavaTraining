@@ -7,19 +7,20 @@ import com.example.demo.matcher.models.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 
 @SpringBootTest
 public class OrderServiceTests {
+    @Spy
     OrderService orderService;
 
     @BeforeEach
@@ -29,8 +30,8 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldAddOrders() {
-        Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
-        Order order2 = new Order("account1", 1, 1, OrderAction.SELL);
+        Order order1 = TestUtils.makeOrder(1, 1, "b");
+        Order order2 = TestUtils.makeOrder(1, 1, "s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -40,9 +41,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldRemoveOrders() {
-        Order order1 = new Order("account1", 1, 1, OrderAction.BUY);
-        Order order2 = new Order("account2", 1, 1, OrderAction.SELL);
-        Order order3 = new Order("account3", 1, 1, OrderAction.SELL);
+        Order order1 = TestUtils.makeOrder(1, 1, "b");
+        Order order2 = TestUtils.makeOrder(1, 1 ,"s");
+        Order order3 = TestUtils.makeOrder(1, 1 ,"s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -58,22 +59,30 @@ public class OrderServiceTests {
         assertThat(orderService.get()).isEqualTo(List.of());
     }
 
+    public static List<Order> testOrderSet1(String primaryAction) {
+        String secondaryAction = primaryAction.equals("b") ? "s" : "b";
+
+        List<Order> testOrders = new ArrayList<>();
+
+        testOrders.add(TestUtils.makeOrder("account1", 20, 9, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account1", 10, 7, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account2", 20, 9, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account3", 10, 10, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account4", 30, 19, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account1", 40, 100, secondaryAction));
+
+        return testOrders;
+    }
+
     @Test
     void ItShouldGenerateAnOrderbookWithBuyAction() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account2", 10, 7, OrderAction.BUY);
-        Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
-        Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
-        Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
-
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4, order5, order6)
+                testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(30, 19);
-        OrderbookItem obi2 = new OrderbookItem(20, 18);
-        OrderbookItem obi3 = new OrderbookItem(10, 17);
+        OrderbookItem obi1 = TestUtils.makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = TestUtils.makeOrderbookItem(20, 18);
+        OrderbookItem obi3 = TestUtils.makeOrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2, obi3)
         );
@@ -85,24 +94,16 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithSellAction() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.SELL);
-        Order order2 = new Order("account2", 10, 7, OrderAction.SELL);
-        Order order3 = new Order("account3", 20, 9, OrderAction.SELL);
-        Order order4 = new Order("account4", 10, 10, OrderAction.SELL);
-        Order order5 = new Order("account5", 30, 19, OrderAction.SELL);
-        Order order6 = new Order("account6", 40, 100, OrderAction.BUY);
-
-
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4, order5, order6)
+                testOrderSet1("s")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(30, 19);
-        OrderbookItem obi2 = new OrderbookItem(20, 18);
-        OrderbookItem obi3 = new OrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
-                Arrays.asList(obi3, obi2, obi1)
-        );
+                Arrays.asList(
+                        TestUtils.makeOrderbookItem(10, 17),
+                        TestUtils.makeOrderbookItem(20, 18),
+                        TestUtils.makeOrderbookItem(30, 19)
+                ));
 
         assertThat(orderService.getOrderbook(OrderAction.SELL))
                 .usingRecursiveComparison()
@@ -111,67 +112,72 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldGenerateAnOrderbookWithBuyActionAndAccountId() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account1", 10, 7, OrderAction.BUY);
-        Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
-        Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
-        Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account1", 40, 100, OrderAction.SELL);
-
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4, order5, order6)
+                testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(20, 9);
-        OrderbookItem obi2 = new OrderbookItem(10, 7);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
-                Arrays.asList(obi1, obi2)
-        );
+                Arrays.asList(
+                        TestUtils.makeOrderbookItem(20, 9),
+                        TestUtils.makeOrderbookItem(10, 7)
+                ));
 
-        assertThat(orderService.getOrderbook(OrderAction.BUY, "account1"))
+        UUID specifiedAccount = TestUtils.uuidFromString("account1");
+        assertThat(orderService.getOrderbook(OrderAction.BUY, specifiedAccount))
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
     }
 
     @Test
     void ItShouldGenerateOrderDepthWithBuyAction() {
-        Order order1 = new Order("account1", 20, 9, OrderAction.BUY);
-        Order order2 = new Order("account2", 10, 7, OrderAction.BUY);
-        Order order3 = new Order("account3", 20, 9, OrderAction.BUY);
-        Order order4 = new Order("account4", 10, 10, OrderAction.BUY);
-        Order order5 = new Order("account5", 30, 19, OrderAction.BUY);
-        Order order6 = new Order("account6", 40, 100, OrderAction.SELL);
-
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4, order5, order6)
+                testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = new OrderbookItem(30, 19);
-        OrderbookItem obi2 = new OrderbookItem(20, 37);
-        OrderbookItem obi3 = new OrderbookItem(10, 54);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
-                Arrays.asList(obi1, obi2, obi3)
-        );
+                Arrays.asList(
+                        TestUtils.makeOrderbookItem(30, 19),
+                        TestUtils.makeOrderbookItem(20, 37),
+                        TestUtils.makeOrderbookItem(10, 54)
+                ));
 
         assertThat(orderService.getOrderDepth(OrderAction.BUY))
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
     }
 
+    public static List<Order> testOrderSet2() {
+        List<Order> testOrders = new ArrayList<>();
+
+        testOrders.add(TestUtils.makeOrder(3, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(4, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(2, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b"));
+
+        return testOrders;
+    }
+
+    public static List<Order> testOrderSet3() {
+        List<Order> testOrders = new ArrayList<>();
+
+        testOrders.add(TestUtils.makeOrder(3, 10, "b", 4));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b", 2));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b", 3));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b", 1));
+
+        return testOrders;
+    }
+
     @Test
     void ItShouldSortOrdersAscendingByPrice() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY);
-        Order order2 = new Order("account2", 4, 10, OrderAction.BUY);
-        Order order3 = new Order("account3", 2, 10, OrderAction.BUY);
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY);
-
-        ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
-        );
+        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order4, order3, order1, order2)
-        );
+                Arrays.asList(
+                        unsorted.get(3),
+                        unsorted.get(2),
+                        unsorted.get(0),
+                        unsorted.get(1)));
 
         assertThat(OrderService.sortAsc(unsorted))
                 .usingRecursiveComparison()
@@ -180,18 +186,17 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPriceThenDatetime() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
-        Order order2 = new Order("account2", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
-        Order order3 = new Order("account3", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
-
         ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
+                testOrderSet3()
         );
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order4, order2, order3, order1)
-        );
+                Arrays.asList(
+                        unsorted.get(3),
+                        unsorted.get(1),
+                        unsorted.get(2),
+                        unsorted.get(0)
+                ));
 
         assertThat(OrderService.sortAsc(unsorted))
                 .usingRecursiveComparison()
@@ -200,18 +205,14 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPrice() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY);
-        Order order2 = new Order("account2", 4, 10, OrderAction.BUY);
-        Order order3 = new Order("account3", 2, 10, OrderAction.BUY);
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY);
-
-        ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
-        );
+        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order2, order1, order3, order4)
-        );
+                Arrays.asList(unsorted.get(1),
+                        unsorted.get(0),
+                        unsorted.get(2),
+                        unsorted.get(3)
+                ));
 
         assertThat(OrderService.sortDesc(unsorted))
                 .usingRecursiveComparison()
@@ -220,18 +221,15 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPriceThenAscendingByDatetime() {
-        Order order1 = new Order("account1", 3, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0));
-        Order order2 = new Order("account2", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 16, 0, 0));
-        Order order3 = new Order("account3", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 17, 0, 0));
-        Order order4 = new Order("account4", 1, 10, OrderAction.BUY, LocalDateTime.of(2000, Month.JANUARY, 15, 0, 0));
-
-        ArrayList<Order> unsorted = new ArrayList<>(
-                Arrays.asList(order1, order2, order3, order4)
-        );
+        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet3());
 
         ArrayList<Order> expected = new ArrayList<>(
-                Arrays.asList(order1, order4, order2, order3)
-        );
+                Arrays.asList(
+                        unsorted.get(0),
+                        unsorted.get(3),
+                        unsorted.get(1),
+                        unsorted.get(2)
+                ));
 
         assertThat(OrderService.sortDesc(unsorted))
                 .usingRecursiveComparison()
