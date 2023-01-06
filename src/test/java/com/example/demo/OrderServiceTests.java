@@ -10,9 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,38 +28,10 @@ public class OrderServiceTests {
         orderService = spy(new OrderService());
     }
 
-    private static Order makeOrder(float price, float quantity, String strAction) {
-        OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new Order(UUID.randomUUID(), new BigDecimal(price), new BigDecimal(quantity), action);
-    }
-
-    private static Order makeOrder(String strAccount, float price, float quantity, String strAction) {
-        UUID uuid = uuidFromString(strAccount);
-        OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new Order(uuid, new BigDecimal(price), new BigDecimal(quantity), action);
-    }
-
-    private static Order makeOrder(float price, float quantity, String strAction, int datetimeRank) {
-        OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new Order(UUID.randomUUID(),
-                new BigDecimal(price),
-                new BigDecimal(quantity),
-                action,
-                LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0).plusDays(datetimeRank));
-    }
-
-    private static UUID uuidFromString(String s) {
-        return UUID.nameUUIDFromBytes(s.getBytes());
-    }
-
-    private static OrderbookItem makeOrderbookItem(float price, float quantity) {
-        return new OrderbookItem(new BigDecimal(price), new BigDecimal(quantity));
-    }
-
     @Test
     void ItShouldAddOrders() {
-        Order order1 = makeOrder(1, 1, "b");
-        Order order2 = makeOrder(1, 1, "s");
+        Order order1 = TestUtils.makeOrder(1, 1, "b");
+        Order order2 = TestUtils.makeOrder(1, 1, "s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -72,9 +41,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldRemoveOrders() {
-        Order order1 = makeOrder(1, 1, "b");
-        Order order2 = makeOrder(1, 1 ,"s");
-        Order order3 = makeOrder(1, 1 ,"s");
+        Order order1 = TestUtils.makeOrder(1, 1, "b");
+        Order order2 = TestUtils.makeOrder(1, 1 ,"s");
+        Order order3 = TestUtils.makeOrder(1, 1 ,"s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -95,12 +64,12 @@ public class OrderServiceTests {
 
         List<Order> testOrders = new ArrayList<>();
 
-        testOrders.add(makeOrder("account1", 20, 9, primaryAction));
-        testOrders.add(makeOrder("account1", 10, 7, primaryAction));
-        testOrders.add(makeOrder("account2", 20, 9, primaryAction));
-        testOrders.add(makeOrder("account3", 10, 10, primaryAction));
-        testOrders.add(makeOrder("account4", 30, 19, primaryAction));
-        testOrders.add(makeOrder("account1", 40, 100, secondaryAction));
+        testOrders.add(TestUtils.makeOrder("account1", 20, 9, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account1", 10, 7, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account2", 20, 9, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account3", 10, 10, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account4", 30, 19, primaryAction));
+        testOrders.add(TestUtils.makeOrder("account1", 40, 100, secondaryAction));
 
         return testOrders;
     }
@@ -111,9 +80,9 @@ public class OrderServiceTests {
                 testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = makeOrderbookItem(30, 19);
-        OrderbookItem obi2 = makeOrderbookItem(20, 18);
-        OrderbookItem obi3 = makeOrderbookItem(10, 17);
+        OrderbookItem obi1 = TestUtils.makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = TestUtils.makeOrderbookItem(20, 18);
+        OrderbookItem obi3 = TestUtils.makeOrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2, obi3)
         );
@@ -129,9 +98,9 @@ public class OrderServiceTests {
                 testOrderSet1("s")
         ));
 
-        OrderbookItem obi1 = makeOrderbookItem(30, 19);
-        OrderbookItem obi2 = makeOrderbookItem(20, 18);
-        OrderbookItem obi3 = makeOrderbookItem(10, 17);
+        OrderbookItem obi1 = TestUtils.makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = TestUtils.makeOrderbookItem(20, 18);
+        OrderbookItem obi3 = TestUtils.makeOrderbookItem(10, 17);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi3, obi2, obi1)
         );
@@ -147,13 +116,13 @@ public class OrderServiceTests {
                 testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = makeOrderbookItem(20, 9);
-        OrderbookItem obi2 = makeOrderbookItem(10, 7);
+        OrderbookItem obi1 = TestUtils.makeOrderbookItem(20, 9);
+        OrderbookItem obi2 = TestUtils.makeOrderbookItem(10, 7);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2)
         );
 
-        UUID specifiedAccount = uuidFromString("account1");
+        UUID specifiedAccount = TestUtils.uuidFromString("account1");
         assertThat(orderService.getOrderbook(OrderAction.BUY, specifiedAccount))
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
@@ -165,9 +134,9 @@ public class OrderServiceTests {
                 testOrderSet1("b")
         ));
 
-        OrderbookItem obi1 = makeOrderbookItem(30, 19);
-        OrderbookItem obi2 = makeOrderbookItem(20, 37);
-        OrderbookItem obi3 = makeOrderbookItem(10, 54);
+        OrderbookItem obi1 = TestUtils.makeOrderbookItem(30, 19);
+        OrderbookItem obi2 = TestUtils.makeOrderbookItem(20, 37);
+        OrderbookItem obi3 = TestUtils.makeOrderbookItem(10, 54);
         ArrayList<OrderbookItem> expected = new ArrayList<>(
                 Arrays.asList(obi1, obi2, obi3)
         );
@@ -180,10 +149,10 @@ public class OrderServiceTests {
     public static List<Order> testOrderSet2() {
         List<Order> testOrders = new ArrayList<>();
 
-        testOrders.add(makeOrder(3, 10, "b"));
-        testOrders.add(makeOrder(4, 10, "b"));
-        testOrders.add(makeOrder(2, 10, "b"));
-        testOrders.add(makeOrder(1, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(3, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(4, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(2, 10, "b"));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b"));
 
         return testOrders;
     }
@@ -191,10 +160,10 @@ public class OrderServiceTests {
     public static List<Order> testOrderSet3() {
         List<Order> testOrders = new ArrayList<>();
 
-        testOrders.add(makeOrder(3, 10, "b", 4));
-        testOrders.add(makeOrder(1, 10, "b", 2));
-        testOrders.add(makeOrder(1, 10, "b", 3));
-        testOrders.add(makeOrder(1, 10, "b", 1));
+        testOrders.add(TestUtils.makeOrder(3, 10, "b", 4));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b", 2));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b", 3));
+        testOrders.add(TestUtils.makeOrder(1, 10, "b", 1));
 
         return testOrders;
     }
