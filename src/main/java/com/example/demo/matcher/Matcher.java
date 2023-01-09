@@ -5,6 +5,7 @@ import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.Trade;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class Matcher {
     private final OrderService orderService;
     private final TradeService tradeService;
 
+    @Autowired
     public Matcher(OrderService orderService, TradeService tradeService) {
         this.orderService = orderService;
         this.tradeService = tradeService;
