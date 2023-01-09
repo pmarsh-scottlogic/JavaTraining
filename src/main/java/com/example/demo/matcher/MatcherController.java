@@ -14,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class MatcherController {
     @Autowired
     private final Matcher matcher;
@@ -61,14 +62,14 @@ public class MatcherController {
     public MakeOrderReturn makeOrder(@RequestBody NewOrderParams newOrderParams) {
         Order newOrder = new Order(
                 UUID.fromString(newOrderParams.getAccount()),
-                new BigDecimal(newOrderParams.getPrice()),
-                new BigDecimal(newOrderParams.getQuantity()),
+                BigDecimal.valueOf(newOrderParams.getPrice()),
+                BigDecimal.valueOf(newOrderParams.getQuantity()),
                 newOrderParams.getAction().equals("buy") ? OrderAction.BUY : OrderAction.SELL
                 );
 
         matcher.match(newOrder);
 
-        MakeOrderReturn returnObj = new MakeOrderReturn(
+        return new MakeOrderReturn(
                 orderService.getOrderbook(OrderAction.BUY),
                 orderService.getOrderbook(OrderAction.SELL),
                 orderService.getOrderbook(OrderAction.BUY, UUID.fromString(newOrderParams.getAccount())),
@@ -77,6 +78,5 @@ public class MatcherController {
                 orderService.getOrderDepth(OrderAction.BUY),
                 orderService.getOrderDepth(OrderAction.SELL)
                 );
-        return returnObj;
     }
 }
