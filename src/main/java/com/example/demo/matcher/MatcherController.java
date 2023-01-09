@@ -61,7 +61,7 @@ public class MatcherController {
     }
 
     @PostMapping(value="/make/order")
-    public String makeOrder(@RequestBody NewOrderParams newOrderParams) {
+    public MakeOrderReturn makeOrder(@RequestBody NewOrderParams newOrderParams) {
         Order newOrder = new Order(
                 UUID.fromString(newOrderParams.getAccount()),
                 new BigDecimal(newOrderParams.getPrice()),
@@ -71,7 +71,16 @@ public class MatcherController {
 
         matcher.match(newOrder);
 
-
-        return newOrderParams.toString();
+        MakeOrderReturn returnObj = new MakeOrderReturn(
+                orderService.getOrderbook(OrderAction.BUY),
+                orderService.getOrderbook(OrderAction.SELL),
+                orderService.getOrderbook(OrderAction.BUY, UUID.fromString(newOrderParams.getAccount())),
+                orderService.getOrderbook(OrderAction.SELL, UUID.fromString(newOrderParams.getAccount())),
+                tradeService.getRecent(),
+                orderService.getOrderDepth(OrderAction.BUY),
+                orderService.getOrderDepth(OrderAction.SELL)
+                );
+        System.out.println(returnObj.toString());
+        return returnObj;
     }
 }
