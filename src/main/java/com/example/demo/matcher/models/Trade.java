@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter @ToString
-public class Trade {
+public class Trade implements Comparable<Trade> {
     private final UUID tradeId;
     private final UUID accountIdBuyer;
     private final UUID orderIdBuy;
@@ -33,5 +33,11 @@ public class Trade {
         this.price = price;
         this.quantity = quantity;
         this.datetime = datetime;
+    }
+
+
+    @Override
+    public int compareTo(Trade o) {
+        return this.datetime.compareTo(o.getDatetime());
     }
 }
