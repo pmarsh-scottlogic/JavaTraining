@@ -1,6 +1,7 @@
 package com.example.demo.matcher.models;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ public class Order {
     final UUID orderId;
     final UUID accountId;
     final BigDecimal price;
+    @Setter
     BigDecimal quantity;
     final OrderAction action;
     final LocalDateTime datetime;
@@ -32,9 +34,5 @@ public class Order {
         this.quantity = quantity;
         this.action = action;
         this.datetime = datetime;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
     }
 }
