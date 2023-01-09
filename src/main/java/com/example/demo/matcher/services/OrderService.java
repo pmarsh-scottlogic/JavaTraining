@@ -3,11 +3,13 @@ package com.example.demo.matcher.services;
 import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class OrderService {
     private final List<Order> orders;
 
