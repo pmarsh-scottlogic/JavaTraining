@@ -3,8 +3,8 @@ package com.example.demo.matcher;
 import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -13,17 +13,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "")
+@AllArgsConstructor
 public class MatcherController {
-    private final Matcher matcher;
-    private final OrderService orderService;
-    private final TradeService tradeService;
-
     @Autowired
-    public MatcherController(Matcher matcher, OrderService orderService, TradeService tradeService) {
-        this.matcher = matcher;
-        this.orderService = orderService;
-        this.tradeService = tradeService;
-    }
+    private final Matcher matcher;
+    @Autowired
+    private final OrderService orderService;
+    @Autowired
+    private final TradeService tradeService;
 
     @GetMapping(value = "/orderbook/buy")
     public List<OrderbookItem> orderbook_buy() {
@@ -80,7 +77,6 @@ public class MatcherController {
                 orderService.getOrderDepth(OrderAction.BUY),
                 orderService.getOrderDepth(OrderAction.SELL)
                 );
-        System.out.println(returnObj.toString());
         return returnObj;
     }
 }
