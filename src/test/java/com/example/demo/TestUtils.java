@@ -4,6 +4,7 @@ import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 import com.example.demo.matcher.models.Trade;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,8 +46,16 @@ public class TestUtils {
                 UUID.randomUUID(),
                 UUID.randomUUID(),
                 UUID.randomUUID(),
-                new BigDecimal(Math.random()),
-                new BigDecimal(Math.random()),
+                BigDecimal.valueOf(Math.random()),
+                BigDecimal.valueOf(Math.random()),
                 LocalDateTime.now());
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
