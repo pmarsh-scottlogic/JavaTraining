@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebM
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -53,8 +54,23 @@ public class MatcherControllerTest {
                 MockMvcRequestBuilders.get("/orderbook/buy"))
                 .andReturn();
         assertThat(result.getResponse().getContentAsString()).isEqualTo("[]");
-        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
 
+    @Test
+    void ItShouldNotifyBadAccountIdOnGetBuyAccount() throws Exception {
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/orderbook/buy/badId"))
+                .andReturn();
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void ItShouldNotifyBadAccountIdOnGetSellAccount() throws Exception {
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/orderbook/sell/badId"))
+                .andReturn();
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -81,8 +97,6 @@ public class MatcherControllerTest {
             throw new RuntimeException(e);
         }
     }
-
-
 }
 
 

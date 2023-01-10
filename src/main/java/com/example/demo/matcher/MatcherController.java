@@ -26,13 +26,20 @@ public class MatcherController {
     private final TradeService tradeService;
 
     @GetMapping(value = "/orderbook/buy")
-    public List<OrderbookItem> orderbook_buy() {
-        return orderService.getOrderbook(OrderAction.BUY);
+    public ResponseEntity<List<OrderbookItem>> orderbook_buy() {
+        return new ResponseEntity<>(orderService.getOrderbook(OrderAction.BUY), HttpStatus.OK);
     }
 
     @GetMapping(value = "/orderbook/buy/{accountId}")
-    public List<OrderbookItem> orderbook_buy(@PathVariable String accountId) {
-        return orderService.getOrderbook(OrderAction.BUY, UUID.fromString(accountId));
+    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String accountId) {
+        try {
+            UUID accountUuid = UUID.fromString(accountId);
+            return new ResponseEntity<>(orderService.getOrderbook(OrderAction.BUY, UUID.fromString(accountId)), HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping(value = "/orderbook/sell")
@@ -42,7 +49,13 @@ public class MatcherController {
 
     @GetMapping(value = "/orderbook/sell/{accountId}")
     public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String accountId) {
-        return new ResponseEntity<>(orderService.getOrderbook(OrderAction.SELL, UUID.fromString(accountId)), HttpStatus.OK);
+        try {
+            UUID accountUuid = UUID.fromString(accountId);
+            return new ResponseEntity<>(orderService.getOrderbook(OrderAction.SELL, UUID.fromString(accountId)), HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/orderbook/depth/buy")

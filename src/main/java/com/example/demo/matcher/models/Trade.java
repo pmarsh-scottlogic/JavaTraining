@@ -35,7 +35,6 @@ public class Trade implements Comparable<Trade> {
         this.datetime = datetime;
     }
 
-
     @Override
     public int compareTo(Trade o) {
         return this.datetime.compareTo(o.getDatetime());
