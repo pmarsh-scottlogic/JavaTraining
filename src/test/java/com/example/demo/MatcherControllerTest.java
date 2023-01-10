@@ -5,7 +5,6 @@ import com.example.demo.matcher.MatcherController;
 import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +39,7 @@ public class MatcherControllerTest {
     private Matcher matcher;
 
     @Test
-    public void contextLoads() throws Exception {
+    public void contextLoads() {
         assertThat(mvc).isNotNull();
     }
 

@@ -23,7 +23,7 @@ public class TradeService {
     }
 
     public List<Trade> getRecent() {
-        Collections.sort(trades, Collections.reverseOrder());
+        trades.sort(Collections.reverseOrder());
         int returnCount = 30;
         return trades.stream().limit(returnCount).collect(Collectors.toList());
     }
