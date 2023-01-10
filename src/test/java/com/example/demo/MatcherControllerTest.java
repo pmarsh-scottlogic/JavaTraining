@@ -54,6 +54,7 @@ public class MatcherControllerTest {
                 .andReturn();
         assertThat(result.getResponse().getContentAsString()).isEqualTo("[]");
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
+
     }
 
     @Test
@@ -80,6 +81,8 @@ public class MatcherControllerTest {
             throw new RuntimeException(e);
         }
     }
+
+
 }
 
 

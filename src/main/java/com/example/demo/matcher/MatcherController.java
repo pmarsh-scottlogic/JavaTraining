@@ -5,6 +5,8 @@ import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -34,32 +36,32 @@ public class MatcherController {
     }
 
     @GetMapping(value = "/orderbook/sell")
-    public List<OrderbookItem> orderbook_sell() {
-        return orderService.getOrderbook(OrderAction.SELL);
+    public ResponseEntity<List<OrderbookItem>> orderbook_sell() {
+        return new ResponseEntity<>(orderService.getOrderbook(OrderAction.SELL), HttpStatus.OK);
     }
 
     @GetMapping(value = "/orderbook/sell/{accountId}")
-    public List<OrderbookItem> orderbook_sell(@PathVariable String accountId) {
-        return orderService.getOrderbook(OrderAction.SELL, UUID.fromString(accountId));
+    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String accountId) {
+        return new ResponseEntity<>(orderService.getOrderbook(OrderAction.SELL, UUID.fromString(accountId)), HttpStatus.OK);
     }
 
     @GetMapping(value = "/orderbook/depth/buy")
-    public List<OrderbookItem> orderdepth_buy() {
-        return orderService.getOrderDepth(OrderAction.BUY);
+    public ResponseEntity<List<OrderbookItem>> orderdepth_buy() {
+        return new ResponseEntity<>(orderService.getOrderDepth(OrderAction.BUY), HttpStatus.OK);
     }
 
     @GetMapping(value = "/orderbook/depth/sell")
-    public List<OrderbookItem> orderdepth_sell() {
-        return orderService.getOrderDepth(OrderAction.SELL);
+    public ResponseEntity<List<OrderbookItem>> orderdepth_sell() {
+        return new ResponseEntity<>(orderService.getOrderDepth(OrderAction.SELL), HttpStatus.OK);
     }
 
     @GetMapping(value = "/tradebook")
-    public List<Trade> tradebook() {
-        return tradeService.getRecent();
+    public ResponseEntity<List<Trade>> tradebook() {
+        return new ResponseEntity<>(tradeService.getRecent(), HttpStatus.OK);
     }
 
     @PostMapping(value="/make/order")
-    public MakeOrderReturn makeOrder(@RequestBody NewOrderParams newOrderParams) {
+    public ResponseEntity<MakeOrderReturn> makeOrder(@RequestBody NewOrderParams newOrderParams) {
         Order newOrder = new Order(
                 UUID.fromString(newOrderParams.getAccount()),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
@@ -69,7 +71,7 @@ public class MatcherController {
 
         matcher.match(newOrder);
 
-        return new MakeOrderReturn(
+        return new ResponseEntity<>(new MakeOrderReturn(
                 orderService.getOrderbook(OrderAction.BUY),
                 orderService.getOrderbook(OrderAction.SELL),
                 orderService.getOrderbook(OrderAction.BUY, UUID.fromString(newOrderParams.getAccount())),
@@ -77,6 +79,6 @@ public class MatcherController {
                 tradeService.getRecent(),
                 orderService.getOrderDepth(OrderAction.BUY),
                 orderService.getOrderDepth(OrderAction.SELL)
-                );
+                ), HttpStatus.OK);
     }
 }
