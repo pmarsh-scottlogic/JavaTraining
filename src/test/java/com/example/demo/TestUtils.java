@@ -7,6 +7,7 @@ import com.example.demo.matcher.models.Trade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public class TestUtils {
@@ -47,6 +48,13 @@ public class TestUtils {
                 BigDecimal.valueOf(Math.random()),
                 BigDecimal.valueOf(Math.random()),
                 Math.round(Math.random() * 100));
+    }
+
+    static List<Trade> makeRandomTradebook() {
+        return List.of(
+                TestUtils.randomTrade(),
+                TestUtils.randomTrade()
+        );
     }
 
     public static String asJsonString(final Object obj) {

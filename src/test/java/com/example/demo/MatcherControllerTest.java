@@ -147,22 +147,16 @@ public class MatcherControllerTest {
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     }
-
-    static List<Trade> testTradebook() {
-        return List.of(
-                TestUtils.randomTrade(),
-                TestUtils.randomTrade()
-        );
-    }
     @Test
     void ItShouldReturnTradebook() throws Exception {
-        doReturn(testTradebook()).when(tradeService).getRecent();
+        List<Trade> testTradebook = TestUtils.makeRandomTradebook();
+        doReturn(testTradebook).when(tradeService).getRecent();
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.get("/tradebook/"))
                 .andReturn();
 
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testTradebook()));
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testTradebook));
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
