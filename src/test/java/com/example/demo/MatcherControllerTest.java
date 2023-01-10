@@ -2,10 +2,7 @@ package com.example.demo;
 
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.MatcherController;
-import com.example.demo.matcher.models.NewOrderParams;
-import com.example.demo.matcher.models.OrderAction;
-import com.example.demo.matcher.models.OrderbookItem;
-import com.example.demo.matcher.models.Trade;
+import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -162,18 +159,43 @@ public class MatcherControllerTest {
 
     @Test
     void ItShouldCreateAnOrder() throws Exception {
-        NewOrderParams newOrder = new NewOrderParams(
-                UUID.randomUUID().toString(),
-                1,
-                1,
+        Order newOrder = TestUtils.makeOrder(1 ,1, "b");
+
+        NewOrderParams newOrderParams = new NewOrderParams(
+                newOrder.getAccountId().toString(),
+                newOrder.getPrice().doubleValue(),
+                newOrder.getQuantity().doubleValue(),
                 "buy"
         );
 
+        // mock return values
+        OrderbookItem expectedOrderbookItem = new OrderbookItem(newOrder.getPrice(), newOrder.getQuantity());
+        doReturn(List.of(expectedOrderbookItem)).when(orderService).getOrderbook(OrderAction.BUY);
+        doReturn(List.of()).when(orderService).getOrderbook(OrderAction.SELL);
+        doReturn(List.of(expectedOrderbookItem)).when(orderService).getOrderbook(OrderAction.BUY, UUID.fromString(newOrderParams.getAccount()));
+        doReturn(List.of()).when(orderService).getOrderbook(OrderAction.SELL, UUID.fromString(newOrderParams.getAccount()));
+        doReturn(List.of()).when(tradeService).getRecent();
+        doReturn(List.of(expectedOrderbookItem)).when(orderService).getOrderDepth(OrderAction.BUY);
+        doReturn(List.of()).when(orderService).getOrderDepth(OrderAction.SELL);
+
+        // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtils.asJsonString(newOrder)))
+                    .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
-        //assertThat(result.getResponse().getContentAsString()).isEqualTo("[]");
+
+        // check result
+        MakeOrderReturn expectedReturn = new MakeOrderReturn(
+                List.of(expectedOrderbookItem),
+                List.of(),
+                List.of(expectedOrderbookItem),
+                List.of(),
+                List.of(),
+                List.of(expectedOrderbookItem),
+                List.of()
+        );
+
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(expectedReturn));
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
     }
 }
