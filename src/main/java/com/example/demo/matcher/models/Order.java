@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter @ToString
@@ -16,7 +16,7 @@ public class Order {
     @Setter
     private BigDecimal quantity;
     private final OrderAction action;
-    private final LocalDateTime datetime;
+    private final Long datetime;
 
     public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action) {
         this.orderId = UUID.randomUUID(); // use some sort of UUId generating library later for this
@@ -24,10 +24,10 @@ public class Order {
         this.price = price;
         this.quantity = quantity;
         this.action = action;
-        this.datetime = LocalDateTime.now();
+        this.datetime = Instant.now().toEpochMilli();
     }
 
-    public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action, LocalDateTime datetime) {
+    public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action, Long datetime) {
         this.orderId = UUID.randomUUID();
         this.accountId = accountId;
         this.price = price;

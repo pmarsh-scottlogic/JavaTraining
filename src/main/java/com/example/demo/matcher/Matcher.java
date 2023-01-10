@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +40,7 @@ public class Matcher {
                     sellOrder.getOrderId(),
                     tradePrice,
                     tradeQuantity,
-                    LocalDateTime.now()));
+                    Instant.now().toEpochMilli()));
 
             newOrder.setQuantity(newOrder.getQuantity().subtract(tradeQuantity));
             matchedOrder.setQuantity(matchedOrder.getQuantity().subtract(tradeQuantity));

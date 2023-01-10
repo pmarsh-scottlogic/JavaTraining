@@ -7,8 +7,6 @@ import com.example.demo.matcher.models.Trade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.UUID;
 
 public class TestUtils {
@@ -29,7 +27,7 @@ public class TestUtils {
                 new BigDecimal(price),
                 new BigDecimal(quantity),
                 action,
-                LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0).plusDays(datetimeRank));
+                (long) datetimeRank);
     }
 
     public static UUID uuidFromString(String s) {
@@ -48,7 +46,7 @@ public class TestUtils {
                 UUID.randomUUID(),
                 BigDecimal.valueOf(Math.random()),
                 BigDecimal.valueOf(Math.random()),
-                LocalDateTime.now());
+                Math.round(Math.random() * 100));
     }
 
     public static String asJsonString(final Object obj) {
