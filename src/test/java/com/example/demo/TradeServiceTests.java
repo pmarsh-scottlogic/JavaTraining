@@ -16,7 +16,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
 
-@SpringBootTest
 public class TradeServiceTests {
     TradeService tradeService;
     @BeforeEach

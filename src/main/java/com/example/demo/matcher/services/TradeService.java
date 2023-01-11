@@ -5,12 +5,14 @@ import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TradeService {
     @Getter
-    List<Trade> trades;
+    private final List<Trade> trades;
 
     public TradeService() {
         trades = new ArrayList<>();
@@ -20,4 +22,9 @@ public class TradeService {
         trades.add(trade);
     }
 
+    public List<Trade> getRecent() {
+        trades.sort(Collections.reverseOrder());
+        int returnCount = 30;
+        return trades.stream().limit(returnCount).collect(Collectors.toList());
+    }
 }

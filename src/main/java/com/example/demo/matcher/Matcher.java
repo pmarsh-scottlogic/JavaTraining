@@ -5,24 +5,21 @@ import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.Trade;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Service @AllArgsConstructor
 public class Matcher {
-    private final OrderService orderService;
-    private final TradeService tradeService;
-
-    @Autowired
-    public Matcher(OrderService orderService, TradeService tradeService) {
-        this.orderService = orderService;
-        this.tradeService = tradeService;
-    }
+    @Autowired private final OrderService orderService;
+    @Autowired private final TradeService tradeService;
 
     public void match(Order newOrder) {
         Order matchedOrder;
@@ -43,7 +40,7 @@ public class Matcher {
                     sellOrder.getOrderId(),
                     tradePrice,
                     tradeQuantity,
-                    LocalDateTime.now()));
+                    Instant.now().toEpochMilli()));
 
             newOrder.setQuantity(newOrder.getQuantity().subtract(tradeQuantity));
             matchedOrder.setQuantity(matchedOrder.getQuantity().subtract(tradeQuantity));

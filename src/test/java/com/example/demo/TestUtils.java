@@ -4,10 +4,10 @@ import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 import com.example.demo.matcher.models.Trade;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.util.List;
 import java.util.UUID;
 
 public class TestUtils {
@@ -28,7 +28,7 @@ public class TestUtils {
                 new BigDecimal(price),
                 new BigDecimal(quantity),
                 action,
-                LocalDateTime.of(2000, Month.JANUARY, 18, 0, 0).plusDays(datetimeRank));
+                (long) datetimeRank);
     }
 
     public static UUID uuidFromString(String s) {
@@ -45,8 +45,23 @@ public class TestUtils {
                 UUID.randomUUID(),
                 UUID.randomUUID(),
                 UUID.randomUUID(),
-                new BigDecimal(Math.random()),
-                new BigDecimal(Math.random()),
-                LocalDateTime.now());
+                BigDecimal.valueOf(Math.random()),
+                BigDecimal.valueOf(Math.random()),
+                Math.round(Math.random() * 100));
+    }
+
+    static List<Trade> makeRandomTradebook() {
+        return List.of(
+                TestUtils.randomTrade(),
+                TestUtils.randomTrade()
+        );
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

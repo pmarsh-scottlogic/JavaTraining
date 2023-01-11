@@ -4,11 +4,10 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter @ToString
-public class Trade {
+public class Trade implements Comparable<Trade> {
     private final UUID tradeId;
     private final UUID accountIdBuyer;
     private final UUID orderIdBuy;
@@ -16,7 +15,7 @@ public class Trade {
     private final UUID orderIdSell;
     private final BigDecimal price;
     private final BigDecimal quantity;
-    private final LocalDateTime datetime;
+    private final Long datetime;
 
     public Trade(UUID accountIdBuyer,
                  UUID orderIdBuy,
@@ -24,7 +23,7 @@ public class Trade {
                  UUID orderIdSell,
                  BigDecimal price,
                  BigDecimal quantity,
-                 LocalDateTime datetime) {
+                 Long datetime) {
         this.tradeId = UUID.randomUUID();
         this.accountIdBuyer = accountIdBuyer;
         this.orderIdBuy = orderIdBuy;
@@ -33,5 +32,10 @@ public class Trade {
         this.price = price;
         this.quantity = quantity;
         this.datetime = datetime;
+    }
+
+    @Override
+    public int compareTo(Trade o) {
+        return this.datetime.compareTo(o.getDatetime());
     }
 }
