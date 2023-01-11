@@ -193,7 +193,23 @@ public class MatcherControllerTest {
         );
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(expectedReturn));
-        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    void ItShouldCheckNewOrderHasValidUUID() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                "badId", 1, 1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getErrorMessage()).isEqualTo("Bad UUID format");
     }
 }
 

@@ -11,12 +11,11 @@ import javax.validation.constraints.Pattern;
 
 @ToString @AllArgsConstructor @Getter
 public class NewOrderParams {
-    @UUID
-    @NotEmpty
+    @UUID(message = "Bad UUID format")
     String account;
-    @NotEmpty @Range(min = 0, max = 1000000000)
+    @Range(min = 0, max = 1000000000)
     double price;
-    @NotEmpty @Range(min = 0, max = 1000000000)
+    @Range(min = 0, max = 1000000000)
     double quantity;
     @NotEmpty @Pattern(regexp = "^buy|sell$")
     String action;
