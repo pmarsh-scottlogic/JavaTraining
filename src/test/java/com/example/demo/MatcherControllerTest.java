@@ -209,7 +209,90 @@ public class MatcherControllerTest {
                 .andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(result.getResponse().getErrorMessage()).isEqualTo("Bad UUID format");
+        assertThat(result.getResponse().getContentAsString()).contains("Bad UUID format");
+    }
+
+    @Test
+    void ItShouldCheckPriceIsNotTooSmall() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), -1, 1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("price");
+        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+    }
+
+    @Test
+    void ItShouldCheckPriceIsNotTooLarge() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1000000001, 1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("price");
+        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+    }
+    @Test
+    void ItShouldCheckQuanitityIsNotTooSmall() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1, -1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("quantity");
+        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+    }
+
+    @Test
+    void ItShouldCheckQuanitityIsNotTooLarge() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1, 1000000001, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("quantity");
+        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+    }
+
+    @Test
+    void ItShouldCheckActionIsBuyOrSell() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1, 1, "badAction"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("should be buy or sell");
     }
 }
 
