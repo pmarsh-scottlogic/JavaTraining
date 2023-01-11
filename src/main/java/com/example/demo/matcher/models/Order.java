@@ -18,6 +18,11 @@ public class Order {
     private final OrderAction action;
     private final Long datetime;
 
+    public static final int minPrice = 0;
+    public static final int maxPrice = 1000000000;
+    public static final int minQuantity = 0;
+    public static final int maxQuantity = 1000000000;
+
     public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action) {
         this.orderId = UUID.randomUUID(); // use some sort of UUId generating library later for this
         this.accountId = accountId;

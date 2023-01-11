@@ -103,6 +103,15 @@ public class MatcherControllerTest {
     }
 
     @Test
+    void ItShouldCheckBuyOrderbookWithBadAccountId() throws Exception {
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/orderbook/buy/" + "badAccountId"))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
     void ItShouldNotifyBadAccountIdOnGetBuyAccount() throws Exception {
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.get("/orderbook/buy/badId"))
@@ -193,7 +202,106 @@ public class MatcherControllerTest {
         );
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(expectedReturn));
-        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    void ItShouldCheckNewOrderHasValidUUID() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                "badId", 1, 1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("Bad UUID format");
+    }
+
+    @Test
+    void ItShouldCheckPriceIsNotTooSmall() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), -1, 1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("price");
+        assertThat(result.getResponse().getContentAsString()).contains("must be greater than or equal to");
+    }
+
+    @Test
+    void ItShouldCheckPriceIsNotTooLarge() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1000000001, 1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("price");
+        assertThat(result.getResponse().getContentAsString()).contains("must be less than or equal to");
+    }
+    @Test
+    void ItShouldCheckQuantityIsNotTooSmall() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1, -1, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("quantity");
+        assertThat(result.getResponse().getContentAsString()).contains("must be greater than or equal to");
+    }
+
+    @Test
+    void ItShouldCheckQuantityIsNotTooLarge() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1, 1000000001, "buy"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("quantity");
+        assertThat(result.getResponse().getContentAsString()).contains("must be less than or equal to");
+    }
+
+    @Test
+    void ItShouldCheckActionIsBuyOrSell() throws Exception {
+        NewOrderParams newOrderParams = new NewOrderParams(
+                TestUtils.uuidFromString("account").toString(), 1, 1, "badAction"
+        );
+
+        // API call
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.asJsonString(newOrderParams)))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("should be buy or sell");
     }
 }
 
