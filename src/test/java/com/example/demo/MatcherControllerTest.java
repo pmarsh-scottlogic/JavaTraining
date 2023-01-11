@@ -103,6 +103,17 @@ public class MatcherControllerTest {
     }
 
     @Test
+    void ItShouldCheckBuyOrderbookWithBadAccountId() throws Exception {
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/orderbook/buy/" + "badAccountId"))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("bad UUUID");
+
+    }
+
+    @Test
     void ItShouldNotifyBadAccountIdOnGetBuyAccount() throws Exception {
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.get("/orderbook/buy/badId"))
@@ -246,7 +257,7 @@ public class MatcherControllerTest {
         assertThat(result.getResponse().getContentAsString()).contains("must be between");
     }
     @Test
-    void ItShouldCheckQuanitityIsNotTooSmall() throws Exception {
+    void ItShouldCheckQuantityIsNotTooSmall() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
                 TestUtils.uuidFromString("account").toString(), 1, -1, "buy"
         );
@@ -263,7 +274,7 @@ public class MatcherControllerTest {
     }
 
     @Test
-    void ItShouldCheckQuanitityIsNotTooLarge() throws Exception {
+    void ItShouldCheckQuantityIsNotTooLarge() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
                 TestUtils.uuidFromString("account").toString(), 1, 1000000001, "buy"
         );
