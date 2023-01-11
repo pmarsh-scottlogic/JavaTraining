@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class MatcherController {
     public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String accountId) {
         try {
             UUID accountUuid = UUID.fromString(accountId);
-            return new ResponseEntity<>(orderService.getOrderbook(OrderAction.SELL, UUID.fromString(accountId)), HttpStatus.OK);
+            return new ResponseEntity<>(orderService.getOrderbook(OrderAction.SELL, accountUuid), HttpStatus.OK);
         }
         catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -74,7 +75,7 @@ public class MatcherController {
     }
 
     @PostMapping(value="/make/order")
-    public ResponseEntity<MakeOrderReturn> makeOrder(@RequestBody NewOrderParams newOrderParams) {
+    public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams) {
         Order newOrder = new Order(
                 UUID.fromString(newOrderParams.getAccount()),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
