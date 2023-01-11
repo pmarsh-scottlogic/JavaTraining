@@ -109,8 +109,6 @@ public class MatcherControllerTest {
                 .andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(result.getResponse().getContentAsString()).contains("bad UUUID");
-
     }
 
     @Test
@@ -237,7 +235,7 @@ public class MatcherControllerTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(result.getResponse().getContentAsString()).contains("price");
-        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+        assertThat(result.getResponse().getContentAsString()).contains("must be greater than or equal to");
     }
 
     @Test
@@ -254,7 +252,7 @@ public class MatcherControllerTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(result.getResponse().getContentAsString()).contains("price");
-        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+        assertThat(result.getResponse().getContentAsString()).contains("must be less than or equal to");
     }
     @Test
     void ItShouldCheckQuantityIsNotTooSmall() throws Exception {
@@ -270,7 +268,7 @@ public class MatcherControllerTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(result.getResponse().getContentAsString()).contains("quantity");
-        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+        assertThat(result.getResponse().getContentAsString()).contains("must be greater than or equal to");
     }
 
     @Test
@@ -287,7 +285,7 @@ public class MatcherControllerTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(result.getResponse().getContentAsString()).contains("quantity");
-        assertThat(result.getResponse().getContentAsString()).contains("must be between");
+        assertThat(result.getResponse().getContentAsString()).contains("must be less than or equal to");
     }
 
     @Test

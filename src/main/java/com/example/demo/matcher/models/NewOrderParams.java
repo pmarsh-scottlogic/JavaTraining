@@ -4,8 +4,9 @@ import com.example.demo.validation.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -13,9 +14,9 @@ import javax.validation.constraints.Pattern;
 public class NewOrderParams {
     @UUID(message = "Bad UUID format")
     String account;
-    @Range(min = Order.minPrice, max = Order.maxPrice)
+    @Min(value = Order.minPrice) @Max(value = Order.maxPrice)
     double price;
-    @Range(min = Order.minQuantity, max = Order.maxQuantity)
+    @Min(value = Order.minQuantity) @Max(value = Order.maxQuantity)
     double quantity;
     @NotEmpty @Pattern(regexp = "^buy|sell$", message = "should be buy or sell")
     String action;
