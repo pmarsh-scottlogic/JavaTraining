@@ -20,11 +20,6 @@ public class DemoApplication {
 	}
 
 	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
 		// this interface is used to run a code block exactly once upon initialisation of the program
 	CommandLineRunner run (UserService userService) {
 		return args -> {
