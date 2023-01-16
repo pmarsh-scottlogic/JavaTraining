@@ -12,7 +12,7 @@ public class AuthRequest {
     @NotNull @Length(min = 1, max = 50)
     private String username;
 
-    @NotNull @Length(min = 5, max = 10)
+    @NotNull @Length(min = 1, max = 10)
     private String password;
 
 }

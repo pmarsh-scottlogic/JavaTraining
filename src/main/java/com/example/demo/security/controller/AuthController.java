@@ -25,7 +25,7 @@ public class AuthController {
     JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
