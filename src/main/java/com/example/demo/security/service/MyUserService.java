@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service // Tells Spring that this is a service - it should be injected into a controller later
 @RequiredArgsConstructor // Lombok
@@ -37,7 +38,7 @@ public class MyUserService implements UserService, UserDetailsService {
         // a UserDetails object, which includes the username, password and a collection of SimpleGrantedAuthority.
         //
 
-        AppUser user = userRepo.findByUsername(username);
+        Optional<AppUser> user = userRepo.findByUsername(username);
         if (user == null) {
             log.error("User {} not found in the database", username);
             throw new UsernameNotFoundException("User {} not found in the database");

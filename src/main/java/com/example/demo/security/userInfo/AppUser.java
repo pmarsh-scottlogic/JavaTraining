@@ -3,6 +3,8 @@ package com.example.demo.security.userInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import static javax.persistence.GenerationType.AUTO;
 @Entity // in JPA, an entity is any POJO representing data that can be persisted to a database
 // An entity class represents a table, and each instance of the class is a new row in the table
 @Data @NoArgsConstructor @AllArgsConstructor // lombok stuff for boilerplate code
-public class AppUser {
+public class AppUser implements UserDetails {
     @Id // defines the primary key for the table
     @GeneratedValue(strategy = AUTO)
     private Long id;
@@ -25,4 +27,29 @@ public class AppUser {
     // when we fetch a user, we will always load all of their roles (hence EAGER)
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
