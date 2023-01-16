@@ -18,13 +18,12 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service // Tells Spring that this is a service - it should be injected into a controller later
 @RequiredArgsConstructor // Lombok
 @Transactional // This marks all class methods as transactional.
 // A transaction is a series of actions that must all complete successfully.
-// Hence if at least one action fails, everything should roll back to leave the application state unchanged.
+// Hence, if at least one action fails, everything should roll back to leave the application state unchanged.
 // Apparently it also means that when we've edited an entity that we took from a database, it will automatically save those changes to the database
 @Slf4j // Lombok annotation that enables logging
 public class MyUserService implements UserService, UserDetailsService {

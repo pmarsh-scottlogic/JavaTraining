@@ -1,6 +1,5 @@
 package com.example.demo.security.authInfo;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
