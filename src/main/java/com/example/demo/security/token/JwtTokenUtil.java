@@ -3,9 +3,11 @@ package com.example.demo.security.token;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.security.userInfo.AppUser;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class JwtTokenUtil {
     private static final long EXPIRE_DURATION = 60 * 60 * 1000; // 1 hour
 

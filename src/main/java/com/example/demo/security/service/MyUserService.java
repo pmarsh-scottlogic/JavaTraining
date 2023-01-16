@@ -38,19 +38,15 @@ public class MyUserService implements UserService, UserDetailsService {
         // a UserDetails object, which includes the username, password and a collection of SimpleGrantedAuthority.
         //
 
-        Optional<AppUser> user = userRepo.findByUsername(username);
-        if (user == null) {
-            log.error("User {} not found in the database", username);
-            throw new UsernameNotFoundException("User {} not found in the database");
-        }
-        else {
-            log.info("User found in the database: ", username);
-        }
+        AppUser user = userRepo.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("User {} not found in the database")
+        );
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(
                 role -> authorities.add(new SimpleGrantedAuthority(role.getName()))
         );
         return new User(user.getUsername(), user.getPassword(), authorities);
+
     }
 
     @Override
@@ -67,17 +63,19 @@ public class MyUserService implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
+    public void addRoleToUser(String username, String roleName) throws UsernameNotFoundException {
         log.info("Adding role {} to user {}", roleName, username);
-        AppUser user = userRepo.findByUsername(username);
+        AppUser user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found."));
         Role role = roleRepo.findByName(roleName);
         user.getRoles().add(role);
     }
 
     @Override
-    public AppUser getUser(String username) {
+    public AppUser getUser(String username) throws UsernameNotFoundException {
         log.info("Fetching user {}", username);
-        return userRepo.findByUsername(username);
+        return userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found."));
     }
 
     @Override
