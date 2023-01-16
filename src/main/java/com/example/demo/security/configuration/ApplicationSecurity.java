@@ -15,5 +15,4 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().permitAll();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
 }
