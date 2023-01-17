@@ -12,9 +12,8 @@ import static javax.persistence.GenerationType.AUTO;
 
 @Entity // in JPA, an entity is any POJO representing data that can be persisted to a database
 // An entity class represents a table, and each instance of the class is a new row in the table
-@Data
-@NoArgsConstructor
-@AllArgsConstructor // lombok stuff for boilerplate code
+@Data // lombok annotation that shortcuts @ToString @EqualsAndHashCode @Getter @Setter @RequiredArgsConstructor
+@NoArgsConstructor @AllArgsConstructor // lombok stuff for boilerplate code
 public class Role {
     @Id // defines the primary key for the table
     @GeneratedValue(strategy = AUTO)

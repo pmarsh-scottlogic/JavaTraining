@@ -26,8 +26,12 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
+        // If we get to this endpoint, it means the client doesn't have a jwt yet and wants one.
+        // The client provides a username and password via the AuthRequest object. These credentials are checked as follows:
         try {
-            // todo: what role does this authenticate method have in the process? If we're authenticating here, then what's the point in the filter?
+            // We set up this authenticationManager object in ApplicationSecurity, and we told it how to get users from the database.
+            // the Authenticate method will return a fully populated Authentication object if successful, and if not throw one of these exceptions:
+            // DisabledException, LockedException, BadCredentialsException
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getUsername(), request.getPassword()

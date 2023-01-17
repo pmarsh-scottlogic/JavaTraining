@@ -60,6 +60,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
+        // todo: What is the purpose of this method?
         // The token payload subject contains the user id and username, which we retrieve here.
         UserDetails userDetails = getUserDetails(token);
 

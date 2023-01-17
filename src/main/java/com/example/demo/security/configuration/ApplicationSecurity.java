@@ -70,13 +70,17 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() { //todo: where is this used? Why must it be a bean?
+    PasswordEncoder passwordEncoder() {
+        // expose the PasswordEncoder to spring for use in UserService, so we can encode password before persisting them.
         return new BCryptPasswordEncoder();
     }
 
     @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception { // todo: what does this method do?
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        // overriding this method allows the AuthenticationManager (configured above in configure(AuthenticationManagerBuilder auth))
+        // to be exposed as a Bean for access by Spring
+        // AuthenticationManager has one method only: authenticate()
         return super.authenticationManagerBean();
     }
 
