@@ -1,8 +1,6 @@
 package com.example.demo.security.userInfo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,7 +12,7 @@ import static javax.persistence.GenerationType.AUTO;
 
 @Entity // in JPA, an entity is any POJO representing data that can be persisted to a database
 // An entity class represents a table, and each instance of the class is a new row in the table
-@Data @NoArgsConstructor @AllArgsConstructor // lombok stuff for boilerplate code
+@Data @NoArgsConstructor @AllArgsConstructor @Setter // lombok stuff for boilerplate code
 public class AppUser implements UserDetails {
     @Id // defines the primary key for the table
     @GeneratedValue(strategy = AUTO)
