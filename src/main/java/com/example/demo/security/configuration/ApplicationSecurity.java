@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
 @AllArgsConstructor
-public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo convert away from deprecated system
 
     @Autowired
     private final UserRepo userRepo;
@@ -38,35 +38,45 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        // disables protection against Cross Site Request Forgery. If we don't do this, however, we get 403 responses
+        // to all http requests :(
         http.csrf().disable();
+
+        // disables protection against the browser rendering a page in a or <iframe>.
+        // we must disable it so that the h2-console can be rendered properly
         http.headers().frameOptions().disable();
+
+        // Spring Security will never create an HttpSession, and it will never use it to obtain the SecurityContext
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        // authorises any request via /auth/login to enter without authentication
         http.authorizeRequests()
                 .antMatchers("/auth/login").permitAll()
                 .anyRequest().authenticated();
 
+        // This exception handling code ensures that the server will return HTTP status 401 (Unauthorized)
+        // if any error occurs during authentication process
         http.exceptionHandling()
                 .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage()
-                            );
-                        }
+                        (request, response, ex) -> response.sendError(
+                                HttpServletResponse.SC_UNAUTHORIZED,
+                                ex.getMessage()
+                        )
                 );
 
+        // We add our custom filter before the UsernameAndPasswordAuthenticationFilter in Spring Security filters chain.
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() { //todo: where is this used? Why must it be a bean?
         return new BCryptPasswordEncoder();
     }
 
     @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
+    public AuthenticationManager authenticationManagerBean() throws Exception { // todo: what does this method do?
         return super.authenticationManagerBean();
     }
 

@@ -28,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // this method is called when the filter is reached in the filter chain
 
         // If the request has no AuthorizationBearer (i.e. no jwt token) then we continue down the chain,
-        // where it will be intercepted elsewhere and give a 401 unauthorized response
+        // where it will be intercepted elsewhere and give a 401 unauthorized response,
         // or it is a login request, and a new token will be sent to the client.
         if (!hasAuthorizationBearer(request)) {
             filterChain.doFilter(request, response);
@@ -49,18 +49,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean hasAuthorizationBearer(HttpServletRequest request) {
         // An http request carrying a JWT will put it in the Authorization section of the request header.
         String header = request.getHeader("Authorization");
-        if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
-            return false;
-        }
-        return true;
+        return !ObjectUtils.isEmpty(header) && header.startsWith("Bearer");
     }
 
     private String getAccessToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
 
         // The authorization header looks like "Bearer [token_string]", so we must isolate the token_string
-        String token = header.split(" ")[1].trim();
-        return token;
+        return header.split(" ")[1].trim();
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {

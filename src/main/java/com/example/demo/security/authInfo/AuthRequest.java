@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 @Getter @Setter
-public class AuthRequest {
+public class AuthRequest { // POJO
     @NotNull @Length(min = 1, max = 50)
     private String username;
 

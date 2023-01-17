@@ -27,11 +27,14 @@ public class AuthController {
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
         try {
+            // todo: what role does this authenticate method have in the process? If we're authenticating here, then what's the point in the filter?
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getUsername(), request.getPassword()
                     )
             );
+
+            // respond with username and JWT
             AppUser user = (AppUser) authentication.getPrincipal();
             String accessToken = jwtTokenUtil.generateAccessToken(user);
             AuthResponse response = new AuthResponse(user.getUsername(), accessToken);

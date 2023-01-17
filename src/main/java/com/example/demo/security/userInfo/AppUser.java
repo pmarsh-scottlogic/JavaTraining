@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.AUTO;
 @Entity // in JPA, an entity is any POJO representing data that can be persisted to a database
 // An entity class represents a table, and each instance of the class is a new row in the table
 @Data @NoArgsConstructor @AllArgsConstructor @Setter // lombok stuff for boilerplate code
-public class AppUser implements UserDetails {
+public class AppUser implements UserDetails { // todo: why do we implement UserDetails?
     @Id // defines the primary key for the table
     @GeneratedValue(strategy = AUTO)
     private Long id;
@@ -26,6 +26,8 @@ public class AppUser implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
+
+    // todo: what's the point in the below? Should we  return meaningful stuff? Should this information be included in the database?
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
