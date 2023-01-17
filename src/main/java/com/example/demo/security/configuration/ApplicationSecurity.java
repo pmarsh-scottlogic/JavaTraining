@@ -25,8 +25,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private final UserRepo userRepo;
 
-//    @Autowired
-//    private final JwtTokenFilter jwtTokenFilter;
+    @Autowired
+    private final JwtTokenFilter jwtTokenFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -46,17 +46,17 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/login").permitAll()
                 .anyRequest().authenticated();
 
-//        http.exceptionHandling()
-//                .authenticationEntryPoint(
-//                        (request, response, ex) -> {
-//                            response.sendError(
-//                                    HttpServletResponse.SC_UNAUTHORIZED,
-//                                    ex.getMessage()
-//                            );
-//                        }
-//                );
+        http.exceptionHandling()
+                .authenticationEntryPoint(
+                        (request, response, ex) -> {
+                            response.sendError(
+                                    HttpServletResponse.SC_UNAUTHORIZED,
+                                    ex.getMessage()
+                            );
+                        }
+                );
 
-//        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

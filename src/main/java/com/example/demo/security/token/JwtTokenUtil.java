@@ -35,6 +35,11 @@ public class JwtTokenUtil {
 
     public boolean validateAccessToken(String token) {
         try {
+            // surely there's easier syntax for this?
+            // anyway, verification is a builder object that takes claims and builds a JWTVerifier.
+            // In this case we check claims later.
+            // The JWTVerifier class holds the verify method to assert that a given Token has not only a proper JWT format, but also it's signature matches.
+            // Recall that the signature is made by encoding the header and payload then hashing them along with a secret.
             JWTVerifier.BaseVerification verification = (JWTVerifier.BaseVerification) JWT.require(algorithm);
             DecodedJWT jwt = verification
                     .build()
@@ -55,8 +60,10 @@ public class JwtTokenUtil {
     }
 
     public String getSubject(String token) {
-        JWTParser parser = new JWTParser();
-        return parser.parsePayload(token).getSubject();
+        // We receive the token in encoded format. We need to decode it then get subject field from the JSON
+
+        DecodedJWT decoded = JWT.decode(token);
+        return decoded.getSubject();
     }
 
 }
