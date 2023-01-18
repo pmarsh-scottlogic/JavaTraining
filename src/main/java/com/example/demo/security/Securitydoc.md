@@ -16,7 +16,7 @@ The client posts a JSON object containing a user's username and password to `aut
 
 Upon the port receiving the request, we bypass `HttpSecurity`\* (having configured it to not secure this endpoint), and the request hits the endpoint.
 
-To check the user's credentials, we look to `AuthenticationManager`\* (which we configured at the start). We call its `authenticate()`\* method, passing it a `new UsernameAndPasswordAuthenticationToken`\*, with usernames and passwords taken from the request. It does some black box Spring magic ✨ to determine if this is a real user. If this fails, we return an *unauthorised* status. If it succeeds, we call on our `jwtTokenUtil` class to generate us a JWT and send it back to the client.
+To check the user's credentials, we look to `AuthenticationManager`\* (which we configured at the start). We call its `authenticate()`\* method, passing it a `new UsernameAndPasswordAuthenticationToken`\*, with the username and password taken from the request. It does some black box Spring magic ✨ to determine if this is a real user. If this fails, we return an *unauthorised* status. If it succeeds, we call on our `jwtTokenUtil` class to generate us a JWT and send it back to the client.
 
 ### Authorised User Accesses API 
 
@@ -152,7 +152,7 @@ Implements `UserService` (my own interface) `UserDetailsService`.
 - `PasswordEncoder`
 
 ### Job:
-This service is for interacting with the database. It does this via the `UserRepo` and `RoleRepo` interfaces, along with Spring JPA which handles the actual database stuff. It has methods for adding nd retrieving users and roles to the database.
+This service is for interacting with the database. It does this via the `UserRepo` and `RoleRepo` interfaces, along with Spring JPA which handles the actual database stuff. It has methods for adding and retrieving users and roles to the database.
 
 ## JwtTokenUtil
 Has constants for token expiry duration, the signing secret key and the hashing algorithm.
