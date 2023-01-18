@@ -5,17 +5,14 @@ import com.example.demo.matcher.Matcher;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.userInfo.AppUser;
 import com.example.demo.security.userInfo.Role;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import javax.persistence.Tuple;
 import java.util.ArrayList;
 
-@SpringBootApplication @AllArgsConstructor
+@SpringBootApplication
 public class DemoApplication {
 
 	public static void main(String[] args) {
