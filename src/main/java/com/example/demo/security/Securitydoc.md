@@ -1,5 +1,34 @@
-# Peter's Spring Security Doc
+# 🔑 Peter's Spring Security Doc  🔐
 This documentation summarizes my understanding of Spring security, and how all the components in my system fit together with the stuff provided by the framework.
+
+## Authentication journey from start to finish 🚌
+Names marked with an asterisk (\*) are things provided by Spring security, and not made by me.
+### Initialisation
+At the start of the program, `ApplicationSecurity` gets going, configuring the `AuthenticationManager`\* to be able to access the database based on a username. We also configure `HttpSecurity`\*; we secure all endpoints apart from `auth/login`, disable a few protections that mess with the app, determine how to handle authentication exceptions and add our custom `JwtTokenFilter` to Spring's filter chain. Next we expose our `PasswordEncoder` and `AuthenticationManager`\* `@Beans`.
+
+Our H2-database is initialized with tables determined by the `AppUser` and `Role` `@Entity` classes. `RoleRepo` and `UserRepo` expose methods for querying the database.
+
+The `@Bean` `CommandLineRunner`runs once, populating our database with hardcoded users and roles.
+
+### User logs in
+
+The client posts a JSON object containing a user's username and password to `auth/login`.
+
+Upon the port receiving the request, we bypass `HttpSecurity`\* (having configured it to not secure this endpoint), and the request hits the endpoint.
+
+To check the user's credentials, we look to `AuthenticationManager`\* (which we configured at the start). We call its `authenticate()`\* method, passing it a `new UsernameAndPasswordAuthenticationToken`\*, with usernames and passwords taken from the request. It does some black box Spring magic ✨ to determine if this is a real user. If this fails, we return an *unauthorised* status. If it succeeds, we call on our `jwtTokenUtil` class to generate us a JWT and send it back to the client.
+
+### Authorised User Accesses API 
+
+The client makes any http request to the server, but this time it includes the JWT as part of the request. Specifically, in the token headers we have the field called `Authorization`, which contains the text "Bearer [token string]".
+
+Upon the port receiving the request, it gets pulled into the filter chain by `HttpSecurity`\* where it hits our `JwtTokenFilter` and the method `doFIlterInternal` is invoked, performing the following:
+
+- Ensure that request has the Authorization field in its header. If not, we continue along the chain without authorizing the request.
+- Ensure that the token is valid (correct format, and that the signature is correct given the header, payload and secrets). If not, we continue along the chain without authorizing the request. If valid, we call `setAuthenticationContext()` which, through some black box Spring magic✨ means that the request can get through to the endpoint.
+
+At the endpoint, relevant logic is executed and a sensible response is sent  to the client.
+
 
 ## Misc Concepts
 
@@ -23,7 +52,7 @@ An example token could look like this:
 
 
 
-## My classes
+## My classes 📁
 
 *authInfo
 ├── AuthRequest
@@ -73,7 +102,7 @@ A `@repo` interface that extends `JpaRepository<Role, Long>`.  AppUser is the ty
 In this case we expose `findByName()`, which we call in `MyUserService`'s `getUser()` method.
 
 
-## AuthController
+## AuthController 🎮
 
  **Dependencies:**
 - [AuthenticationManager](https://www.baeldung.com/spring-security-authenticationmanagerresolver#:~:text=What%20Is%20the%20AuthenticationManager?,authenticated%20flag%20set%20to%20true.)
@@ -86,7 +115,7 @@ Credentials are checked by `authenticationManager`, via its `authenticate` metho
 
 If username and password are accepted, the we return an `AuthResponse` with the username and JWT
 
-## ApplicationSecurity
+## ApplicationSecurity 📋
 This is the big boy that sets up all the configuration.
 
 **Dependencies:**
@@ -103,7 +132,7 @@ The other `configure` method sets up the `HttpSecurity` object. In particular we
 
 We also define `@Bean`s that provide 1) a `PasswordEncoder` to Spring (for use in `UserService` so that we can encode passwords before adding the to our database.) and 2) the `AuthenticationManager` that we configured earlier.
 
-## JwtTokenFilter
+## JwtTokenFilter 🧪
 **Dependencies:**
 - JwtTokenUtil
 
