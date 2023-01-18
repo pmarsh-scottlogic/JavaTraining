@@ -1,6 +1,6 @@
 package com.example.demo.matcher.models;
 
-import com.example.demo.validation.UUID;
+import com.example.demo.matcher.validation.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

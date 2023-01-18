@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor // Lombok
 @Transactional // This marks all class methods as transactional.
 // A transaction is a series of actions that must all complete successfully.
-// Hence if at least one action fails, everything should roll back to leave the application state unchanged.
+// Hence, if at least one action fails, everything should roll back to leave the application state unchanged.
 // Apparently it also means that when we've edited an entity that we took from a database, it will automatically save those changes to the database
 @Slf4j // Lombok annotation that enables logging
 public class MyUserService implements UserService, UserDetailsService {
@@ -37,19 +37,15 @@ public class MyUserService implements UserService, UserDetailsService {
         // a UserDetails object, which includes the username, password and a collection of SimpleGrantedAuthority.
         //
 
-        AppUser user = userRepo.findByUsername(username);
-        if (user == null) {
-            log.error("User {} not found in the database", username);
-            throw new UsernameNotFoundException("User {} not found in the database");
-        }
-        else {
-            log.info("User found in the database: ", username);
-        }
+        AppUser user = userRepo.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("User {} not found in the database")
+        );
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(
                 role -> authorities.add(new SimpleGrantedAuthority(role.getName()))
         );
         return new User(user.getUsername(), user.getPassword(), authorities);
+
     }
 
     @Override
@@ -66,17 +62,19 @@ public class MyUserService implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
+    public void addRoleToUser(String username, String roleName) throws UsernameNotFoundException {
         log.info("Adding role {} to user {}", roleName, username);
-        AppUser user = userRepo.findByUsername(username);
+        AppUser user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found."));
         Role role = roleRepo.findByName(roleName);
         user.getRoles().add(role);
     }
 
     @Override
-    public AppUser getUser(String username) {
+    public AppUser getUser(String username) throws UsernameNotFoundException {
         log.info("Fetching user {}", username);
-        return userRepo.findByUsername(username);
+        return userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found."));
     }
 
     @Override

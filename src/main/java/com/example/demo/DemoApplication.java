@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.matcher.InitialiseFakeMarket;
+import com.example.demo.matcher.Matcher;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.userInfo.AppUser;
 import com.example.demo.security.userInfo.Role;
@@ -7,8 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 
@@ -19,9 +19,8 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	@Bean
-		// this interface is used to run a code block exactly once upon initialisation of the program
-	CommandLineRunner run (UserService userService) {
+	@Bean// this bean runs a code block exactly once upon initialisation of the program
+	CommandLineRunner run (UserService userService, Matcher matcher) {
 		return args -> {
 			userService.saveRole(new Role(null, "ROLE_USER"));
 			userService.saveRole(new Role(null, "ROLE_MANAGER"));
@@ -37,6 +36,8 @@ public class DemoApplication {
 			userService.addRoleToUser("DD", "ROLE_USER");
 			userService.addRoleToUser("Jim", "ROLE_USER");
 			userService.addRoleToUser("Em", "ROLE_MANAGER");
+
+			InitialiseFakeMarket.fillMatcher(matcher);
 		};
 	}
 }
