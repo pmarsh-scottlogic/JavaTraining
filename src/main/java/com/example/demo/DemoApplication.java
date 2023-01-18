@@ -18,15 +18,12 @@ import java.util.ArrayList;
 @SpringBootApplication @AllArgsConstructor
 public class DemoApplication {
 
-	@Autowired
-	private final Matcher matcher;
-
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
 	@Bean// this bean runs a code block exactly once upon initialisation of the program
-	CommandLineRunner run (UserService userService) {
+	CommandLineRunner run (UserService userService, Matcher matcher) {
 		return args -> {
 			userService.saveRole(new Role(null, "ROLE_USER"));
 			userService.saveRole(new Role(null, "ROLE_MANAGER"));
