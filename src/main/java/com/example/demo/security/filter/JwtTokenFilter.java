@@ -60,8 +60,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
-        // todo: What is the purpose of this method?
-        // The token payload subject contains the user id and username, which we retrieve here.
+        // This method is what ultimately says that "yup, the given request is valid". I don't know how it works though.
         UserDetails userDetails = getUserDetails(token);
 
         UsernamePasswordAuthenticationToken

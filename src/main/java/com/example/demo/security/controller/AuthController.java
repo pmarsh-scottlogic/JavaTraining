@@ -32,6 +32,7 @@ public class AuthController {
             // We set up this authenticationManager object in ApplicationSecurity, and we told it how to get users from the database.
             // the Authenticate method will return a fully populated Authentication object if successful, and if not throw one of these exceptions:
             // DisabledException, LockedException, BadCredentialsException
+            // todo: But how does it know how to access the users password? Does it know it needs to encode the request password? Does it check the user's Roles?
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getUsername(), request.getPassword()
