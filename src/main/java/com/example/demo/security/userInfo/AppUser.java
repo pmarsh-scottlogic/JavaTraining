@@ -17,7 +17,7 @@ import static javax.persistence.GenerationType.AUTO;
 @NoArgsConstructor @AllArgsConstructor // lombok stuff for boilerplate code
 public class AppUser implements UserDetails { // todo: why do we implement UserDetails?
     @Id // defines the primary key for the table
-    private UUID id;
+    private String id;
     private String name;
     private String username;
     private String password;

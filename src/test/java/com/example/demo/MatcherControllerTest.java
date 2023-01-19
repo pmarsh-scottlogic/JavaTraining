@@ -30,8 +30,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
-@ContextConfiguration(classes = { ApplicationSecurity.class, JwtTokenFilter.class, JwtTokenUtil.class, UserService.class })
 @WebMvcTest(controllers = MatcherController.class)
+@ContextConfiguration(classes = { ApplicationSecurity.class, JwtTokenFilter.class, JwtTokenUtil.class, UserService.class })
+
 public class MatcherControllerTest {
 
     @Autowired

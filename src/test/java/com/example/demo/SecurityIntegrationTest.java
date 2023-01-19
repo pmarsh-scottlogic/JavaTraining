@@ -20,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -41,8 +42,8 @@ public class SecurityIntegrationTest {
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
 
-        testUser1 = new AppUser(null, "testName", "testUsername", "testPassword", new ArrayList<>());
-        testUser2 = new AppUser(null, "testName", "testUsername", "testPassword", new ArrayList<>());
+        testUser1 = new AppUser("5bbf6bc6-517d-46a4-b908-b01ad3b75c15", "testName1", "testUsername1", "testPassword1", new ArrayList<>());
+        testUser2 = new AppUser("503b3c07-2239-4fa7-bc9d-c940c2005f10", "testName2", "testUsername2", "testPassword2", new ArrayList<>());
         // these guys will need accountIds
 
         userService.saveUser(testUser1);

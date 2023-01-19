@@ -52,7 +52,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
 
         // authorises any request via /auth/login to enter without authentication
         http.authorizeRequests()
-                .antMatchers("/auth/login", "h2-console/*", "/public/").permitAll()
+                .antMatchers("/auth/login", "/h2-console/*", "/public/*").permitAll()
                 .anyRequest().authenticated();
 
         // This exception handling code ensures that the server will return HTTP status 401 (Unauthorized)
