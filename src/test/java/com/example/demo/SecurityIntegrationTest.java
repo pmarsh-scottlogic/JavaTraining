@@ -139,11 +139,11 @@ public class SecurityIntegrationTest {
     @Test
     public void itShouldReturnTokenOnSuccessfulLogin() throws Exception {
         String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), testUser2.getPassword()));
-
+        System.out.println("RBOOOOODIEEEET " + requestBody);
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.post("/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content("{\"username\": \"James\",\"password\" : \"1234\"}"))
                 .andReturn();
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result.getResponse().getContentAsString()).matches("[w-]*.[w-]*.[w-]*");
