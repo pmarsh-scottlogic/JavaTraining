@@ -242,7 +242,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
 
     @Test
     public void itShouldReturnTokenOnSuccessfulLogin() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), testUser2.getPassword()));
+        String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), testUser1.getPassword()));
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.post("/auth/login")
@@ -258,25 +258,69 @@ public class MatcherControllerAndSecurityIntegrationTest {
     @Test
     public void itShouldAllowAccessToPrivateBuyOrdersWithValidJWT() throws Exception {
         // placeholder
-        assertThat(true).isFalse();
+        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        UUID testUserUUID1 = null; // get this once its implemented
+
+        doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUserUUID1);
+
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/private/orderbook/buy/" + testUserUUID1)
+                                .header("Authorization", validJWT))
+                .andReturn();
+
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     public void itShouldAllowPrivateToPrivateSellOrdersWithValidJWT() throws Exception {
         // placeholder
-        assertThat(true).isFalse();
+        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        UUID testUserUUID1 = null; // get this once its implemented
+
+        doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.SELL, testUserUUID1);
+
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/private/orderbook/sell/" + testUserUUID1)
+                                .header("Authorization", validJWT))
+                .andReturn();
+
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     public void itShouldNotAllowPrivateAccessToBuyOrdersWithValidJWTButWrongAccount() throws Exception {
         // placeholder
-        assertThat(true).isFalse();
+        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        UUID testUserUUID1 = null; // get this once its implemented
+        UUID testUserUUID2 = null;
+
+        doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUserUUID1);
+
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/private/orderbook/buy/" + testUserUUID2)
+                                .header("Authorization", validJWT))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     public void itShouldNotAllowPrivateAccessToSellOrdersWithValidJWTButWrongAccount() throws Exception {
         // placeholder
-        assertThat(true).isFalse();
+        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        UUID testUserUUID1 = null; // get this once its implemented
+        UUID testUserUUID2 = null;
+
+        doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUserUUID1);
+
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.get("/private/orderbook/sell/" + testUserUUID2)
+                                .header("Authorization", validJWT))
+                .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
