@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class AuthResponse { // POJO
+    private String id;
     private String username;
     private String accessToken;
 

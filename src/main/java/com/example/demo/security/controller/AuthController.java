@@ -42,7 +42,7 @@ public class AuthController {
             // respond with username and JWT
             AppUser user = (AppUser) authentication.getPrincipal();
             String accessToken = jwtTokenUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getUsername(), accessToken);
+            AuthResponse response = new AuthResponse(user.getId(), user.getUsername(), accessToken);
             return ResponseEntity.ok().body(response);
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
