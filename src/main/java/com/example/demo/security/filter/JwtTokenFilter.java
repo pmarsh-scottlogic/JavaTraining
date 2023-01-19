@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @AllArgsConstructor @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -74,7 +75,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private UserDetails getUserDetails(String token) {
         String[] jwtSubject = jwtTokenUtil.getSubject(token).split(",");
-        Long id = Long.parseLong(jwtSubject[0]);
+        UUID id = UUID.fromString(jwtSubject[0]);
         String username = jwtSubject[1];
 
         AppUser userDetails = new AppUser();

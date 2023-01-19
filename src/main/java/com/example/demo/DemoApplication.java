@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -27,10 +28,10 @@ public class DemoApplication {
 			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 			userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-			userService.saveUser(new AppUser(null, "James Lewis", "James", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Dave Daveman", "DD", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Jimmy LaCroix", "Jim", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Emerald Smelter", "Em", "1234", new ArrayList<>()));
+			userService.saveUser(new AppUser(UUID.randomUUID(), "James Lewis", "James", "1234", new ArrayList<>()));
+			userService.saveUser(new AppUser(UUID.randomUUID(), "Dave Daveman", "DD", "1234", new ArrayList<>()));
+			userService.saveUser(new AppUser(UUID.randomUUID(), "Jimmy LaCroix", "Jim", "1234", new ArrayList<>()));
+			userService.saveUser(new AppUser(UUID.randomUUID(), "Emerald Smelter", "Em", "1234", new ArrayList<>()));
 
 			userService.addRoleToUser("James", "ROLE_ADMIN");
 			userService.addRoleToUser("DD", "ROLE_USER");

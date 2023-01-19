@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 import static javax.persistence.GenerationType.AUTO;
 
@@ -16,8 +17,7 @@ import static javax.persistence.GenerationType.AUTO;
 @NoArgsConstructor @AllArgsConstructor // lombok stuff for boilerplate code
 public class AppUser implements UserDetails { // todo: why do we implement UserDetails?
     @Id // defines the primary key for the table
-    @GeneratedValue(strategy = AUTO)
-    private Long id;
+    private UUID id;
     private String name;
     private String username;
     private String password;
