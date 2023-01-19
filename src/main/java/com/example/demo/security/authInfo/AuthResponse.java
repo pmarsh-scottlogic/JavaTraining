@@ -9,4 +9,6 @@ import lombok.Setter;
 public class AuthResponse { // POJO
     private String username;
     private String accessToken;
+
+    //todo add accountId field so that only orderbook of authorized account can be retrieved
 }

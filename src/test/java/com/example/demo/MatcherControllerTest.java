@@ -6,12 +6,19 @@ import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 
+import com.example.demo.security.configuration.ApplicationSecurity;
+import com.example.demo.security.filter.JwtTokenFilter;
+import com.example.demo.security.repo.UserRepo;
+import com.example.demo.security.service.UserService;
+import com.example.demo.security.token.JwtTokenUtil;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,6 +30,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
+@ContextConfiguration(classes = { ApplicationSecurity.class, JwtTokenFilter.class, JwtTokenUtil.class, UserService.class })
 @WebMvcTest(controllers = MatcherController.class)
 public class MatcherControllerTest {
 
@@ -37,6 +45,9 @@ public class MatcherControllerTest {
 
     @MockBean
     private Matcher matcher;
+
+    @MockBean
+    private UserRepo userRepo;
 
     @Test
     public void contextLoads() {
