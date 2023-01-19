@@ -27,12 +27,12 @@ public class MatcherController {
     @Autowired
     private final TradeService tradeService;
 
-    @GetMapping(value = "/orderbook/buy")
+    @GetMapping(value = "/public/orderbook/buy")
     public ResponseEntity<List<OrderbookItem>> orderbook_buy() {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY));
     }
 
-    @GetMapping(value = "/orderbook/buy/{accountId}")
+    @GetMapping(value = "/private/orderbook/buy/{accountId}")
     public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String accountId) {
         try {
             UUID accountUuid = UUID.fromString(accountId);
@@ -43,12 +43,12 @@ public class MatcherController {
         }
     }
 
-    @GetMapping(value = "/orderbook/sell")
+    @GetMapping(value = "/public/orderbook/sell")
     public ResponseEntity<List<OrderbookItem>> orderbook_sell() {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL));
     }
 
-    @GetMapping(value = "/orderbook/sell/{accountId}")
+    @GetMapping(value = "/private/orderbook/sell/{accountId}")
     public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String accountId) {
         try {
             UUID accountUuid = UUID.fromString(accountId);
@@ -59,22 +59,22 @@ public class MatcherController {
         }
     }
 
-    @GetMapping(value = "/orderbook/depth/buy")
+    @GetMapping(value = "/public/orderbook/depth/buy")
     public ResponseEntity<List<OrderbookItem>> orderdepth_buy() {
         return ResponseEntity.ok(orderService.getOrderDepth(OrderAction.BUY));
     }
 
-    @GetMapping(value = "/orderbook/depth/sell")
+    @GetMapping(value = "/public/orderbook/depth/sell")
     public ResponseEntity<List<OrderbookItem>> orderdepth_sell() {
         return ResponseEntity.ok(orderService.getOrderDepth(OrderAction.SELL));
     }
 
-    @GetMapping(value = "/tradebook")
+    @GetMapping(value = "/public/tradebook")
     public ResponseEntity<List<Trade>> tradebook() {
         return ResponseEntity.ok(tradeService.getRecent());
     }
 
-    @PostMapping(value="/make/order")
+    @PostMapping(value="/private/make/order")
     public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams) {
         Order newOrder = new Order(
                 UUID.fromString(newOrderParams.getAccount()),

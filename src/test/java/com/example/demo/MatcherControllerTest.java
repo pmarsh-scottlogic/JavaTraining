@@ -66,7 +66,7 @@ public class MatcherControllerTest {
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY);
 
         MvcResult result = mvc.perform(
-                MockMvcRequestBuilders.get("/orderbook/buy"))
+                MockMvcRequestBuilders.get("/public/orderbook/buy"))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -78,7 +78,7 @@ public class MatcherControllerTest {
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.SELL);
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/sell"))
+                        MockMvcRequestBuilders.get("/public/orderbook/sell"))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -92,7 +92,7 @@ public class MatcherControllerTest {
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, accountUuid);
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/buy/" + accountUuid))
+                        MockMvcRequestBuilders.get("/private/orderbook/buy/" + accountUuid))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -106,7 +106,7 @@ public class MatcherControllerTest {
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.SELL, accountUuid);
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/sell/" + accountUuid))
+                        MockMvcRequestBuilders.get("/private/orderbook/sell/" + accountUuid))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -114,18 +114,9 @@ public class MatcherControllerTest {
     }
 
     @Test
-    void ItShouldCheckBuyOrderbookWithBadAccountId() throws Exception {
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/buy/" + "badAccountId"))
-                .andReturn();
-
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
     void ItShouldNotifyBadAccountIdOnGetBuyAccount() throws Exception {
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/buy/badId"))
+                        MockMvcRequestBuilders.get("/private/orderbook/buy/badId"))
                 .andReturn();
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -133,7 +124,7 @@ public class MatcherControllerTest {
     @Test
     void ItShouldNotifyBadAccountIdOnGetSellAccount() throws Exception {
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/sell/badId"))
+                        MockMvcRequestBuilders.get("/private/orderbook/sell/badId"))
                 .andReturn();
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -143,7 +134,7 @@ public class MatcherControllerTest {
         doReturn(testOrderbook1()).when(orderService).getOrderDepth(OrderAction.BUY);
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/depth/buy"))
+                        MockMvcRequestBuilders.get("/public/orderbook/depth/buy"))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -155,7 +146,7 @@ public class MatcherControllerTest {
         doReturn(testOrderbook1()).when(orderService).getOrderDepth(OrderAction.SELL);
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/orderbook/depth/sell"))
+                        MockMvcRequestBuilders.get("/public/orderbook/depth/sell"))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -167,7 +158,7 @@ public class MatcherControllerTest {
         doReturn(testTradebook).when(tradeService).getRecent();
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/tradebook/"))
+                        MockMvcRequestBuilders.get("/public/tradebook/"))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testTradebook));
@@ -196,7 +187,7 @@ public class MatcherControllerTest {
         doReturn(List.of()).when(orderService).getOrderDepth(OrderAction.SELL);
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -223,7 +214,7 @@ public class MatcherControllerTest {
         );
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -239,7 +230,7 @@ public class MatcherControllerTest {
         );
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -256,7 +247,7 @@ public class MatcherControllerTest {
         );
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -272,7 +263,7 @@ public class MatcherControllerTest {
         );
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -289,7 +280,7 @@ public class MatcherControllerTest {
         );
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -306,7 +297,7 @@ public class MatcherControllerTest {
         );
 
         // API call
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/make/order")
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
