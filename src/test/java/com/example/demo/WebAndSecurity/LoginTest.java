@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
+// these tests require the whole system to be running
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LoginTest {
@@ -61,8 +62,6 @@ public class LoginTest {
     @BeforeEach
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
-        testUser1 = new AppUser(null, "testName1", "testUsername1", "testPassword1", new ArrayList<>());
-        userService.saveUser(testUser1);
     }
 
     @Test
