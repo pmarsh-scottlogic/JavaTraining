@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.Matcher;
 
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.models.Order;

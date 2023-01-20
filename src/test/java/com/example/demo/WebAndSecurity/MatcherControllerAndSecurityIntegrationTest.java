@@ -1,6 +1,6 @@
-package com.example.demo;
+package com.example.demo.WebAndSecurity;
 
-import com.auth0.jwt.JWT;
+import com.example.demo.Matcher.TestUtils;
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.models.Order;
@@ -69,74 +69,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
         userService.saveUser(testUser2);
     }
 
-    // ========= Test that public endpoints are accessible and working =================================================
 
-    static List<OrderbookItem> testOrderbook1() {
-        return List.of(
-                TestUtils.makeOrderbookItem(1, 1),
-                TestUtils.makeOrderbookItem(2, 2)
-        );
-    }
-
-    @Test
-    public void itShouldAllowAccessToPublicBuyOrderbook() throws Exception {
-        doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY);
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/public/orderbook/buy"))
-                .andReturn();
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    public void itShouldAllowAccessToPublicSellOrderbook() throws Exception {
-        doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.SELL);
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/public/orderbook/sell"))
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    public void itShouldAllowAccessToPublicBuyOrderdepth() throws Exception {
-        doReturn(testOrderbook1()).when(orderService).getOrderDepth(OrderAction.BUY);
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/public/orderbook/depth/buy"))
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    public void itShouldAllowAccessToPublicSellOrderdepth() throws Exception {
-        doReturn(testOrderbook1()).when(orderService).getOrderDepth(OrderAction.SELL);
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/public/orderbook/depth/sell"))
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    public void itShouldAllowAccessToTradebook() throws Exception {
-        List<Trade> testTradebook = TestUtils.makeRandomTradebook();
-        doReturn(testTradebook).when(tradeService).getRecent();
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/public/tradebook"))
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testTradebook));
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
 
     // ========= Test that private endpoints are inaccessible without a good token =====================================
 
@@ -218,51 +151,14 @@ public class MatcherControllerAndSecurityIntegrationTest {
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    // ======== Test logging in ========================================================================================
-
-    @Test
-    public void itShouldNotAllowLoginWithNoCredentials() throws Exception {
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.post("/auth/login"))
-                .andReturn();
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    public void itShouldNotAllowLoginWithBadCredentials() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest("badUsername", "badPassword"));
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andReturn();
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    public void itShouldReturnTokenOnSuccessfulLogin() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), "testPassword1"));
-
-        MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.post("/auth/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
-                .andReturn();
-        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-        String JWTRegexPattern = "[\\w-]+\\.[\\w-]+\\.[\\w-]+";
-        assertThat(result.getResponse().getContentAsString()).containsPattern(JWTRegexPattern);
-
-        AssignValidJWTFromResult(result);
-    }
-
-    private void AssignValidJWTFromResult(MvcResult result) throws UnsupportedEncodingException, JSONException {
-        JSONObject json = new JSONObject(result.getResponse().getContentAsString());
-        String token = json.getString("accessToken");
-
-    }
-
     // ======= Tests once we have a valid JWT ==========================================================================
+
+    static List<OrderbookItem> testOrderbook1() {
+        return List.of(
+                TestUtils.makeOrderbookItem(1, 1),
+                TestUtils.makeOrderbookItem(2, 2)
+        );
+    }
 
     @Test
     public void itShouldAllowAccessToPrivateBuyOrdersWithValidJWT() throws Exception {

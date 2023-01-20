@@ -1,17 +1,11 @@
-package com.example.demo;
+package com.example.demo.Matcher;
 
 import com.example.demo.matcher.models.Trade;
-import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;

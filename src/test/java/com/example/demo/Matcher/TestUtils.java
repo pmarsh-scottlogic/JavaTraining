@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.Matcher;
 
 import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.models.OrderAction;
@@ -50,7 +50,7 @@ public class TestUtils {
                 Math.round(Math.random() * 100));
     }
 
-    static List<Trade> makeRandomTradebook() {
+    public static List<Trade> makeRandomTradebook() {
         return List.of(
                 TestUtils.randomTrade(),
                 TestUtils.randomTrade()
