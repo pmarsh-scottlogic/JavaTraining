@@ -3,6 +3,7 @@ package com.example.demo.security.authInfo;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.example.demo.security.authInfo.passwordValidation.PasswordValidation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,6 @@ public class AuthRequest { // POJO
     @NotNull @Length(min = 1, max = 20)
     private String username;
 
-    @NotNull @Length(min = 1, max = 20) @Pattern(regexp = "", message = "")
+    @PasswordValidation
     private String password;
-
 }
