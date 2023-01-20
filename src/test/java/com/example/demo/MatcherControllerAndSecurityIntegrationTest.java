@@ -1,14 +1,17 @@
 package com.example.demo;
 
+import com.auth0.jwt.JWT;
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.models.*;
+import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.authInfo.AuthRequest;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.userInfo.AppUser;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +56,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
 
     private AppUser testUser1;
     private AppUser testUser2;
+
 
     @BeforeEach
     public void setup() throws Exception {
@@ -245,7 +250,16 @@ public class MatcherControllerAndSecurityIntegrationTest {
                                 .content(requestBody))
                 .andReturn();
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(result.getResponse().getContentAsString()).containsPattern("[\\w-]+\\.[\\w-]+\\.[\\w-]+");
+        String JWTRegexPattern = "[\\w-]+\\.[\\w-]+\\.[\\w-]+";
+        assertThat(result.getResponse().getContentAsString()).containsPattern(JWTRegexPattern);
+
+        AssignValidJWTFromResult(result);
+    }
+
+    private void AssignValidJWTFromResult(MvcResult result) throws UnsupportedEncodingException, JSONException {
+        JSONObject json = new JSONObject(result.getResponse().getContentAsString());
+        String token = json.getString("accessToken");
+
     }
 
     // ======= Tests once we have a valid JWT ==========================================================================
@@ -267,7 +281,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
     }
 
     @Test
-    public void itShouldAllowPrivateToPrivateSellOrdersWithValidJWT() throws Exception {
+    public void itShouldAllowAccessToPrivateSellOrdersWithValidJWT() throws Exception {
         // placeholder
         String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
 
@@ -283,7 +297,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
     }
 
     @Test
-    public void itShouldNotAllowPrivateAccessToBuyOrdersWithValidJWTButWrongAccount() throws Exception {
+    public void itShouldNotAllowAccessToPrivateBuyOrdersWithValidJWTButWrongAccount() throws Exception {
         // placeholder
         String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
 
@@ -298,7 +312,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
     }
 
     @Test
-    public void itShouldNotAllowPrivateAccessToSellOrdersWithValidJWTButWrongAccount() throws Exception {
+    public void itShouldNotAllowAccessToPrivateSellOrdersWithValidJWTButWrongAccount() throws Exception {
         // placeholder
         String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
 

@@ -107,7 +107,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void ItShouldGenerateAnOrderbookWithBuyActionAndAccountId() {
+    void ItShouldGenerateAnOrderbookWithBuyActionAndUsername() {
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 testOrderSet1("b")
         ));
