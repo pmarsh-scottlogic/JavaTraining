@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -27,57 +26,55 @@ public class MatcherController {
     @Autowired
     private final TradeService tradeService;
 
-    @GetMapping(value = "/orderbook/buy")
+    @GetMapping(value = "/public/orderbook/buy")
     public ResponseEntity<List<OrderbookItem>> orderbook_buy() {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY));
     }
 
-    @GetMapping(value = "/orderbook/buy/{accountId}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String accountId) {
+    @GetMapping(value = "/private/orderbook/buy/{username}")
+    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String username) {
         try {
-            UUID accountUuid = UUID.fromString(accountId);
-            return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY, UUID.fromString(accountId)));
+            return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY, username));
         }
         catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(value = "/orderbook/sell")
+    @GetMapping(value = "/public/orderbook/sell")
     public ResponseEntity<List<OrderbookItem>> orderbook_sell() {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL));
     }
 
-    @GetMapping(value = "/orderbook/sell/{accountId}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String accountId) {
+    @GetMapping(value = "/private/orderbook/sell/{username}")
+    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String username) {
         try {
-            UUID accountUuid = UUID.fromString(accountId);
-            return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL, accountUuid));
+            return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL, username));
         }
         catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(value = "/orderbook/depth/buy")
+    @GetMapping(value = "/public/orderbook/depth/buy")
     public ResponseEntity<List<OrderbookItem>> orderdepth_buy() {
         return ResponseEntity.ok(orderService.getOrderDepth(OrderAction.BUY));
     }
 
-    @GetMapping(value = "/orderbook/depth/sell")
+    @GetMapping(value = "/public/orderbook/depth/sell")
     public ResponseEntity<List<OrderbookItem>> orderdepth_sell() {
         return ResponseEntity.ok(orderService.getOrderDepth(OrderAction.SELL));
     }
 
-    @GetMapping(value = "/tradebook")
+    @GetMapping(value = "/public/tradebook")
     public ResponseEntity<List<Trade>> tradebook() {
         return ResponseEntity.ok(tradeService.getRecent());
     }
 
-    @PostMapping(value="/make/order")
+    @PostMapping(value="/private/make/order")
     public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams) {
         Order newOrder = new Order(
-                UUID.fromString(newOrderParams.getAccount()),
+                newOrderParams.getUsername(),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
                 BigDecimal.valueOf(newOrderParams.getQuantity()),
                 newOrderParams.getAction().equals("buy") ? OrderAction.BUY : OrderAction.SELL
@@ -88,8 +85,8 @@ public class MatcherController {
         return ResponseEntity.ok(new MakeOrderReturn(
                 orderService.getOrderbook(OrderAction.BUY),
                 orderService.getOrderbook(OrderAction.SELL),
-                orderService.getOrderbook(OrderAction.BUY, UUID.fromString(newOrderParams.getAccount())),
-                orderService.getOrderbook(OrderAction.SELL, UUID.fromString(newOrderParams.getAccount())),
+                orderService.getOrderbook(OrderAction.BUY, newOrderParams.getUsername()),
+                orderService.getOrderbook(OrderAction.SELL, newOrder.getUsername()),
                 tradeService.getRecent(),
                 orderService.getOrderDepth(OrderAction.BUY),
                 orderService.getOrderDepth(OrderAction.SELL)

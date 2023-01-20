@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -71,8 +70,8 @@ public class MatcherTests {
         // check properties of created trade object that was added to tradeService
         assertThat(createdTrade.getValue().getPrice()).isEqualTo(new BigDecimal(4));
         assertThat(createdTrade.getValue().getQuantity()).isEqualTo(new BigDecimal(10));
-        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
-        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdTrade.getValue().getUsernameBuyer()).isEqualTo(existingOrder.getUsername());
+        assertThat(createdTrade.getValue().getUsernameSeller()).isEqualTo(newOrder.getUsername());
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getOrderId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
     }
@@ -96,8 +95,8 @@ public class MatcherTests {
         // check properties of created trade object that was added to tradeService
         assertThat(createdTrade.getValue().getPrice()).isEqualTo(new BigDecimal(4));
         assertThat(createdTrade.getValue().getQuantity()).isEqualTo(new BigDecimal(10));
-        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
-        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdTrade.getValue().getUsernameBuyer()).isEqualTo(existingOrder.getUsername());
+        assertThat(createdTrade.getValue().getUsernameSeller()).isEqualTo(newOrder.getUsername());
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getOrderId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
 
@@ -107,7 +106,7 @@ public class MatcherTests {
 
         // check properties of created order object that was added to orderService
         assertThat(createdOrder.getValue().getOrderId()).isEqualTo(newOrder.getOrderId());
-        assertThat(createdOrder.getValue().getAccountId()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdOrder.getValue().getUsername()).isEqualTo(newOrder.getUsername());
         assertThat(createdOrder.getValue().getPrice()).isEqualTo(new BigDecimal(4));
         assertThat(createdOrder.getValue().getQuantity()).isEqualTo(new BigDecimal(2));
         assertThat(createdOrder.getValue().getDatetime()).isEqualTo(newOrder.getDatetime());
@@ -133,8 +132,8 @@ public class MatcherTests {
         // check properties of created trade object that was added to tradeService
         assertThat(createdTrade.getValue().getPrice()).isEqualTo(new BigDecimal(4));
         assertThat(createdTrade.getValue().getQuantity()).isEqualTo(new BigDecimal(8));
-        assertThat(createdTrade.getValue().getAccountIdBuyer()).isEqualTo(existingOrder.getAccountId());
-        assertThat(createdTrade.getValue().getAccountIdSeller()).isEqualTo(newOrder.getAccountId());
+        assertThat(createdTrade.getValue().getUsernameBuyer()).isEqualTo(existingOrder.getUsername());
+        assertThat(createdTrade.getValue().getUsernameSeller()).isEqualTo(newOrder.getUsername());
         assertThat(createdTrade.getValue().getOrderIdBuy()).isEqualTo(existingOrder.getOrderId());
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
 

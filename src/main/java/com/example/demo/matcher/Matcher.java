@@ -34,9 +34,9 @@ public class Matcher {
             BigDecimal tradePrice = matchedOrder.getPrice();
             BigDecimal tradeQuantity = newOrder.getQuantity().min(matchedOrder.getQuantity());
 
-            tradeService.add(new Trade(buyOrder.getAccountId(),
+            tradeService.add(new Trade(buyOrder.getUsername(),
                     buyOrder.getOrderId(),
-                    sellOrder.getAccountId(),
+                    sellOrder.getUsername(),
                     sellOrder.getOrderId(),
                     tradePrice,
                     tradeQuantity,
@@ -62,8 +62,8 @@ public class Matcher {
         // filter incompatible actions and accounts
         eligibleOrders = eligibleOrders.stream()
                 .filter(
-                        order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getAccountId(),
-                                newOrder.getAccountId()))
+                        order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getUsername(),
+                                newOrder.getUsername()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         if (newOrder.getAction() == OrderAction.BUY) {

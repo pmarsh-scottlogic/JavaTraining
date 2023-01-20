@@ -13,18 +13,18 @@ import java.util.UUID;
 public class TestUtils {
     public static Order makeOrder(float price, float quantity, String strAction) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new Order(UUID.randomUUID(), new BigDecimal(price), new BigDecimal(quantity), action);
+        return new Order(UUID.randomUUID().toString(), // unique username
+                new BigDecimal(price), new BigDecimal(quantity), action);
     }
 
-    public static Order makeOrder(String strAccount, float price, float quantity, String strAction) {
-        UUID uuid = uuidFromString(strAccount);
+    public static Order makeOrder(String username, float price, float quantity, String strAction) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new Order(uuid, new BigDecimal(price), new BigDecimal(quantity), action);
+        return new Order(username, new BigDecimal(price), new BigDecimal(quantity), action);
     }
 
     public static Order makeOrder(float price, float quantity, String strAction, int datetimeRank) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new Order(UUID.randomUUID(),
+        return new Order(UUID.randomUUID().toString(), // unique username
                 new BigDecimal(price),
                 new BigDecimal(quantity),
                 action,
@@ -41,9 +41,9 @@ public class TestUtils {
 
     public static Trade randomTrade() {
         return new Trade(
+                UUID.randomUUID().toString(), // unique username
                 UUID.randomUUID(),
-                UUID.randomUUID(),
-                UUID.randomUUID(),
+                UUID.randomUUID().toString(), // unique username
                 UUID.randomUUID(),
                 BigDecimal.valueOf(Math.random()),
                 BigDecimal.valueOf(Math.random()),

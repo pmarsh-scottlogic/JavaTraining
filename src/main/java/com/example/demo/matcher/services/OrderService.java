@@ -29,10 +29,10 @@ public class OrderService {
         orders.remove(order);
     }
 
-    public List<OrderbookItem> getOrderbook(OrderAction action, UUID accountId) {
+    public List<OrderbookItem> getOrderbook(OrderAction action, String username) {
         // filter the order list by action
         List<Order> filtered = this.get().stream()
-                .filter(order -> order.getAction() == action && Objects.equals(order.getAccountId(), accountId))
+                .filter(order -> order.getAction() == action && order.getUsername().equals(username))
                 .collect(Collectors.toList());
         return makeOrderbook(filtered, action);
     }

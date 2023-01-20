@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.spy;
@@ -108,7 +107,7 @@ public class OrderServiceTests {
     }
 
     @Test
-    void ItShouldGenerateAnOrderbookWithBuyActionAndAccountId() {
+    void ItShouldGenerateAnOrderbookWithBuyActionAndUsername() {
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 testOrderSet1("b")
         ));
@@ -119,8 +118,7 @@ public class OrderServiceTests {
                         TestUtils.makeOrderbookItem(10, 7)
                 ));
 
-        UUID specifiedAccount = TestUtils.uuidFromString("account1");
-        assertThat(orderService.getOrderbook(OrderAction.BUY, specifiedAccount))
+        assertThat(orderService.getOrderbook(OrderAction.BUY, "account1"))
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
     }
