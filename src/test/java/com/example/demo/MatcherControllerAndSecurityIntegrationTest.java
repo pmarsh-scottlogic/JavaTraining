@@ -57,9 +57,9 @@ public class MatcherControllerAndSecurityIntegrationTest {
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
 
-        testUser1 = new AppUser(null, "testName", "testUsername", "testPassword", new ArrayList<>());
-        testUser2 = new AppUser(null, "testName", "testUsername", "testPassword", new ArrayList<>());
-        // these guys will need accountIds
+        testUser1 = new AppUser("e28a0306-1566-44c3-a939-caa28f55b3d7", "testName1", "testUsername1", "testPassword1", new ArrayList<>());
+        System.out.println("testUser1.passwrod setup: " + testUser1.getPassword());
+        testUser2 = new AppUser("f840a893-baff-4094-aa3c-96b75d41dbe1", "testName2", "testUsername2", "testPassword2", new ArrayList<>());
 
         userService.saveUser(testUser1);
         userService.saveUser(testUser2);
@@ -149,7 +149,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
     public void itShouldNotAllowAccessToPrivateSellOrdersWithoutAnyJWT() throws Exception {
         String testUser1Accountid = "GET THIS ONCE USERS HAVE ACCOUNTIDS";
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/public/orderbook/Sell/" + testUser1Accountid))
+                        MockMvcRequestBuilders.get("/private/orderbook/Sell/" + testUser1Accountid))
                 .andReturn();
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -242,7 +242,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
 
     @Test
     public void itShouldReturnTokenOnSuccessfulLogin() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), testUser1.getPassword()));
+        String requestBody = TestUtils.asJsonString(new AuthRequest("testUsername1", "testPassword1"));
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.post("/auth/login")
@@ -250,7 +250,7 @@ public class MatcherControllerAndSecurityIntegrationTest {
                                 .content(requestBody))
                 .andReturn();
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(result.getResponse().getContentAsString()).matches("[w-]*.[w-]*.[w-]*");
+        assertThat(result.getResponse().getContentAsString()).containsPattern("[\\w-]+\\.[\\w-]+\\.[\\w-]+");
     }
 
     // ======= Tests once we have a valid JWT ==========================================================================
