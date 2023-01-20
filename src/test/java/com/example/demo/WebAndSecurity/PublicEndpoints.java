@@ -58,7 +58,7 @@ public class PublicEndpoints {
                 TestUtils.makeOrderbookItem(2, 2)
         );
     }
-
+// yes
     @Test
     public void itShouldAllowAccessToPublicBuyOrderbook() throws Exception {
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY);
