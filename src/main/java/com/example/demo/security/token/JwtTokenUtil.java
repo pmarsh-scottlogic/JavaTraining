@@ -59,7 +59,7 @@ public class JwtTokenUtil {
         return false;
     }
 
-    public String getSubject(String token) {
+    public static String getSubject(String token) {
         // We receive the token in encoded format. We need to decode it then get subject field from the JSON
 
         DecodedJWT decoded = JWT.decode(token);
