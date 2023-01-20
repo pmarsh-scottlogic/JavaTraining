@@ -80,8 +80,8 @@ public class LoginValidationTest {
     }
 
     @Test
-    public void ifShouldAlertIfPasswordInvalid() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest("testUsername", ""));
+    public void ifShouldAlertIfPasswordTooShort() throws Exception {
+        String requestBody = TestUtils.asJsonString(new AuthRequest("testUsername", "aA!1"));
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.post("/auth/login")
@@ -92,4 +92,34 @@ public class LoginValidationTest {
         assertThat(result.getResponse().getContentAsString()).contains("Password should be");
         assertThat(result.getResponse().getContentAsString()).contains("password");
     }
+
+    @Test
+    public void ifShouldAlertIfPasswordTooLong() throws Exception {
+        String requestBody = TestUtils.asJsonString(new AuthRequest("testUsername", "aA!1eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
+
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.post("/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                .andReturn();
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("Password should be");
+        assertThat(result.getResponse().getContentAsString()).contains("password");
+    }
+
+    @Test
+    public void ifShouldAlertIfPasswordMissingUpperCase() throws Exception {
+        String requestBody = TestUtils.asJsonString(new AuthRequest("testUsername", "almostagoodpassword1!"));
+
+        MvcResult result = mvc.perform(
+                        MockMvcRequestBuilders.post("/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                .andReturn();
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(result.getResponse().getContentAsString()).contains("Password should be");
+        assertThat(result.getResponse().getContentAsString()).contains("password");
+    }
+
+    // etc etc
 }
