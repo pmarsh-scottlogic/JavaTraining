@@ -1,6 +1,5 @@
 package com.example.demo.matcher.models;
 
-import com.example.demo.matcher.validation.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -12,8 +11,7 @@ import javax.validation.constraints.Pattern;
 
 @ToString @AllArgsConstructor @Getter
 public class NewOrderParams {
-    @UUID(message = "Bad UUID format")
-    String account;
+    String username;
     @Min(value = Order.minPrice) @Max(value = Order.maxPrice)
     double price;
     @Min(value = Order.minQuantity) @Max(value = Order.maxQuantity)

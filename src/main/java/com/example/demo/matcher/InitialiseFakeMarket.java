@@ -12,7 +12,7 @@ public class InitialiseFakeMarket {
         Random rd = new Random();
         boolean bool = rd.nextBoolean();
         return new Order(
-                UUID.randomUUID(),
+                UUID.randomUUID().toString(), // These should be usernames, but usernames should be unique, so we're using uuids as usernames
                 BigDecimal.valueOf(Math.random()),
                 BigDecimal.valueOf(Math.random()),
                 bool ? OrderAction.BUY : OrderAction.SELL

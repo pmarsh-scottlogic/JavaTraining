@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter @ToString
 public class Order {
     private final UUID orderId;
-    private final UUID accountId;
+    private final String username;
     private final BigDecimal price;
     @Setter
     private BigDecimal quantity;
@@ -23,18 +23,18 @@ public class Order {
     public static final int minQuantity = 0;
     public static final int maxQuantity = 1000000000;
 
-    public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action) {
+    public Order(String username, BigDecimal price, BigDecimal quantity, OrderAction action) {
         this.orderId = UUID.randomUUID(); // use some sort of UUId generating library later for this
-        this.accountId = accountId;
+        this.username = username;
         this.price = price;
         this.quantity = quantity;
         this.action = action;
         this.datetime = Instant.now().toEpochMilli();
     }
 
-    public Order(UUID accountId, BigDecimal price, BigDecimal quantity, OrderAction action, Long datetime) {
+    public Order(String username, BigDecimal price, BigDecimal quantity, OrderAction action, Long datetime) {
         this.orderId = UUID.randomUUID();
-        this.accountId = accountId;
+        this.username = username;
         this.price = price;
         this.quantity = quantity;
         this.action = action;

@@ -9,25 +9,25 @@ import java.util.UUID;
 @Getter @ToString
 public class Trade implements Comparable<Trade> {
     private final UUID tradeId;
-    private final UUID accountIdBuyer;
+    private final String usernameBuyer;
     private final UUID orderIdBuy;
-    private final UUID accountIdSeller;
+    private final String usernameSeller;
     private final UUID orderIdSell;
     private final BigDecimal price;
     private final BigDecimal quantity;
     private final Long datetime;
 
-    public Trade(UUID accountIdBuyer,
+    public Trade(String usernameBuyer,
                  UUID orderIdBuy,
-                 UUID accountIdSeller,
+                 String usernameSeller,
                  UUID orderIdSell,
                  BigDecimal price,
                  BigDecimal quantity,
                  Long datetime) {
         this.tradeId = UUID.randomUUID();
-        this.accountIdBuyer = accountIdBuyer;
+        this.usernameBuyer = usernameBuyer;
         this.orderIdBuy = orderIdBuy;
-        this.accountIdSeller = accountIdSeller;
+        this.usernameSeller = usernameSeller;
         this.orderIdSell = orderIdSell;
         this.price = price;
         this.quantity = quantity;
