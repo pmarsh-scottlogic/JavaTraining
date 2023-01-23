@@ -56,7 +56,9 @@ public class MatcherController {
     }
 
     @GetMapping(value = "/private/orderbook/sell/{username}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String username) {
+    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        if (!getUsernameFromAuthHeader(authHeader).equals(username))
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         try {
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL, username));
         }
@@ -81,7 +83,9 @@ public class MatcherController {
     }
 
     @PostMapping(value="/private/make/order")
-    public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams) {
+    public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        if (!getUsernameFromAuthHeader(authHeader).equals(newOrderParams.getUsername()))
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         Order newOrder = new Order(
                 newOrderParams.getUsername(),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
