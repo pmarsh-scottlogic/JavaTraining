@@ -3,8 +3,10 @@ package com.example.demo.matcher;
 import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
+import com.example.demo.security.token.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +33,16 @@ public class MatcherController {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY));
     }
 
+    private static String getUsernameFromAuthHeader(String authHeader) {
+        String token = authHeader.split(" ")[1].trim();
+        return JwtTokenUtil.getSubject(token).split(",")[1];
+    }
+
     @GetMapping(value = "/private/orderbook/buy/{username}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String username) {
+    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
+            if (!getUsernameFromAuthHeader(authHeader).equals(username))
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY, username));
         }
         catch(Exception e) {
@@ -47,8 +56,10 @@ public class MatcherController {
     }
 
     @GetMapping(value = "/private/orderbook/sell/{username}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String username) {
+    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
+            if (!getUsernameFromAuthHeader(authHeader).equals(username))
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL, username));
         }
         catch(Exception e) {
@@ -72,7 +83,15 @@ public class MatcherController {
     }
 
     @PostMapping(value="/private/make/order")
-    public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams) {
+    public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        try{
+            if (!getUsernameFromAuthHeader(authHeader).equals(newOrderParams.getUsername()))
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Order newOrder = new Order(
                 newOrderParams.getUsername(),
                 BigDecimal.valueOf(newOrderParams.getPrice()),

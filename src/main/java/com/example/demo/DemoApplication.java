@@ -28,10 +28,10 @@ public class DemoApplication {
 			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 			userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-			userService.saveUser(new AppUser(null, "James Lewis", "James", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Dave Daveman", "DD", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Jimmy LaCroix", "Jim", "1234", new ArrayList<>()));
-			userService.saveUser(new AppUser(null, "Emerald Smelter", "Em", "1234", new ArrayList<>()));
+			userService.saveUser(new AppUser(null, "James Lewis", "James", "1GoodPassw0rd?", new ArrayList<>()));
+			userService.saveUser(new AppUser(null, "Dave Daveman", "DD", "1GoodPassw0rd?", new ArrayList<>()));
+			userService.saveUser(new AppUser(null, "Jimmy LaCroix", "Jim", "1GoodPassw0rd?", new ArrayList<>()));
+			userService.saveUser(new AppUser(null, "Emerald Smelter", "Em", "1GoodPassw0rd?", new ArrayList<>()));
 
 			userService.addRoleToUser("James", "ROLE_ADMIN");
 			userService.addRoleToUser("DD", "ROLE_USER");
