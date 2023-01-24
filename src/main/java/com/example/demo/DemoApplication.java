@@ -4,7 +4,7 @@ import com.example.demo.matcher.InitialiseFakeMarket;
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
-import com.example.demo.matcher.services.OrderRepoHandler;
+import com.example.demo.matcher.services.OrderService;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.userInfo.AppUser;
 import com.example.demo.security.userInfo.Role;
@@ -23,8 +23,8 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	@Bean// this bean runs a code block exactly once upon initialisation of the program
-	CommandLineRunner run (UserService userService, Matcher matcher, OrderRepoHandler orderRepoHandler) {
+	@Bean // this bean runs a code block exactly once upon initialisation of the program
+	CommandLineRunner run (UserService userService, Matcher matcher, OrderService orderService) {
 		return args -> {
 			userService.saveRole(new Role(null, "ROLE_USER"));
 			userService.saveRole(new Role(null, "ROLE_MANAGER"));
@@ -41,7 +41,7 @@ public class DemoApplication {
 			userService.addRoleToUser("Jim", "ROLE_USER");
 			userService.addRoleToUser("Em", "ROLE_MANAGER");
 
-			orderRepoHandler.saveOrder(new OrderObj("James", new BigDecimal(1), new BigDecimal(1), OrderAction.SELL));
+			orderService.add(new OrderObj("James", new BigDecimal(1), new BigDecimal(1), OrderAction.SELL));
 
 			InitialiseFakeMarket.fillMatcher(matcher);
 		};

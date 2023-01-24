@@ -3,6 +3,9 @@ package com.example.demo.matcher.services;
 import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
+import com.example.demo.matcher.repo.OrderRepo;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -10,23 +13,25 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
+@AllArgsConstructor
 public class OrderService {
-    private final List<OrderObj> orders;
-
-    public OrderService() {
-        orders = new ArrayList<>();
-    }
+    private final List<OrderObj> orders = new ArrayList<>();
+    private final OrderRepo orderRepo;
 
     public List<OrderObj> get() {
-        return orders;
+        log.info("Fetching all orders");
+        return orderRepo.findAll();
     }
 
-    public void add(OrderObj order) {
-        orders.add(order);
+    public OrderObj add(OrderObj order) {
+        log.info("Saving new order {} to the database", order.toString());
+        return orderRepo.save(order);
     }
 
     public void remove(OrderObj order) {
-        orders.remove(order);
+        log.info("Removing order {} from the database", order.toString());
+        orderRepo.delete(order);
     }
 
     public List<OrderbookItem> getOrderbook(OrderAction action, String username) {
