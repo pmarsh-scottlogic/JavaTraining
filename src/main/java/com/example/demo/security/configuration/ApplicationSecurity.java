@@ -57,7 +57,6 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
 
         // This exception handling code ensures that the server will return HTTP status 401 (Unauthorized)
         // if any error occurs during authentication process
-        // todo: this is not what I want. It is causing nonsense urls to return 401 unauthorised errors. Which is not useful
         http.exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, ex) ->
@@ -84,5 +83,4 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
         // AuthenticationManager has one method only: authenticate()
         return super.authenticationManagerBean();
     }
-
 }
