@@ -2,8 +2,6 @@ package com.example.demo;
 
 import com.example.demo.matcher.InitialiseFakeMarket;
 import com.example.demo.matcher.Matcher;
-import com.example.demo.matcher.models.OrderObj;
-import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.userInfo.AppUser;
@@ -13,7 +11,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @SpringBootApplication
@@ -24,8 +21,9 @@ public class DemoApplication {
 	}
 
 	@Bean // this bean runs a code block exactly once upon initialisation of the program
-	CommandLineRunner run (UserService userService, Matcher matcher, OrderService orderService) {
+	CommandLineRunner run (UserService userService, Matcher matcher, OrderService orderService, InitialiseFakeMarket initialiseFakeMarket) {
 		return args -> {
+
 			userService.saveRole(new Role(null, "ROLE_USER"));
 			userService.saveRole(new Role(null, "ROLE_MANAGER"));
 			userService.saveRole(new Role(null, "ROLE_ADMIN"));
@@ -41,9 +39,7 @@ public class DemoApplication {
 			userService.addRoleToUser("Jim", "ROLE_USER");
 			userService.addRoleToUser("Em", "ROLE_MANAGER");
 
-			orderService.add(new OrderObj("James", new BigDecimal(1), new BigDecimal(1), OrderAction.SELL));
-
-			InitialiseFakeMarket.fillMatcher(matcher);
+			initialiseFakeMarket.fillMatcher(matcher);
 		};
 	}
 }
