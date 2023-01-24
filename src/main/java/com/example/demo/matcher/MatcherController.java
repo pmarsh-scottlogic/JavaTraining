@@ -3,6 +3,7 @@ package com.example.demo.matcher;
 import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
+import com.example.demo.security.service.UserService;
 import com.example.demo.security.token.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class MatcherController {
     private final OrderService orderService;
     @Autowired
     private final TradeService tradeService;
+
+    @Autowired
+    private final UserService userService;
 
     @GetMapping(value = "/public/orderbook/buy")
     public ResponseEntity<List<OrderbookItem>> orderbook_buy() {
@@ -92,7 +96,7 @@ public class MatcherController {
         }
 
         OrderObj newOrder = new OrderObj(
-                newOrderParams.getUsername(),
+                userService.getUser(newOrderParams.getUsername()),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
                 BigDecimal.valueOf(newOrderParams.getQuantity()),
                 newOrderParams.getAction().equals("buy") ? OrderAction.BUY : OrderAction.SELL
@@ -104,7 +108,7 @@ public class MatcherController {
                 orderService.getOrderbook(OrderAction.BUY),
                 orderService.getOrderbook(OrderAction.SELL),
                 orderService.getOrderbook(OrderAction.BUY, newOrderParams.getUsername()),
-                orderService.getOrderbook(OrderAction.SELL, newOrder.getUsername()),
+                orderService.getOrderbook(OrderAction.SELL, newOrder.getUser().getUsername()),
                 tradeService.getRecent(),
                 orderService.getOrderDepth(OrderAction.BUY),
                 orderService.getOrderDepth(OrderAction.SELL)

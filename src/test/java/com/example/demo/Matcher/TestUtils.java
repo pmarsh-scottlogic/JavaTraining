@@ -4,6 +4,7 @@ import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 import com.example.demo.matcher.models.Trade;
+import com.example.demo.security.userInfo.AppUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
@@ -13,18 +14,24 @@ import java.util.UUID;
 public class TestUtils {
     public static OrderObj makeOrder(float price, float quantity, String strAction) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new OrderObj(UUID.randomUUID().toString(), // unique username
+        AppUser user = new AppUser();
+        user.setUsername(UUID.randomUUID().toString());// unique username
+        return new OrderObj(user,
                 new BigDecimal(price), new BigDecimal(quantity), action);
     }
 
     public static OrderObj makeOrder(String username, float price, float quantity, String strAction) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new OrderObj(username, new BigDecimal(price), new BigDecimal(quantity), action);
+        AppUser user = new AppUser();
+        user.setUsername(username);
+        return new OrderObj(user, new BigDecimal(price), new BigDecimal(quantity), action);
     }
 
     public static OrderObj makeOrder(float price, float quantity, String strAction, int datetimeRank) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        return new OrderObj(UUID.randomUUID().toString(), // unique username
+        AppUser user = new AppUser();
+        user.setUsername(UUID.randomUUID().toString());// unique username // unique username
+        return new OrderObj(user,
                 new BigDecimal(price),
                 new BigDecimal(quantity),
                 action,

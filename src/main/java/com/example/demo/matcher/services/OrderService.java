@@ -37,7 +37,7 @@ public class OrderService {
     public List<OrderbookItem> getOrderbook(OrderAction action, String username) {
         // filter the order list by action
         List<OrderObj> filtered = this.get().stream()
-                .filter(order -> order.getAction() == action && order.getUsername().equals(username))
+                .filter(order -> order.getAction() == action && order.getUser().getUsername().equals(username))
                 .collect(Collectors.toList());
         return makeOrderbook(filtered, action);
     }

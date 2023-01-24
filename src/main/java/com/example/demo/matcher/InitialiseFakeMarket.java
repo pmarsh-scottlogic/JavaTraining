@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -16,12 +17,12 @@ import java.util.stream.Collectors;
 public class InitialiseFakeMarket {
     @Autowired
     private UserService userService;
-    private ArrayList<String> usernames = new ArrayList<>();
+    private List<AppUser> users = new ArrayList<>();
     public OrderObj fakeOrder() {
         Random rd = new Random();
         boolean bool = rd.nextBoolean();
         return new OrderObj(
-                usernames.get((int) Math.floor(Math.random() * usernames.size())),
+                users.get((int) Math.floor(Math.random() * users.size())),
                 BigDecimal.valueOf(Math.random()),
                 BigDecimal.valueOf(Math.random()),
                 bool ? OrderAction.BUY : OrderAction.SELL
@@ -29,14 +30,14 @@ public class InitialiseFakeMarket {
     }
 
     public void fillMatcher(Matcher matcher) {
-        getUsernames();
+        getUsers();
         int n = 1000;
         for (int i = 0 ; i < n; i++) {
             matcher.match(fakeOrder());
         }
     }
 
-    public void getUsernames() {
-        usernames = new ArrayList<>(userService.getUsers().stream().map(AppUser::getUsername).collect(Collectors.toList()));
+    public void getUsers() {
+        users = userService.getUsers();
     }
 }
