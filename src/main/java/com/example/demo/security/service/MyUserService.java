@@ -82,6 +82,4 @@ public class MyUserService implements UserService, UserDetailsService {
         log.info("Fetching all users");
         return userRepo.findAll();
     }
-
-
 }
