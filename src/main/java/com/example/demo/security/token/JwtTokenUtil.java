@@ -55,6 +55,8 @@ public class JwtTokenUtil {
             log.error("Claim to be verified is missing", ex);
         } catch (IncorrectClaimException ex) {
             log.error("Incorrect claim");
+        } catch (Exception ex) {
+            log.error("There is a problem with the JWT");
         }
         return false;
     }

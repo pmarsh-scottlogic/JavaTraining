@@ -45,7 +45,6 @@ public class LoginValidationTest {
     @MockBean
     private Matcher matcher;
 
-
     @BeforeEach
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();

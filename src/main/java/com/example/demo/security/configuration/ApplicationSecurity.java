@@ -52,18 +52,17 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
 
         // authorises any request via /auth/login to enter without authentication
         http.authorizeRequests()
-                .antMatchers("/auth/login", "/h2-console/**", "/public/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/private/**").authenticated()
+                .anyRequest().permitAll();
 
         // This exception handling code ensures that the server will return HTTP status 401 (Unauthorized)
         // if any error occurs during authentication process
-        // todo: this is not what I want. It is causing nonsense urls to return 401 unauthorised errors. Which is not useful
         http.exceptionHandling()
                 .authenticationEntryPoint(
-                        (request, response, ex) -> response.sendError(
+                        (request, response, ex) ->
+                            response.sendError(
                                 HttpServletResponse.SC_UNAUTHORIZED,
-                                ex.getMessage()
-                        )
+                                ex.getMessage())
                 );
 
         // We add our custom filter before the UsernameAndPasswordAuthenticationFilter in Spring Security filters chain.
@@ -84,5 +83,4 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
         // AuthenticationManager has one method only: authenticate()
         return super.authenticationManagerBean();
     }
-
 }
