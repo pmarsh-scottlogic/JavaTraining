@@ -1,6 +1,6 @@
 package com.example.demo.matcher;
 
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.Trade;
 import com.example.demo.matcher.services.OrderService;
@@ -21,15 +21,15 @@ public class Matcher {
     @Autowired private final OrderService orderService;
     @Autowired private final TradeService tradeService;
 
-    public void match(Order newOrder) {
-        Order matchedOrder;
+    public void match(OrderObj newOrder) {
+        OrderObj matchedOrder;
 
         do {
             matchedOrder = getMatchingOrder(newOrder);
             if (matchedOrder == null) break;
 
-            Order buyOrder = newOrder.getAction() == OrderAction.BUY? newOrder : matchedOrder;
-            Order sellOrder = newOrder.getAction() == OrderAction.SELL? newOrder : matchedOrder;
+            OrderObj buyOrder = newOrder.getAction() == OrderAction.BUY? newOrder : matchedOrder;
+            OrderObj sellOrder = newOrder.getAction() == OrderAction.SELL? newOrder : matchedOrder;
 
             BigDecimal tradePrice = matchedOrder.getPrice();
             BigDecimal tradeQuantity = newOrder.getQuantity().min(matchedOrder.getQuantity());
@@ -53,11 +53,11 @@ public class Matcher {
         if (newOrder.getQuantity().compareTo(BigDecimal.ZERO) > 0) orderService.add(newOrder);
     }
 
-    private Order getMatchingOrder(Order newOrder) {
+    private OrderObj getMatchingOrder(OrderObj newOrder) {
         // match the new order to the best order of opposite action (sorted by price and then time)
 
         // get all orders
-        List<Order> eligibleOrders = new ArrayList<>(orderService.get());
+        List<OrderObj> eligibleOrders = new ArrayList<>(orderService.get());
 
         // filter incompatible actions and accounts
         eligibleOrders = eligibleOrders.stream()

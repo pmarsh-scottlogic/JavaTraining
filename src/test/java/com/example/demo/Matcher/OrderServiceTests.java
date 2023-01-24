@@ -3,7 +3,7 @@ package com.example.demo.Matcher;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 import com.example.demo.matcher.services.OrderService;
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,8 +26,8 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldAddOrders() {
-        Order order1 = TestUtils.makeOrder(1, 1, "b");
-        Order order2 = TestUtils.makeOrder(1, 1, "s");
+        OrderObj order1 = TestUtils.makeOrder(1, 1, "b");
+        OrderObj order2 = TestUtils.makeOrder(1, 1, "s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -37,9 +37,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldRemoveOrders() {
-        Order order1 = TestUtils.makeOrder(1, 1, "b");
-        Order order2 = TestUtils.makeOrder(1, 1 ,"s");
-        Order order3 = TestUtils.makeOrder(1, 1 ,"s");
+        OrderObj order1 = TestUtils.makeOrder(1, 1, "b");
+        OrderObj order2 = TestUtils.makeOrder(1, 1 ,"s");
+        OrderObj order3 = TestUtils.makeOrder(1, 1 ,"s");
 
         orderService.add(order1);
         orderService.add(order2);
@@ -55,10 +55,10 @@ public class OrderServiceTests {
         assertThat(orderService.get()).isEqualTo(List.of());
     }
 
-    public static List<Order> testOrderSet1(String primaryAction) {
+    public static List<OrderObj> testOrderSet1(String primaryAction) {
         String secondaryAction = primaryAction.equals("b") ? "s" : "b";
 
-        List<Order> testOrders = new ArrayList<>();
+        List<OrderObj> testOrders = new ArrayList<>();
 
         testOrders.add(TestUtils.makeOrder("account1", 20, 9, primaryAction));
         testOrders.add(TestUtils.makeOrder("account1", 10, 7, primaryAction));
@@ -141,8 +141,8 @@ public class OrderServiceTests {
                 .isEqualTo(expected);
     }
 
-    public static List<Order> testOrderSet2() {
-        List<Order> testOrders = new ArrayList<>();
+    public static List<OrderObj> testOrderSet2() {
+        List<OrderObj> testOrders = new ArrayList<>();
 
         testOrders.add(TestUtils.makeOrder(3, 10, "b"));
         testOrders.add(TestUtils.makeOrder(4, 10, "b"));
@@ -152,8 +152,8 @@ public class OrderServiceTests {
         return testOrders;
     }
 
-    public static List<Order> testOrderSet3() {
-        List<Order> testOrders = new ArrayList<>();
+    public static List<OrderObj> testOrderSet3() {
+        List<OrderObj> testOrders = new ArrayList<>();
 
         testOrders.add(TestUtils.makeOrder(3, 10, "b", 4));
         testOrders.add(TestUtils.makeOrder(1, 10, "b", 2));
@@ -165,9 +165,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPrice() {
-        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
+        ArrayList<OrderObj> unsorted = new ArrayList<>(testOrderSet2());
 
-        ArrayList<Order> expected = new ArrayList<>(
+        ArrayList<OrderObj> expected = new ArrayList<>(
                 Arrays.asList(
                         unsorted.get(3),
                         unsorted.get(2),
@@ -181,11 +181,11 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersAscendingByPriceThenDatetime() {
-        ArrayList<Order> unsorted = new ArrayList<>(
+        ArrayList<OrderObj> unsorted = new ArrayList<>(
                 testOrderSet3()
         );
 
-        ArrayList<Order> expected = new ArrayList<>(
+        ArrayList<OrderObj> expected = new ArrayList<>(
                 Arrays.asList(
                         unsorted.get(3),
                         unsorted.get(1),
@@ -200,9 +200,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPrice() {
-        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet2());
+        ArrayList<OrderObj> unsorted = new ArrayList<>(testOrderSet2());
 
-        ArrayList<Order> expected = new ArrayList<>(
+        ArrayList<OrderObj> expected = new ArrayList<>(
                 Arrays.asList(unsorted.get(1),
                         unsorted.get(0),
                         unsorted.get(2),
@@ -216,9 +216,9 @@ public class OrderServiceTests {
 
     @Test
     void ItShouldSortOrdersDescendingByPriceThenAscendingByDatetime() {
-        ArrayList<Order> unsorted = new ArrayList<>(testOrderSet3());
+        ArrayList<OrderObj> unsorted = new ArrayList<>(testOrderSet3());
 
-        ArrayList<Order> expected = new ArrayList<>(
+        ArrayList<OrderObj> expected = new ArrayList<>(
                 Arrays.asList(
                         unsorted.get(0),
                         unsorted.get(3),

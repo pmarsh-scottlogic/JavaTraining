@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "")
@@ -92,7 +91,7 @@ public class MatcherController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Order newOrder = new Order(
+        OrderObj newOrder = new OrderObj(
                 newOrderParams.getUsername(),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
                 BigDecimal.valueOf(newOrderParams.getQuantity()),

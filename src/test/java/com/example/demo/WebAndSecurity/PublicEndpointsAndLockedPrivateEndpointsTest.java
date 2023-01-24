@@ -154,7 +154,7 @@ public class PublicEndpointsAndLockedPrivateEndpointsTest {
 
     @Test
     void itShouldNotAllowCreationOfOrdersWithoutAnyJWT() throws Exception {
-        Order newOrder = TestUtils.makeOrder(1 ,1, "b");
+        OrderObj newOrder = TestUtils.makeOrder(1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
                 newOrder.getUsername(),
@@ -195,7 +195,7 @@ public class PublicEndpointsAndLockedPrivateEndpointsTest {
 
     @Test
     void itShouldNotAllowCreationOfOrdersWithoutValidJWT() throws Exception {
-        Order newOrder = TestUtils.makeOrder(1 ,1, "b");
+        OrderObj newOrder = TestUtils.makeOrder(1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
                 newOrder.getUsername(),

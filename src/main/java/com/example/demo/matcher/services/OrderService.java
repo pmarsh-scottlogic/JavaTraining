@@ -1,9 +1,8 @@
 package com.example.demo.matcher.services;
 
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
-import com.example.demo.security.repo.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,27 +11,27 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final List<Order> orders;
+    private final List<OrderObj> orders;
 
     public OrderService() {
         orders = new ArrayList<>();
     }
 
-    public List<Order> get() {
+    public List<OrderObj> get() {
         return orders;
     }
 
-    public void add(Order order) {
+    public void add(OrderObj order) {
         orders.add(order);
     }
 
-    public void remove(Order order) {
+    public void remove(OrderObj order) {
         orders.remove(order);
     }
 
     public List<OrderbookItem> getOrderbook(OrderAction action, String username) {
         // filter the order list by action
-        List<Order> filtered = this.get().stream()
+        List<OrderObj> filtered = this.get().stream()
                 .filter(order -> order.getAction() == action && order.getUsername().equals(username))
                 .collect(Collectors.toList());
         return makeOrderbook(filtered, action);
@@ -40,13 +39,13 @@ public class OrderService {
 
     public List<OrderbookItem> getOrderbook(OrderAction action) {
         // filter the order list by action
-        List<Order> filtered = this.get().stream()
+        List<OrderObj> filtered = this.get().stream()
                 .filter(order -> order.getAction() == action)
                 .collect(Collectors.toList());
         return makeOrderbook(filtered, action);
     }
 
-    private static List<OrderbookItem> makeOrderbook(List<Order> orderList, OrderAction action) {
+    private static List<OrderbookItem> makeOrderbook(List<OrderObj> orderList, OrderAction action) {
         // aggregate orders
         List<OrderbookItem> orderbook = aggregateOrders(orderList);
 
@@ -57,10 +56,10 @@ public class OrderService {
         return orderbook;
     }
 
-    private static List<OrderbookItem> aggregateOrders(List<Order> orderList) {
+    private static List<OrderbookItem> aggregateOrders(List<OrderObj> orderList) {
         // aggregate orders using hashmap
         Map<BigDecimal, BigDecimal> aggregated = new HashMap<>();
-        for (Order order : orderList) {
+        for (OrderObj order : orderList) {
             aggregated.merge(order.getPrice(), order.getQuantity(), BigDecimal::add);
         }
 
@@ -83,8 +82,8 @@ public class OrderService {
         return orderDepth;
     }
 
-    public static List<Order> sortAsc(List<Order> orders) {
-        List<Order> sorted = new ArrayList<>(orders);
+    public static List<OrderObj> sortAsc(List<OrderObj> orders) {
+        List<OrderObj> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
             int priceComp = order1.getPrice().subtract(order2.getPrice()).signum();
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
@@ -94,8 +93,8 @@ public class OrderService {
         return sorted;
     }
 
-    public static List<Order> sortDesc(List<Order> orders) {
-        List<Order> sorted = new ArrayList<>(orders);
+    public static List<OrderObj> sortDesc(List<OrderObj> orders) {
+        List<OrderObj> sorted = new ArrayList<>(orders);
         sorted.sort((order1, order2) -> {
             int priceComp = order2.getPrice().subtract(order1.getPrice()).signum();
             int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());

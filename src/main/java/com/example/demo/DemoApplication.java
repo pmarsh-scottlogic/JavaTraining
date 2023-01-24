@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.matcher.InitialiseFakeMarket;
 import com.example.demo.matcher.Matcher;
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.services.OrderRepoHandler;
 import com.example.demo.security.service.UserService;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.UUID;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -42,7 +41,7 @@ public class DemoApplication {
 			userService.addRoleToUser("Jim", "ROLE_USER");
 			userService.addRoleToUser("Em", "ROLE_MANAGER");
 
-			orderRepoHandler.saveOrder(new Order("James", new BigDecimal(1), new BigDecimal(1), OrderAction.SELL));
+			orderRepoHandler.saveOrder(new OrderObj("James", new BigDecimal(1), new BigDecimal(1), OrderAction.SELL));
 
 			InitialiseFakeMarket.fillMatcher(matcher);
 		};

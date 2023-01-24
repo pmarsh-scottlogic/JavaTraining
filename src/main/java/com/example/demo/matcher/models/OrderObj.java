@@ -6,16 +6,14 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter @ToString @Entity
-public class Order {
+public class OrderObj {
     @Id
     private final Long orderId;
 
-    @ManyToOne
     private final String username;
     private final BigDecimal price;
     @Setter
@@ -28,7 +26,7 @@ public class Order {
     public static final int minQuantity = 0;
     public static final int maxQuantity = 1000000000;
 
-    public Order(String username, BigDecimal price, BigDecimal quantity, OrderAction action) {
+    public OrderObj(String username, BigDecimal price, BigDecimal quantity, OrderAction action) {
         this.orderId = null; // use some sort of UUId generating library later for this
         this.username = username;
         this.price = price;
@@ -37,7 +35,7 @@ public class Order {
         this.datetime = Instant.now().toEpochMilli();
     }
 
-    public Order(String username, BigDecimal price, BigDecimal quantity, OrderAction action, Long datetime) {
+    public OrderObj(String username, BigDecimal price, BigDecimal quantity, OrderAction action, Long datetime) {
         this.orderId = null;
         this.username = username;
         this.price = price;

@@ -1,7 +1,7 @@
 package com.example.demo.Matcher;
 
 import com.example.demo.matcher.Matcher;
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.Trade;
 import com.example.demo.matcher.services.OrderService;
@@ -32,14 +32,14 @@ public class MatcherTests {
 
     @Test
     void ItShouldAddAnOrderIfThereAreNoExistingOrders() {
-        Order newOrder = TestUtils.makeOrder(1, 1, "b");
+        OrderObj newOrder = TestUtils.makeOrder(1, 1, "b");
         matcher.match(newOrder);
         Mockito.verify(orderService).add(newOrder);
     }
 
     @Test
     void ItShouldAddAnOrderIfThereAreNoEligibleOrders() {
-        Order newOrder = TestUtils.makeOrder("account1", 5, 10, "s");
+        OrderObj newOrder = TestUtils.makeOrder("account1", 5, 10, "s");
 
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(
                 Arrays.asList(
@@ -56,11 +56,11 @@ public class MatcherTests {
     @Test
     void ItShouldMatchABasicSellOrder() {
         // setup mock returns
-        Order existingOrder = TestUtils.makeOrder(4, 10, "b");
+        OrderObj existingOrder = TestUtils.makeOrder(4, 10, "b");
         Mockito.when(orderService.get()).thenReturn(new ArrayList<>(List.of(existingOrder)));
 
         // run match
-        Order newOrder = TestUtils.makeOrder(4, 10, "s");
+        OrderObj newOrder = TestUtils.makeOrder(4, 10, "s");
         matcher.match(newOrder);
 
         // capture the created trade object
@@ -79,13 +79,13 @@ public class MatcherTests {
     @Test
     void ItShouldAddToTheOrderbookWhenThereIsExcessQuantity() {
         // setup mock returns
-        Order existingOrder = TestUtils.makeOrder(4, 10, "b");
+        OrderObj existingOrder = TestUtils.makeOrder(4, 10, "b");
         Mockito.when(orderService.get())
                 .thenReturn(new ArrayList<>(List.of(existingOrder)))
                 .thenReturn(new ArrayList<>(List.of()));
 
         // run match
-        Order newOrder = TestUtils.makeOrder(4, 12, "s");
+        OrderObj newOrder = TestUtils.makeOrder(4, 12, "s");
         matcher.match(newOrder);
 
         // capture the created trade object
@@ -101,7 +101,7 @@ public class MatcherTests {
         assertThat(createdTrade.getValue().getOrderIdSell()).isEqualTo(newOrder.getOrderId());
 
         // capture the created order object
-        ArgumentCaptor<Order> createdOrder = ArgumentCaptor.forClass(Order.class);
+        ArgumentCaptor<OrderObj> createdOrder = ArgumentCaptor.forClass(OrderObj.class);
         Mockito.verify(orderService).add(createdOrder.capture());
 
         // check properties of created order object that was added to orderService
@@ -116,13 +116,13 @@ public class MatcherTests {
     @Test
     void ItShouldUpdateTheQuantityOfMatchedExistingOrderWhenThereIsExcess() {
         // setup mock returns
-        Order existingOrder = TestUtils.makeOrder(4, 10 ,"b");
+        OrderObj existingOrder = TestUtils.makeOrder(4, 10 ,"b");
         Mockito.when(orderService.get())
                 .thenReturn(new ArrayList<>(List.of(existingOrder)))
                 .thenReturn(new ArrayList<>(List.of()));
 
         // run match
-        Order newOrder = TestUtils.makeOrder(4, 8, "s");
+        OrderObj newOrder = TestUtils.makeOrder(4, 8, "s");
         matcher.match(newOrder);
 
         // capture the created trade object

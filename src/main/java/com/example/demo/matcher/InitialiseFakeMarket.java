@@ -1,6 +1,6 @@
 package com.example.demo.matcher;
 
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 
 import java.math.BigDecimal;
@@ -8,10 +8,10 @@ import java.util.Random;
 import java.util.UUID;
 
 public class InitialiseFakeMarket {
-    public static Order fakeOrder() {
+    public static OrderObj fakeOrder() {
         Random rd = new Random();
         boolean bool = rd.nextBoolean();
-        return new Order(
+        return new OrderObj(
                 UUID.randomUUID().toString(), // These should be usernames, but usernames should be unique, so we're using uuids as usernames
                 BigDecimal.valueOf(Math.random()),
                 BigDecimal.valueOf(Math.random()),

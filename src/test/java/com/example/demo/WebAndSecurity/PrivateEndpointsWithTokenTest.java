@@ -3,7 +3,7 @@ package com.example.demo.WebAndSecurity;
 import com.example.demo.Matcher.TestUtils;
 import com.example.demo.matcher.Matcher;
 import com.example.demo.matcher.models.*;
-import com.example.demo.matcher.models.Order;
+import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.service.UserService;
@@ -143,7 +143,7 @@ public class PrivateEndpointsWithTokenTest {
         //placeholder
         String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
 
-        Order newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
+        OrderObj newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
                 newOrder.getUsername(),
