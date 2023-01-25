@@ -4,6 +4,8 @@ import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 import com.example.demo.matcher.repo.OrderRepo;
+import com.example.demo.security.repo.UserRepo;
+import com.example.demo.security.userInfo.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final List<OrderObj> orders = new ArrayList<>();
     private final OrderRepo orderRepo;
+    private  final UserRepo userRepo;
 
     public List<OrderObj> get() {
         log.info("Fetching all orders");
@@ -35,19 +38,11 @@ public class OrderService {
     }
 
     public List<OrderbookItem> getOrderbook(OrderAction action, String username) {
-        // filter the order list by action
-        List<OrderObj> filtered = this.get().stream()
-                .filter(order -> order.getAction() == action && order.getUser().getUsername().equals(username))
-                .collect(Collectors.toList());
-        return makeOrderbook(filtered, action);
+        return makeOrderbook(orderRepo.findByUsernameAndAction(username, action.ordinal()), action);
     }
 
     public List<OrderbookItem> getOrderbook(OrderAction action) {
-        // filter the order list by action
-        List<OrderObj> filtered = this.get().stream()
-                .filter(order -> order.getAction() == action)
-                .collect(Collectors.toList());
-        return makeOrderbook(filtered, action);
+        return makeOrderbook(orderRepo.findByAction(action), action);
     }
 
     private static List<OrderbookItem> makeOrderbook(List<OrderObj> orderList, OrderAction action) {

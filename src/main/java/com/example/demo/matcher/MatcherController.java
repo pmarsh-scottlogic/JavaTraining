@@ -6,6 +6,7 @@ import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.token.JwtTokenUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "")
 @AllArgsConstructor
@@ -49,6 +51,7 @@ public class MatcherController {
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY, username));
         }
         catch(Exception e) {
+            log.error(e.toString());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
