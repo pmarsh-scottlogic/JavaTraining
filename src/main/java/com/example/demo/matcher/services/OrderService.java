@@ -5,14 +5,12 @@ import com.example.demo.matcher.models.OrderAction;
 import com.example.demo.matcher.models.OrderbookItem;
 import com.example.demo.matcher.repo.OrderRepo;
 import com.example.demo.security.repo.UserRepo;
-import com.example.demo.security.userInfo.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
