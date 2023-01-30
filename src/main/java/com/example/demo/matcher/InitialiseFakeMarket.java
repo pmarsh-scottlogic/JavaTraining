@@ -11,13 +11,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Component
 public class InitialiseFakeMarket {
     @Autowired
     private UserService userService;
     private List<AppUser> users = new ArrayList<>();
+    private static final  int NUM_OF_ORDERS_TO_MATCH = 1000;
+
     public OrderObj fakeOrder() {
         Random rd = new Random();
         boolean bool = rd.nextBoolean();
@@ -31,8 +32,7 @@ public class InitialiseFakeMarket {
 
     public void fillMatcher(Matcher matcher) {
         getUsers();
-        int n = 1000;
-        for (int i = 0 ; i < n; i++) {
+        for (int i = 0 ; i < NUM_OF_ORDERS_TO_MATCH; i++) {
             matcher.match(fakeOrder());
         }
     }
