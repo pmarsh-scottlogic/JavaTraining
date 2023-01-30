@@ -10,17 +10,17 @@ import java.util.UUID;
 public class Trade implements Comparable<Trade> {
     private final UUID tradeId;
     private final String usernameBuyer;
-    private final UUID orderIdBuy;
+    private final Long orderIdBuy;
     private final String usernameSeller;
-    private final UUID orderIdSell;
+    private final Long orderIdSell;
     private final BigDecimal price;
     private final BigDecimal quantity;
     private final Long datetime;
 
     public Trade(String usernameBuyer,
-                 UUID orderIdBuy,
+                 Long orderIdBuy,
                  String usernameSeller,
-                 UUID orderIdSell,
+                 Long orderIdSell,
                  BigDecimal price,
                  BigDecimal quantity,
                  Long datetime) {

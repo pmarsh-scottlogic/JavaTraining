@@ -2,15 +2,11 @@ package com.example.demo.WebAndSecurity;
 
 import com.example.demo.Matcher.TestUtils;
 import com.example.demo.matcher.Matcher;
-import com.example.demo.matcher.models.*;
-import com.example.demo.matcher.models.Order;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.authInfo.AuthRequest;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.userInfo.AppUser;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;

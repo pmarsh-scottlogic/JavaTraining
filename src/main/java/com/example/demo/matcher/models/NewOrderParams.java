@@ -12,9 +12,9 @@ import javax.validation.constraints.Pattern;
 @ToString @AllArgsConstructor @Getter
 public class NewOrderParams {
     String username;
-    @Min(value = Order.minPrice) @Max(value = Order.maxPrice)
+    @Min(value = OrderObj.minPrice) @Max(value = OrderObj.maxPrice)
     double price;
-    @Min(value = Order.minQuantity) @Max(value = Order.maxQuantity)
+    @Min(value = OrderObj.minQuantity) @Max(value = OrderObj.maxQuantity)
     double quantity;
     @NotEmpty @Pattern(regexp = "^buy|sell$", message = "should be buy or sell")
     String action;

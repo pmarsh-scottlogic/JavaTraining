@@ -3,8 +3,10 @@ package com.example.demo.matcher;
 import com.example.demo.matcher.models.*;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
+import com.example.demo.security.service.UserService;
 import com.example.demo.security.token.JwtTokenUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "")
 @AllArgsConstructor
@@ -27,6 +29,9 @@ public class MatcherController {
     private final OrderService orderService;
     @Autowired
     private final TradeService tradeService;
+
+    @Autowired
+    private final UserService userService;
 
     @GetMapping(value = "/public/orderbook/buy")
     public ResponseEntity<List<OrderbookItem>> orderbook_buy() {
@@ -46,6 +51,7 @@ public class MatcherController {
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY, username));
         }
         catch(Exception e) {
+            log.error(e.toString());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -92,8 +98,8 @@ public class MatcherController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Order newOrder = new Order(
-                newOrderParams.getUsername(),
+        OrderObj newOrder = new OrderObj(
+                userService.getUser(newOrderParams.getUsername()),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
                 BigDecimal.valueOf(newOrderParams.getQuantity()),
                 newOrderParams.getAction().equals("buy") ? OrderAction.BUY : OrderAction.SELL
@@ -105,7 +111,7 @@ public class MatcherController {
                 orderService.getOrderbook(OrderAction.BUY),
                 orderService.getOrderbook(OrderAction.SELL),
                 orderService.getOrderbook(OrderAction.BUY, newOrderParams.getUsername()),
-                orderService.getOrderbook(OrderAction.SELL, newOrder.getUsername()),
+                orderService.getOrderbook(OrderAction.SELL, newOrder.getUser().getUsername()),
                 tradeService.getRecent(),
                 orderService.getOrderDepth(OrderAction.BUY),
                 orderService.getOrderDepth(OrderAction.SELL)
