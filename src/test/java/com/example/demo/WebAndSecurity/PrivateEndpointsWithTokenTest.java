@@ -146,7 +146,7 @@ public class PrivateEndpointsWithTokenTest {
         OrderObj newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                newOrder.getUsername(),
+                newOrder.getUser().getUsername(),
                 newOrder.getPrice().doubleValue(),
                 newOrder.getQuantity().doubleValue(),
                 "buy"

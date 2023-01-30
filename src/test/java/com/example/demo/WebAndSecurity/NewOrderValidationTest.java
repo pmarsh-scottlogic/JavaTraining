@@ -6,13 +6,16 @@ import com.example.demo.matcher.models.NewOrderParams;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.service.UserService;
+import com.example.demo.security.token.JwtTokenUtil;
 import com.example.demo.security.userInfo.AppUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 // ideally we'd not run the whole app, and only have the matchercontroller, without even the security layer.
@@ -49,28 +53,26 @@ public class NewOrderValidationTest {
     @MockBean
     private Matcher matcher;
 
-    private AppUser testUser1;
+    @MockBean
+    private JwtTokenUtil jwtTokenUtil;
+    
+    private static final String FAKE_JWT = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1LEphbWVzIiwiaXNzIjoiTWF0Y2hlcl9CYWNrZW5kIiwiZXhwIjoxNjc1MDc3MzcwfQ.ZDaSHkgobhAYaTwRDcurPY3VS-lhvM4V5Ya7oPHcOi0";
 
     @BeforeEach
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
-
-        testUser1 = new AppUser(null, "testName1", "testUsername1", "testPassword1", new ArrayList<>());
-
-        userService.saveUser(testUser1);
     }
     @Test
     void ItShouldCheckNewOrderPriceIsNotTooSmall() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                testUser1.getUsername(), -1, 1, "buy"
+                "fakeUsername", -1, 1, "buy"
         );
 
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -82,16 +84,15 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderPriceIsNotTooLarge() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                testUser1.getUsername(), 1000000001, 1, "buy"
+                "fakeUsername", 1000000001, 1, "buy"
         );
 
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header("Authorization", "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -103,16 +104,15 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderQuantityIsNotTooSmall() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                testUser1.getUsername(), 1, -1, "buy"
+                "fakeUsername", 1, -1, "buy"
         );
 
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header("Authorization", "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -124,16 +124,15 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderQuantityIsNotTooLarge() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                testUser1.getUsername(), 1, 1000000001, "buy"
+                "fakeUsername", 1, 1000000001, "buy"
         );
 
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header("Authorization", "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -145,16 +144,15 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderActionIsBuyOrSell() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                testUser1.getUsername(), 1, 1, "badAction"
+                "fakeUsername", 1, 1, "badAction"
         );
 
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header("Authorization", "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
