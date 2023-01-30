@@ -7,9 +7,11 @@ import com.example.demo.matcher.models.OrderObj;
 import com.example.demo.matcher.services.OrderService;
 import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.service.UserService;
+import com.example.demo.security.token.JwtTokenUtil;
 import com.example.demo.security.userInfo.AppUser;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -54,6 +56,11 @@ public class PrivateEndpointsWithTokenTest {
     @MockBean
     private Matcher matcher;
 
+    @MockBean
+    private JwtTokenUtil jwtTokenUtil;
+
+    private static final String FAKE_JWT = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1LEphbWVzIiwiaXNzIjoiTWF0Y2hlcl9CYWNrZW5kIiwiZXhwIjoxNjc1MDc3MzcwfQ.ZDaSHkgobhAYaTwRDcurPY3VS-lhvM4V5Ya7oPHcOi0";
+
     private AppUser testUser1;
     private AppUser testUser2;
 
@@ -78,14 +85,16 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldAllowAccessToPrivateBuyOrdersWithValidJWT() throws Exception {
-        // placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
 
+        // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUser1.getUsername());
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.get("/private/orderbook/buy/" + testUser1.getUsername())
-                                .header("Authorization", validJWT))
+                                .header("Authorization", "Bearer: " + FAKE_JWT))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -94,14 +103,16 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldAllowAccessToPrivateSellOrdersWithValidJWT() throws Exception {
-        // placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
 
+        // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.SELL, testUser1.getUsername());
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.get("/private/orderbook/sell/" + testUser1.getUsername())
-                                .header("Authorization", validJWT))
+                                .header("Authorization", "Bearer: " + FAKE_JWT))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(testOrderbook1()));
@@ -110,14 +121,16 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldNotAllowAccessToPrivateBuyOrdersWithValidJWTButWrongAccount() throws Exception {
-        // placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
 
+        // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUser2.getUsername());
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.get("/private/orderbook/buy/" + testUser2.getUsername())
-                                .header("Authorization", validJWT))
+                                .header("Authorization", "Bearer: " + FAKE_JWT))
                 .andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -125,14 +138,16 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldNotAllowAccessToPrivateSellOrdersWithValidJWTButWrongAccount() throws Exception {
-        // placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
 
+        // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUser2.getUsername());
 
         MvcResult result = mvc.perform(
-                        MockMvcRequestBuilders.get("/private/orderbook/sell/" + testUser1.getUsername())
-                                .header("Authorization", validJWT))
+                        MockMvcRequestBuilders.get("/private/orderbook/sell/" + testUser2.getUsername())
+                                .header("Authorization", "Bearer: " + FAKE_JWT))
                 .andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -140,8 +155,9 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     void ItShouldAllowCreatingAnOrderWithValidJWT() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
 
         OrderObj newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
 
@@ -162,9 +178,10 @@ public class PrivateEndpointsWithTokenTest {
         doReturn(List.of(expectedOrderbookItem)).when(orderService).getOrderDepth(OrderAction.BUY);
         doReturn(List.of()).when(orderService).getOrderDepth(OrderAction.SELL);
 
+
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header("Authorization", "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
@@ -180,16 +197,17 @@ public class PrivateEndpointsWithTokenTest {
                 List.of()
         );
 
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(expectedReturn));
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(TestUtils.asJsonString(expectedReturn));
     }
 
     // Test new order post request validation
 
     @Test
     void ItShouldCheckNewOrderHasSameUsernameAsJWT() throws Exception {
-        //placeholder
-        String validJWT = "validJWT"; // todo: figure out how to pass a valid jwt in test context
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
 
         NewOrderParams newOrderParams = new NewOrderParams(
                 "anotherUsername", 1, 1, "buy"
@@ -197,7 +215,7 @@ public class PrivateEndpointsWithTokenTest {
 
         // API call
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/private/make/order")
-                        .header("Authorization", validJWT)
+                        .header("Authorization", "Bearer: " + FAKE_JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.asJsonString(newOrderParams)))
                 .andReturn();
