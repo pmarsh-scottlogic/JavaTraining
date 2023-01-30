@@ -74,20 +74,17 @@ public class PrivateEndpointsWithTokenTest {
 
         testUser1 = new AppUser(null, "testName1", "testUsername1", "testPassword1", new ArrayList<>());
         testUser2 = new AppUser(null, "testName2", "testUsername2", "testPassword2", new ArrayList<>());
-
-        if (!z.contains("testUsername1")) {
-            // This is real ugly. I want to add these users to the database exactly once.
-            // I tried using @Before but it causes stubbing errors that I couldn't work out
-            // I also tried using @BeforeAll but that requires attaching it to a static method, which wouldn't work for me
-
-            userService.saveUser(testUser1);
-            userService.saveUser(testUser2);
-        }
-
+        userService.saveUser(testUser1);
+        userService.saveUser(testUser2);
 
         // mock security
         Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
         Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
+    }
+
+    @AfterEach
+    public void cleanup() {
+        userService.deleteAll();
     }
 
     static List<OrderbookItem> testOrderbook1() {

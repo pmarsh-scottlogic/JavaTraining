@@ -20,6 +20,10 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private  final UserRepo userRepo;
 
+    public void removeAll() {
+        orderRepo.deleteAll();
+    }
+
     public List<OrderObj> get() {
         log.info("Fetching all orders");
         return orderRepo.findAll();
@@ -84,27 +88,5 @@ public class OrderService {
             orderDepth.add(new OrderbookItem(obi.getPrice(), runningTotal));
         }
         return orderDepth;
-    }
-
-    public static List<OrderObj> sortAsc(List<OrderObj> orders) {
-        List<OrderObj> sorted = new ArrayList<>(orders);
-        sorted.sort((order1, order2) -> {
-            int priceComp = order1.getPrice().subtract(order2.getPrice()).signum();
-            int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
-            if (priceComp != 0) return priceComp;
-            else return datetimeComp;
-        });
-        return sorted;
-    }
-
-    public static List<OrderObj> sortDesc(List<OrderObj> orders) {
-        List<OrderObj> sorted = new ArrayList<>(orders);
-        sorted.sort((order1, order2) -> {
-            int priceComp = order2.getPrice().subtract(order1.getPrice()).signum();
-            int datetimeComp = order1.getDatetime().compareTo(order2.getDatetime());
-            if (priceComp != 0) return priceComp;
-            else return datetimeComp;
-        });
-        return sorted;
     }
 }
