@@ -74,6 +74,10 @@ public class PrivateEndpointsWithTokenTest {
 
         userService.saveUser(testUser1);
         userService.saveUser(testUser2);
+
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
     }
 
     static List<OrderbookItem> testOrderbook1() {
@@ -85,10 +89,6 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldAllowAccessToPrivateBuyOrdersWithValidJWT() throws Exception {
-        // mock security
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
-
         // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUser1.getUsername());
 
@@ -103,10 +103,6 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldAllowAccessToPrivateSellOrdersWithValidJWT() throws Exception {
-        // mock security
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
-
         // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.SELL, testUser1.getUsername());
 
@@ -121,10 +117,6 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldNotAllowAccessToPrivateBuyOrdersWithValidJWTButWrongAccount() throws Exception {
-        // mock security
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
-
         // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUser2.getUsername());
 
@@ -138,10 +130,6 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     public void itShouldNotAllowAccessToPrivateSellOrdersWithValidJWTButWrongAccount() throws Exception {
-        // mock security
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
-
         // mock orderService
         doReturn(testOrderbook1()).when(orderService).getOrderbook(OrderAction.BUY, testUser2.getUsername());
 
@@ -155,10 +143,6 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     void ItShouldAllowCreatingAnOrderWithValidJWT() throws Exception {
-        // mock security
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
-
         OrderObj newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
@@ -205,10 +189,6 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     void ItShouldCheckNewOrderHasSameUsernameAsJWT() throws Exception {
-        // mock security
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + testUser1.getUsername());
-
         NewOrderParams newOrderParams = new NewOrderParams(
                 "anotherUsername", 1, 1, "buy"
         );

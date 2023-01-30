@@ -61,12 +61,13 @@ public class NewOrderValidationTest {
     @BeforeEach
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
+
+        // mock security
+        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
+        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + "fakeUsername");
     }
     @Test
     void ItShouldCheckNewOrderPriceIsNotTooSmall() throws Exception {
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + "fakeUsername");
-
         NewOrderParams newOrderParams = new NewOrderParams(
                 "fakeUsername", -1, 1, "buy"
         );
@@ -85,10 +86,6 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderPriceIsNotTooLarge() throws Exception {
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + "fakeUsername");
-
-
         NewOrderParams newOrderParams = new NewOrderParams(
                 "fakeUsername", 1000000001, 1, "buy"
         );
@@ -107,10 +104,6 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderQuantityIsNotTooSmall() throws Exception {
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + "fakeUsername");
-
-
         NewOrderParams newOrderParams = new NewOrderParams(
                 "fakeUsername", 1, -1, "buy"
         );
@@ -129,10 +122,6 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderQuantityIsNotTooLarge() throws Exception {
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + "fakeUsername");
-
-
         NewOrderParams newOrderParams = new NewOrderParams(
                 "fakeUsername", 1, 1000000001, "buy"
         );
@@ -151,10 +140,6 @@ public class NewOrderValidationTest {
 
     @Test
     void ItShouldCheckNewOrderActionIsBuyOrSell() throws Exception {
-        Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
-        Mockito.when(jwtTokenUtil.getSubject(FAKE_JWT)).thenReturn("0," + "fakeUsername");
-        
-
         NewOrderParams newOrderParams = new NewOrderParams(
                 "fakeUsername", 1, 1, "badAction"
         );
