@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -95,6 +96,42 @@ public class OrderServiceTests {
                 .usingComparatorForType(BigDecimalComparator.BIG_DECIMAL_COMPARATOR, BigDecimal.class)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of());
+    }
+
+    @Test
+    void ItShouldProduceListOfEligibleBuyOrders() {
+        OrderObj newOrder = TestUtils.makeOrder(testUser1, 5, 10, "s");
+        OrderObj compatibleOrder = TestUtils.makeOrder(testUser2, 5, 10, "b");
+
+        populateOrderService(Arrays.asList(
+                TestUtils.makeOrder(testUser2, 4, 10 ,"b"), // incompatible price
+                TestUtils.makeOrder(testUser2, 5, 10, "s"), // incompatible action
+                TestUtils.makeOrder(testUser1, 6, 10, "b"), // incompatible account
+                compatibleOrder
+        ));
+
+        assertThat(orderService.getEligibleOrders(newOrder))
+                .usingComparatorForType(BigDecimalComparator.BIG_DECIMAL_COMPARATOR, BigDecimal.class)
+                .usingRecursiveComparison()
+                .isEqualTo(List.of(compatibleOrder));
+    }
+
+    @Test
+    void ItShouldProduceListOfEligibleSellOrders() {
+        OrderObj newOrder = TestUtils.makeOrder(testUser1, 5, 10, "b");
+        OrderObj compatibleOrder = TestUtils.makeOrder(testUser2, 5, 10, "s");
+
+        populateOrderService(Arrays.asList(
+                TestUtils.makeOrder(testUser2, 6, 10 ,"s"), // incompatible price
+                TestUtils.makeOrder(testUser2, 5, 10, "b"), // incompatible action
+                TestUtils.makeOrder(testUser1, 4, 10, "s"), // incompatible account
+                compatibleOrder
+        ));
+
+        assertThat(orderService.getEligibleOrders(newOrder))
+                .usingComparatorForType(BigDecimalComparator.BIG_DECIMAL_COMPARATOR, BigDecimal.class)
+                .usingRecursiveComparison()
+                .isEqualTo(List.of(compatibleOrder));
     }
 
     public List<OrderObj> testOrderSet1(String primaryAction) {

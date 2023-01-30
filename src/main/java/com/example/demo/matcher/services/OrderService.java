@@ -60,8 +60,8 @@ public class OrderService {
 
     public List<OrderObj> getEligibleOrders(OrderObj newOrder) {
         return newOrder.getAction() == OrderAction.BUY ?
-                orderRepo.getEligibleSellOrders(newOrder.getUser().getUsername(), newOrder.getPrice().doubleValue()) :
-                orderRepo.getEligibleBuyOrders(newOrder.getUser().getUsername(), newOrder.getPrice().doubleValue());
+                orderRepo.getEligibleSellOrders(newOrder.getUser().getUsername(), newOrder.getPrice().doubleValue(), newOrder.getAction().ordinal()) :
+                orderRepo.getEligibleBuyOrders(newOrder.getUser().getUsername(), newOrder.getPrice().doubleValue(), newOrder.getAction().ordinal());
     }
 
     private static List<OrderbookItem> aggregateOrders(List<OrderObj> orderList) {
