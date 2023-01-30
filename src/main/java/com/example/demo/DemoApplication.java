@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class DemoApplication {
 	}
 
 	@Bean // this bean runs a code block exactly once upon initialisation of the program
+	@Profile("!uninitialised")
 	CommandLineRunner run (UserService userService, Matcher matcher, OrderService orderService, InitialiseFakeMarket initialiseFakeMarket) {
 		return args -> {
 

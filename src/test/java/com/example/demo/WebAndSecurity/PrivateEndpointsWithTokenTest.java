@@ -153,7 +153,7 @@ public class PrivateEndpointsWithTokenTest {
 
     @Test
     void ItShouldAllowCreatingAnOrderWithValidJWT() throws Exception {
-        OrderObj newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
+        OrderObj newOrder = TestUtils.makeOrder(testUser1, 1 ,1, "b");
 
 
 
