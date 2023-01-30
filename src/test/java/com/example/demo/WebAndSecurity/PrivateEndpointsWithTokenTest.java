@@ -9,6 +9,7 @@ import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.token.JwtTokenUtil;
 import com.example.demo.security.userInfo.AppUser;
+import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -27,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -64,16 +66,24 @@ public class PrivateEndpointsWithTokenTest {
     private AppUser testUser1;
     private AppUser testUser2;
 
-
     @BeforeEach
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
+        List<AppUser> y = userService.getUsers();
+        List<String> z = y.stream().map(a -> a.getUsername()).collect(Collectors.toList());
 
         testUser1 = new AppUser(null, "testName1", "testUsername1", "testPassword1", new ArrayList<>());
         testUser2 = new AppUser(null, "testName2", "testUsername2", "testPassword2", new ArrayList<>());
 
-        userService.saveUser(testUser1);
-        userService.saveUser(testUser2);
+        if (!z.contains("testUsername1")) {
+            // This is real ugly. I want to add these users to the database exactly once.
+            // I tried using @Before but it causes stubbing errors that I couldn't work out
+            // I also tried using @BeforeAll but that requires attaching it to a static method, which wouldn't work for me
+
+            userService.saveUser(testUser1);
+            userService.saveUser(testUser2);
+        }
+
 
         // mock security
         Mockito.when(jwtTokenUtil.validateAccessToken(FAKE_JWT)).thenReturn(true);
@@ -144,6 +154,8 @@ public class PrivateEndpointsWithTokenTest {
     @Test
     void ItShouldAllowCreatingAnOrderWithValidJWT() throws Exception {
         OrderObj newOrder = TestUtils.makeOrder(testUser1.getUsername(), 1 ,1, "b");
+
+
 
         NewOrderParams newOrderParams = new NewOrderParams(
                 newOrder.getUser().getUsername(),

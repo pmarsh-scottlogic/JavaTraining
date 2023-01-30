@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -48,12 +50,15 @@ public class LoginTest {
     private Matcher matcher;
 
     private AppUser testUser1;
-    private AppUser testUser2;
+
 
 
     @BeforeEach
     public void setup() throws Exception {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).apply(springSecurity()).build();
+
+        testUser1 = new AppUser(null, "testName1", "testUsername1", "testPassword1!", new ArrayList<>());
+        userService.saveUser(testUser1);
     }
 
     @Test
@@ -66,7 +71,7 @@ public class LoginTest {
 
     @Test
     public void itShouldNotAllowLoginWithBadCredentials() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest("badUsername", "badPassword"));
+        String requestBody = TestUtils.asJsonString(new AuthRequest("badUsername", "badPassword1!"));
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.post("/auth/login")
@@ -78,7 +83,7 @@ public class LoginTest {
 
     @Test
     public void itShouldReturnTokenOnSuccessfulLogin() throws Exception {
-        String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), "testPassword1"));
+        String requestBody = TestUtils.asJsonString(new AuthRequest(testUser1.getUsername(), "testPassword1!"));
 
         MvcResult result = mvc.perform(
                         MockMvcRequestBuilders.post("/auth/login")
