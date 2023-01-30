@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service @AllArgsConstructor
 public class Matcher {
@@ -55,31 +52,7 @@ public class Matcher {
 
     private OrderObj getMatchingOrder(OrderObj newOrder) {
         // match the new order to the best order of opposite action (sorted by price and then time)
-
-        // get all orders
-        List<OrderObj> eligibleOrders = new ArrayList<>(orderService.get());
-
-        // filter incompatible actions and accounts
-        eligibleOrders = eligibleOrders.stream()
-                .filter(
-                        order -> order.getAction() != newOrder.getAction() && !Objects.equals(order.getUser().getUsername(),
-                                newOrder.getUser().getUsername()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        if (newOrder.getAction() == OrderAction.BUY) {
-            // filter out sell orders that are being sold for more than the buy price of the new order
-            eligibleOrders = eligibleOrders.stream()
-                    .filter(order -> order.getPrice().compareTo(newOrder.getPrice()) <= 0)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            eligibleOrders = OrderService.sortDesc(eligibleOrders);
-        }
-        else {
-            // filter out buy orders that are buying for less than the sell price of the new order
-            eligibleOrders = eligibleOrders.stream()
-                    .filter(order -> order.getPrice().compareTo(newOrder.getPrice()) >= 0)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            eligibleOrders = OrderService.sortAsc(eligibleOrders);
-        }
+        List<OrderObj> eligibleOrders = orderService.getEligibleOrders(newOrder);
         return eligibleOrders.size() == 0? null : eligibleOrders.get(0);
     }
 }

@@ -54,6 +54,12 @@ public class OrderService {
         return orderbook;
     }
 
+    public List<OrderObj> getEligibleOrders(OrderObj newOrder) {
+        return newOrder.getAction() == OrderAction.BUY ?
+                orderRepo.getEligibleSellOrders(newOrder.getUser().getUsername(), newOrder.getPrice().doubleValue()) :
+                orderRepo.getEligibleBuyOrders(newOrder.getUser().getUsername(), newOrder.getPrice().doubleValue());
+    }
+
     private static List<OrderbookItem> aggregateOrders(List<OrderObj> orderList) {
         // aggregate orders using hashmap
         Map<BigDecimal, BigDecimal> aggregated = new HashMap<>();

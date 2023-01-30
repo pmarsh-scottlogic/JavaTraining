@@ -16,7 +16,23 @@ public interface OrderRepo extends JpaRepository<OrderObj, Long> {
                     "FROM ORDER_OBJ, APP_USER " +
                     "WHERE ORDER_OBJ.USER_ID = APP_USER.ID " +
                     "AND APP_USER.USERNAME = :username " +
-                    "AND ACTION + :actionOrdinal";
+                    "AND ACTION = :actionOrdinal";
+
+    public final static String GET_ELIGIBLE_BUY_ORDERS =
+            "SELECT Order_ID, ACTION, DATETIME, PRICE, QUANTITY, USER_ID " +
+                    "FROM ORDER_OBJ, APP_USER " +
+                    "WHERE ORDER_OBJ.USER_ID = APP_USER.ID " +
+                    "AND APP_USER.USERNAME != :username " +
+                    "AND PRICE >= :newOrderPrice " +
+                    "ORDER BY PRICE DESC, DATETIME ASC";
+
+    public final static String GET_ELIGIBLE_SELL_ORDERS =
+            "SELECT Order_ID, ACTION, DATETIME, PRICE, QUANTITY, USER_ID " +
+                    "FROM ORDER_OBJ, APP_USER " +
+                    "WHERE ORDER_OBJ.USER_ID = APP_USER.ID " +
+                    "AND APP_USER.USERNAME != :username " +
+                    "AND PRICE <= :newOrderPrice " +
+                    "ORDER BY PRICE ASC, DATETIME ASC";
 
 
     @Query(value = GET_ORDERS_BY_USERNAME_AND_ACTION, nativeQuery=true)
@@ -25,4 +41,14 @@ public interface OrderRepo extends JpaRepository<OrderObj, Long> {
             @Param("actionOrdinal") final int actionOrdinal);
 
     List<OrderObj> findByAction(OrderAction action);
+
+    @Query(value = GET_ELIGIBLE_BUY_ORDERS, nativeQuery=true)
+    List<OrderObj> getEligibleBuyOrders(
+            @Param("username") final String username,
+            @Param("newOrderPrice") final double newOrderPrice);
+
+    @Query(value = GET_ELIGIBLE_SELL_ORDERS, nativeQuery=true)
+    List<OrderObj> getEligibleSellOrders(
+            @Param("username") final String username,
+            @Param("newOrderPrice") final double newOrderPrice);
 }
