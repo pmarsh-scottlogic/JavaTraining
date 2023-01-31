@@ -33,14 +33,17 @@ public class MatcherController {
     @Autowired
     private final UserService userService;
 
+    @Autowired
+    private final JwtTokenUtil jwtTokenUtil;
+
     @GetMapping(value = "/public/orderbook/buy")
     public ResponseEntity<List<OrderbookItem>> orderbook_buy() {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY));
     }
 
-    private static String getUsernameFromAuthHeader(String authHeader) {
+    private String getUsernameFromAuthHeader(String authHeader) {
         String token = authHeader.split(" ")[1].trim();
-        return JwtTokenUtil.getSubject(token).split(",")[1];
+        return jwtTokenUtil.getSubject(token).split(",")[1];
     }
 
     @GetMapping(value = "/private/orderbook/buy/{username}")

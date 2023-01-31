@@ -20,10 +20,8 @@ public class TestUtils {
                 new BigDecimal(price), new BigDecimal(quantity), action);
     }
 
-    public static OrderObj makeOrder(String username, float price, float quantity, String strAction) {
+    public static OrderObj makeOrder(AppUser user, float price, float quantity, String strAction) {
         OrderAction action = strAction.equals("b") ? OrderAction.BUY : OrderAction.SELL;
-        AppUser user = new AppUser();
-        user.setUsername(username);
         return new OrderObj(user, new BigDecimal(price), new BigDecimal(quantity), action);
     }
 
