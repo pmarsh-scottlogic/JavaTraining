@@ -46,11 +46,10 @@ public class MatcherController {
         return jwtTokenUtil.getSubject(token).split(",")[1];
     }
 
-    @GetMapping(value = "/private/orderbook/buy/{username}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@PathVariable String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+    @GetMapping(value = "/private/orderbook/buy")
+    public ResponseEntity<List<OrderbookItem>> orderbook_buy(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
-            if (!getUsernameFromAuthHeader(authHeader).equals(username))
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            String username = getUsernameFromAuthHeader(authHeader);
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.BUY, username));
         }
         catch(Exception e) {
@@ -65,10 +64,9 @@ public class MatcherController {
     }
 
     @GetMapping(value = "/private/orderbook/sell/{username}")
-    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@PathVariable String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+    public ResponseEntity<List<OrderbookItem>> orderbook_sell(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
-            if (!getUsernameFromAuthHeader(authHeader).equals(username))
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            String username = getUsernameFromAuthHeader(authHeader);
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL, username));
         }
         catch(Exception e) {

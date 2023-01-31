@@ -69,7 +69,7 @@ public class NewOrderValidationTest {
     @Test
     void ItShouldCheckNewOrderPriceIsNotTooSmall() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
-                "fakeUsername", -1, 1, "buy"
+                -1, 1, "buy"
         );
 
         // API call
@@ -87,7 +87,7 @@ public class NewOrderValidationTest {
     @Test
     void ItShouldCheckNewOrderPriceIsNotTooLarge() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
-                "fakeUsername", 1000000001, 1, "buy"
+                1000000001, 1, "buy"
         );
 
         // API call
@@ -105,7 +105,7 @@ public class NewOrderValidationTest {
     @Test
     void ItShouldCheckNewOrderQuantityIsNotTooSmall() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
-                "fakeUsername", 1, -1, "buy"
+                1, -1, "buy"
         );
 
         // API call
@@ -123,7 +123,7 @@ public class NewOrderValidationTest {
     @Test
     void ItShouldCheckNewOrderQuantityIsNotTooLarge() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
-                "fakeUsername", 1, 1000000001, "buy"
+                 1, 1000000001, "buy"
         );
 
         // API call
@@ -141,7 +141,7 @@ public class NewOrderValidationTest {
     @Test
     void ItShouldCheckNewOrderActionIsBuyOrSell() throws Exception {
         NewOrderParams newOrderParams = new NewOrderParams(
-                "fakeUsername", 1, 1, "badAction"
+                 1, 1, "badAction"
         );
 
         // API call
