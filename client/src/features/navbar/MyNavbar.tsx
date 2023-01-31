@@ -9,6 +9,7 @@ import { hardAccounts } from "../../testUtils/hardcodedAccounts";
 import { logout, setAccount } from "../../app/accountSlice";
 import logo from "../../branding/logoPure.svg";
 import { Account } from "../../types/types";
+import { stdout } from "process";
 
 //https://react-bootstrap.github.io/components/navbar/
 
@@ -52,8 +53,14 @@ export default function MyNavbar() {
 					<Nav>
 						<button
 							className="btn btn-dark"
+							style={{ color: "#888888" }}
+							onClick={(e) => console.log("Yeee")}>
+							Log in
+						</button>
+						<button
+							className="btn btn-dark"
 							style={{ color: "#888888" }}>
-							hello
+							Register
 						</button>
 						{/* <NavDropdown
 							title={accountDropdownName}
