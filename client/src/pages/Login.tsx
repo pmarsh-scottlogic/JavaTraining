@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { attemptLogin } from "../app/accountSlice";
+import { useAppDispatch } from "../app/hooks";
 
 export default function LoginPage() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const dispatch = useAppDispatch();
 
-	const onSubmit = () => {};
+	const onSubmit = () => {
+		dispatch(attemptLogin({ username, password }));
+	};
 
 	return (
 		<div
