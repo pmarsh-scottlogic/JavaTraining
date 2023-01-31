@@ -12,7 +12,6 @@ import {
 	fetchTradeHistory,
 } from "../app/marketSlice";
 import "../app.css";
-import MyNavbar from "../features/navbar/MyNavbar";
 import OrderForm from "../features/orderForm/OrderForm";
 import MarketDepth from "../features/MarketDepth/MarketDepth";
 

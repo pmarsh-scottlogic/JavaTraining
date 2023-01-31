@@ -38,7 +38,7 @@ export default function MyNavbar() {
 	return (
 		<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
 			<Container>
-				<Navbar.Brand href="#home">
+				<Navbar.Brand href="/">
 					<img
 						alt=""
 						src={logo}
@@ -51,17 +51,20 @@ export default function MyNavbar() {
 				<Navbar.Collapse id="responsive-navbar-nav">
 					<Nav className="me-auto"></Nav>
 					<Nav>
-						<button
-							className="btn btn-dark"
-							style={{ color: "#888888" }}
-							onClick={(e) => console.log("Yeee")}>
-							Log in
-						</button>
-						<button
-							className="btn btn-dark"
-							style={{ color: "#888888" }}>
-							Register
-						</button>
+						<a href="/login">
+							<button
+								className="btn btn-dark"
+								style={{ color: "#888888" }}>
+								Log in
+							</button>
+						</a>
+						<a href="/signup">
+							<button
+								className="btn btn-dark"
+								style={{ color: "#888888" }}>
+								Sign up
+							</button>
+						</a>
 						{/* <NavDropdown
 							title={accountDropdownName}
 							id="collasible-nav-dropdown"
