@@ -27,7 +27,7 @@ public class AuthController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/auth/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         // If we get to this endpoint, it means the client doesn't have a jwt yet and wants one.
         // The client provides a username and password via the AuthRequest object. These credentials are checked as follows:
         try {

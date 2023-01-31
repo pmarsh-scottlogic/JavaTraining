@@ -11,9 +11,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Getter @Setter @AllArgsConstructor
 public class AuthRequest { // POJO
-    @NotNull @Length(min = 1, max = 20)
     private String username;
 
-    @PasswordValidation
     private String password;
 }
