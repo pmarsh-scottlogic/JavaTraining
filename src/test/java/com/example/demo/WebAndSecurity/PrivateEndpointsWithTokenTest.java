@@ -9,7 +9,6 @@ import com.example.demo.matcher.services.TradeService;
 import com.example.demo.security.service.UserService;
 import com.example.demo.security.token.JwtTokenUtil;
 import com.example.demo.security.userInfo.AppUser;
-import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -180,7 +179,7 @@ public class PrivateEndpointsWithTokenTest {
                 .andReturn();
 
         // check result
-        MakeOrderReturn expectedReturn = new MakeOrderReturn(
+        NewOrderReturn expectedReturn = new NewOrderReturn(
                 List.of(expectedOrderbookItem),
                 List.of(),
                 List.of(expectedOrderbookItem),

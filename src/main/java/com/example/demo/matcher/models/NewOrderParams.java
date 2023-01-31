@@ -11,7 +11,6 @@ import javax.validation.constraints.Pattern;
 
 @ToString @AllArgsConstructor @Getter
 public class NewOrderParams {
-    String username;
     @Min(value = OrderObj.minPrice) @Max(value = OrderObj.maxPrice)
     double price;
     @Min(value = OrderObj.minQuantity) @Max(value = OrderObj.maxQuantity)

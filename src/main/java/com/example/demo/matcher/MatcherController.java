@@ -92,28 +92,28 @@ public class MatcherController {
     }
 
     @PostMapping(value="/private/make/order")
-    public ResponseEntity<MakeOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+    public ResponseEntity<NewOrderReturn> makeOrder(@Valid @RequestBody NewOrderParams newOrderParams, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        String username;
         try{
-            if (!getUsernameFromAuthHeader(authHeader).equals(newOrderParams.getUsername()))
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            username = getUsernameFromAuthHeader(authHeader);
         }
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         OrderObj newOrder = new OrderObj(
-                userService.getUser(newOrderParams.getUsername()),
+                userService.getUser(username),
                 BigDecimal.valueOf(newOrderParams.getPrice()),
                 BigDecimal.valueOf(newOrderParams.getQuantity()),
                 newOrderParams.getAction().equals("buy") ? OrderAction.BUY : OrderAction.SELL
-                );
+        );
 
         matcher.match(newOrder);
 
-        return ResponseEntity.ok(new MakeOrderReturn(
+        return ResponseEntity.ok(new NewOrderReturn(
                 orderService.getOrderbook(OrderAction.BUY),
                 orderService.getOrderbook(OrderAction.SELL),
-                orderService.getOrderbook(OrderAction.BUY, newOrderParams.getUsername()),
+                orderService.getOrderbook(OrderAction.BUY, username),
                 orderService.getOrderbook(OrderAction.SELL, newOrder.getUser().getUsername()),
                 tradeService.getRecent(),
                 orderService.getOrderDepth(OrderAction.BUY),
