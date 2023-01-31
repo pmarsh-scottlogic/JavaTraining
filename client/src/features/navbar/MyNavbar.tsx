@@ -8,32 +8,49 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { hardAccounts } from "../../testUtils/hardcodedAccounts";
 import { logout, setAccount } from "../../app/accountSlice";
 import logo from "../../branding/logoPure.svg";
-import { Account } from "../../types/types";
+import { Account, LoginStatus } from "../../types/types";
 import { stdout } from "process";
 
 //https://react-bootstrap.github.io/components/navbar/
 
 export default function MyNavbar() {
 	const dispatch = useAppDispatch();
-	const accountDropdownName = useAppSelector((state) =>
-		state.account.loggedIn ? state.account.name : "Log in"
-	);
+	const loginStatus = useAppSelector((state) => state.account.loginStatus);
+	const username = useAppSelector((state) => state.account.username);
 
-	const handleAccountChange = function (account: Account) {
-		dispatch(setAccount(account));
-	};
-
-	const accountOptions = hardAccounts.map((account, i) => {
-		return (
-			<NavDropdown.Item
-				key={i}
-				onClick={() => {
-					handleAccountChange(account);
-				}}>
-				{account.name}
-			</NavDropdown.Item>
+	const accountSection =
+		loginStatus === LoginStatus.ACCEPTED ? (
+			<NavDropdown
+				title={username}
+				id="collasible-nav-dropdown"
+				data-cy="accountDropdown">
+				<NavDropdown.Divider />
+				<NavDropdown.Item
+					key={-1}
+					onClick={() => {
+						dispatch(logout());
+					}}>
+					Logout
+				</NavDropdown.Item>
+			</NavDropdown>
+		) : (
+			<Nav>
+				<a href="/login">
+					<button
+						className="btn btn-dark"
+						style={{ color: "#888888" }}>
+						Log in
+					</button>
+				</a>
+				<a href="/signup">
+					<button
+						className="btn btn-dark"
+						style={{ color: "#888888" }}>
+						Sign up
+					</button>
+				</a>
+			</Nav>
 		);
-	});
 
 	return (
 		<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -50,37 +67,7 @@ export default function MyNavbar() {
 				<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 				<Navbar.Collapse id="responsive-navbar-nav">
 					<Nav className="me-auto"></Nav>
-					<Nav>
-						<a href="/login">
-							<button
-								className="btn btn-dark"
-								style={{ color: "#888888" }}>
-								Log in
-							</button>
-						</a>
-						<a href="/signup">
-							<button
-								className="btn btn-dark"
-								style={{ color: "#888888" }}>
-								Sign up
-							</button>
-						</a>
-						{/* <NavDropdown
-							title={accountDropdownName}
-							id="collasible-nav-dropdown"
-							data-cy="accountDropdown">
-							{accountOptions}
-							<NavDropdown.Divider />
-							<NavDropdown.Item
-								key={-1}
-								onClick={() => {
-									dispatch(logout());
-								}}>
-								Logout
-							</NavDropdown.Item>
-						</NavDropdown> */}
-						<></>
-					</Nav>
+					{accountSection}
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>
