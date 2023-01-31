@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { attemptLogin } from "../app/accountSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { LoginStatus } from "../types/types";
@@ -12,11 +13,15 @@ export default function LoginPage() {
 
 	const onSubmit = () => {
 		dispatch(attemptLogin({ username, password }));
+		setUsername("");
+		setPassword("");
 	};
 
+	const navigate = useNavigate();
+
 	useEffect(() => {
-		if (loginStatus === LoginStatus.REJECTED) {
-		} else if (loginStatus === LoginStatus.ACCEPTED) {
+		if (loginStatus === LoginStatus.ACCEPTED) {
+			navigate("/");
 		}
 	}, [loginStatus]);
 
@@ -35,6 +40,7 @@ export default function LoginPage() {
 						placeholder="Enter username"
 						onChange={(e) => setUsername(e.target.value)}
 						data-cy="loginFormUsernameEntry"
+						value={username}
 					/>
 				</Form.Group>
 
@@ -44,10 +50,12 @@ export default function LoginPage() {
 						placeholder="Enter password"
 						onChange={(e) => setPassword(e.target.value)}
 						data-cy="loginFormPasswordEntry"
+						value={password}
 					/>
 				</Form.Group>
 
 				<Form.Text
+					id="txtCredentialsWarning"
 					className="text-danger"
 					data-cy="loginFormCredentialsWarning">
 					{loginStatus === LoginStatus.REJECTED
