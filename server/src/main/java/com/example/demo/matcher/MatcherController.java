@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MatcherController {
     @Autowired
     private final Matcher matcher;

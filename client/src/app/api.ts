@@ -15,30 +15,32 @@ export default class Api {
 		return response.json();
 	}
 
-	async getBuyOrders(accountId?: string) {
-		return await this.get(
-			this.baseUrl + "/orderbook/buy" + (accountId ? "/" + accountId : "")
-		);
+	async getPublicBuyOrders() {
+		return await this.get(this.baseUrl + "/public/orderbook/buy");
 	}
 
-	async getSellOrders(accountId?: string) {
-		return await this.get(
-			this.baseUrl +
-				"/orderbook/sell" +
-				(accountId ? "/" + accountId : "")
-		);
+	async getPrivateBuyOrders() {
+		return await this.get(this.baseUrl + "/private/orderbook/buy");
+	}
+
+	async getPublicSellOrders() {
+		return await this.get(this.baseUrl + "/public/orderbook/sell");
+	}
+
+	async getPrivateSellOrders() {
+		return await this.get(this.baseUrl + "/private/orderbook/sell");
 	}
 
 	async getBuyOrderDepth() {
-		return await this.get(this.baseUrl + "/orderbook/depth/buy");
+		return await this.get(this.baseUrl + "/public/orderbook/depth/buy");
 	}
 
 	async getSellOrderDepth() {
-		return await this.get(this.baseUrl + "/orderbook/depth/sell");
+		return await this.get(this.baseUrl + "/public/orderbook/depth/sell");
 	}
 
 	async getTradeHistory() {
-		return await this.get(this.baseUrl + "/tradebook/");
+		return await this.get(this.baseUrl + "/public/tradebook/");
 	}
 
 	async createOrder(params: OrderParams) {

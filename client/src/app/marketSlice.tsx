@@ -19,28 +19,28 @@ const api = new Api(BASE_URL);
 export const fetchBuyOrders = createAsyncThunk(
 	"orderbook/getBuys",
 	async () => {
-		return api.getBuyOrders(); // we do all of the api logic in the api service class, so thunks just become very simple
+		return api.getPublicBuyOrders();
 	}
 );
 
 export const fetchSellOrders = createAsyncThunk(
 	"orderbook/getSells",
 	async () => {
-		return api.getSellOrders();
+		return api.getPublicSellOrders();
 	}
 );
 
 export const fetchPrivateBuyOrders = createAsyncThunk(
 	"orderbook/getPrivateBuys",
 	async (accountId: string) => {
-		return api.getBuyOrders(accountId);
+		return api.getPrivateBuyOrders();
 	}
 );
 
 export const fetchPrivateSellOrders = createAsyncThunk(
 	"orderbook/getPrivateSells",
 	async (accountId: string) => {
-		return api.getSellOrders(accountId);
+		return api.getPrivateSellOrders();
 	}
 );
 
