@@ -7,7 +7,7 @@ import lombok.ToString;
 import java.util.List;
 
 @AllArgsConstructor @ToString @Getter
-public class MakeOrderReturn {
+public class NewOrderReturn {
     private final List<OrderbookItem> buy;
     private final List<OrderbookItem> sell;
     private final List<OrderbookItem> buyPrivate;

@@ -157,7 +157,6 @@ public class PublicEndpointsAndLockedPrivateEndpointsTest {
         OrderObj newOrder = TestUtils.makeOrder(1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                newOrder.getUser().getUsername(),
                 newOrder.getPrice().doubleValue(),
                 newOrder.getQuantity().doubleValue(),
                 "buy"
@@ -198,7 +197,6 @@ public class PublicEndpointsAndLockedPrivateEndpointsTest {
         OrderObj newOrder = TestUtils.makeOrder(1 ,1, "b");
 
         NewOrderParams newOrderParams = new NewOrderParams(
-                newOrder.getUser().getUsername(),
                 newOrder.getPrice().doubleValue(),
                 newOrder.getQuantity().doubleValue(),
                 "buy"
