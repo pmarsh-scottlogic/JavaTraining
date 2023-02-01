@@ -47,12 +47,12 @@ export default function OrderForm({ id }: { id: string }) {
 			return;
 		}
 
-		const params: OrderParams = {
+		const orderParams: OrderParams = {
 			price: price,
 			quantity: quantity,
 			action: radioValue,
 		};
-		dispatch(createOrder(params));
+		dispatch(createOrder({ orderParams, accessToken }));
 	};
 
 	const [price, setPrice] = useState(-1);

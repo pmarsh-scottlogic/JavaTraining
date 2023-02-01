@@ -32,7 +32,7 @@ export default class Api {
 	}
 
 	async getTradeHistory() {
-		return await this.get(this.baseUrl + "/public/tradebook/");
+		return await this.get(this.baseUrl + "/public/tradebook");
 	}
 
 	async getPrivate(url: string, token: string) {
@@ -60,13 +60,14 @@ export default class Api {
 		);
 	}
 
-	async createOrder(params: OrderParams) {
-		const url = this.baseUrl + "/make/order/";
+	async createOrder(params: OrderParams, token: string) {
+		const url = this.baseUrl + "/private/make/order";
 		const response = await fetch(url, {
 			method: "POST",
 			mode: "cors",
 			headers: {
 				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
 			},
 			body: JSON.stringify(params),
 		});

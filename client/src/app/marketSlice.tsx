@@ -67,8 +67,14 @@ export const fetchTradeHistory = createAsyncThunk(
 
 export const createOrder = createAsyncThunk(
 	"createOrder",
-	async (orderParams: OrderParams) => {
-		return api.createOrder(orderParams);
+	async ({
+		orderParams,
+		accessToken,
+	}: {
+		orderParams: OrderParams;
+		accessToken: string;
+	}) => {
+		return api.createOrder(orderParams, accessToken);
 	}
 );
 
