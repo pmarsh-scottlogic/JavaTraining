@@ -19,16 +19,8 @@ export default class Api {
 		return await this.get(this.baseUrl + "/public/orderbook/buy");
 	}
 
-	async getPrivateBuyOrders() {
-		return await this.get(this.baseUrl + "/private/orderbook/buy");
-	}
-
 	async getPublicSellOrders() {
 		return await this.get(this.baseUrl + "/public/orderbook/sell");
-	}
-
-	async getPrivateSellOrders() {
-		return await this.get(this.baseUrl + "/private/orderbook/sell");
 	}
 
 	async getBuyOrderDepth() {
@@ -41,6 +33,14 @@ export default class Api {
 
 	async getTradeHistory() {
 		return await this.get(this.baseUrl + "/public/tradebook/");
+	}
+
+	async getPrivateBuyOrders(token: string) {
+		return await this.get(this.baseUrl + "/private/orderbook/buy");
+	}
+
+	async getPrivateSellOrders(token: string) {
+		return await this.get(this.baseUrl + "/private/orderbook/sell");
 	}
 
 	async createOrder(params: OrderParams) {

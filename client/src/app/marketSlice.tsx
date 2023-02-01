@@ -32,15 +32,15 @@ export const fetchSellOrders = createAsyncThunk(
 
 export const fetchPrivateBuyOrders = createAsyncThunk(
 	"orderbook/getPrivateBuys",
-	async (accountId: string) => {
-		return api.getPrivateBuyOrders();
+	async (token: string) => {
+		return api.getPrivateBuyOrders(token);
 	}
 );
 
 export const fetchPrivateSellOrders = createAsyncThunk(
 	"orderbook/getPrivateSells",
-	async (accountId: string) => {
-		return api.getPrivateSellOrders();
+	async (token: string) => {
+		return api.getPrivateSellOrders(token);
 	}
 );
 
