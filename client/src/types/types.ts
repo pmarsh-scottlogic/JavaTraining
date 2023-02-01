@@ -31,13 +31,8 @@ export type TAccountState = {
 	token: string;
 	loginStatus: LoginStatus;
 };
-export type Account = {
-	name: string;
-	id: string;
-};
 
 export type OrderParams = {
-	account: string;
 	price: number;
 	quantity: number;
 	action: string;
