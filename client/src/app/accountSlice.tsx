@@ -1,18 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-	Account,
-	LoginParams,
-	LoginStatus,
-	TAccountState,
-} from "../types/types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { LoginParams, LoginStatus, TAccountState } from "../types/types";
 import Api from "./api";
 
-const DEFAULT_ACCOUNT_INFO = "na";
-
 const initialState: TAccountState = {
-	loggedIn: false,
-	name: DEFAULT_ACCOUNT_INFO,
-	username: DEFAULT_ACCOUNT_INFO,
+	username: "",
+	token: "",
 	loginStatus: LoginStatus.UNATTEMPTED,
 };
 
@@ -30,19 +22,17 @@ export const accountSlice = createSlice({
 	name: "account",
 	initialState,
 	reducers: {
-		setAccount: (state, action: PayloadAction<Account>) => {
-			state.loggedIn = true;
-			state.name = action.payload.name;
-		},
 		logout: (state) => {
-			state.loggedIn = initialState.loggedIn;
-			state.name = initialState.name;
+			state.loginStatus = initialState.loginStatus;
+			state.username = initialState.username;
 		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(attemptLogin.fulfilled, (state, action) => {
-			console.log(action.payload);
+			console.log("LOGIN SUCCESSFUL");
 			state.loginStatus = LoginStatus.ACCEPTED;
+			state.username = action.payload.username;
+			state.token = action.payload.accessToken;
 		});
 		builder.addCase(attemptLogin.rejected, (state, action) => {
 			console.log("LOGIN FAILED BAD CREDENTIALS");
@@ -51,6 +41,6 @@ export const accountSlice = createSlice({
 	},
 });
 
-export const { setAccount, logout } = accountSlice.actions;
+export const { logout } = accountSlice.actions;
 
 export default accountSlice.reducer;

@@ -27,9 +27,8 @@ export type TMarketState = {
 };
 
 export type TAccountState = {
-	loggedIn: boolean;
-	name: string;
 	username: string;
+	token: string;
 	loginStatus: LoginStatus;
 };
 export type Account = {
@@ -51,7 +50,6 @@ export type LoginParams = {
 
 export enum LoginStatus {
 	UNATTEMPTED,
-	PENDING,
 	ACCEPTED,
 	REJECTED,
 }

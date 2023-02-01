@@ -5,11 +5,9 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { hardAccounts } from "../../testUtils/hardcodedAccounts";
-import { logout, setAccount } from "../../app/accountSlice";
+import { logout } from "../../app/accountSlice";
 import logo from "../../branding/logoPure.svg";
-import { Account, LoginStatus } from "../../types/types";
-import { stdout } from "process";
+import { LoginStatus } from "../../types/types";
 
 //https://react-bootstrap.github.io/components/navbar/
 
@@ -23,7 +21,8 @@ export default function MyNavbar() {
 			<NavDropdown
 				title={username}
 				id="collasible-nav-dropdown"
-				data-cy="accountDropdown">
+				data-cy="accountDropdown"
+				style={{ color: "#888888" }}>
 				<NavDropdown.Divider />
 				<NavDropdown.Item
 					key={-1}

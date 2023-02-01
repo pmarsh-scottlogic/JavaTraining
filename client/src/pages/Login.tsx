@@ -23,7 +23,7 @@ export default function LoginPage() {
 		if (loginStatus === LoginStatus.ACCEPTED) {
 			navigate("/");
 		}
-	}, [loginStatus]);
+	}, [loginStatus, navigate]);
 
 	return (
 		<div
@@ -45,8 +45,9 @@ export default function LoginPage() {
 				</Form.Group>
 
 				<Form.Group className="mb-3" controlId="password">
-					<Form.Label>Quantity</Form.Label>
+					<Form.Label>Password</Form.Label>
 					<Form.Control
+						type="password"
 						placeholder="Enter password"
 						onChange={(e) => setPassword(e.target.value)}
 						data-cy="loginFormPasswordEntry"
