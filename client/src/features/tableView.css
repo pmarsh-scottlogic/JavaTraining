@@ -1,0 +1,59 @@
+.tableView {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    box-shadow: 0vw 0vw 3vw 0vw #eeeeee;
+    text-align: right;
+    z-index: 0;
+}
+
+tbody {
+    overflow-y: auto;
+}
+
+td {
+    text-align: right;
+}
+
+.title {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 0.2em;
+}
+
+.tableContainer {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tableContainer .no-margin {
+    margin-bottom: 0;
+}
+
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 0px;
+    /* padding-bottom: 0.25em; */
+    background-color: grey;
+    z-index: 1;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+.switchContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.centreContent {
+    display: flex;
+    justify-content: center;
+}
