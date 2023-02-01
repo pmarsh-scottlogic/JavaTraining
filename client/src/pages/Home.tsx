@@ -14,6 +14,7 @@ import {
 import "../app.css";
 import OrderForm from "../features/orderForm/OrderForm";
 import MarketDepth from "../features/MarketDepth/MarketDepth";
+import { LoginStatus } from "../types/types";
 
 export default function Home() {
 	const buyOrderBook = useAppSelector((state) => state.market.orderbookBuy);
@@ -29,8 +30,8 @@ export default function Home() {
 		(state) => state.market.orderDepthSell
 	);
 	const tradeHistory = useAppSelector((state) => state.market.tradeHistory);
-	const loggedIn = useAppSelector((state) => state.account.loggedIn);
-	const selectedAccountId = useAppSelector((state) => state.account.id);
+	const loginStatus = useAppSelector((state) => state.account.loginStatus);
+	const accessToken = useAppSelector((state) => state.account.token);
 	// is it better paactise to put these selectors in a separate file somewhere? Maybe with the relevant slice?
 
 	const dispatch = useAppDispatch();
@@ -45,11 +46,11 @@ export default function Home() {
 	}, [dispatch]);
 
 	useEffect(() => {
-		if (loggedIn) {
-			dispatch(fetchPrivateBuyOrders(selectedAccountId));
-			dispatch(fetchPrivateSellOrders(selectedAccountId));
+		if (loginStatus === LoginStatus.ACCEPTED) {
+			dispatch(fetchPrivateBuyOrders(accessToken));
+			dispatch(fetchPrivateSellOrders(accessToken));
 		}
-	}, [dispatch, loggedIn, selectedAccountId]);
+	}, [dispatch, loginStatus, accessToken]);
 
 	return (
 		<div id="gridContainer">
