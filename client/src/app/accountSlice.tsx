@@ -33,6 +33,7 @@ export const accountSlice = createSlice({
 			state.loginStatus = LoginStatus.ACCEPTED;
 			state.username = action.payload.username;
 			state.token = action.payload.accessToken;
+			console.log(action.payload);
 		});
 		builder.addCase(attemptLogin.rejected, (state, action) => {
 			console.log("LOGIN FAILED BAD CREDENTIALS");

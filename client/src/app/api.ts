@@ -35,12 +35,29 @@ export default class Api {
 		return await this.get(this.baseUrl + "/public/tradebook/");
 	}
 
+	async getPrivate(url: string, token: string) {
+		const response = await fetch(url, {
+			method: "GET",
+			mode: "cors",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.json();
+	}
+
 	async getPrivateBuyOrders(token: string) {
-		return await this.get(this.baseUrl + "/private/orderbook/buy");
+		return await this.getPrivate(
+			this.baseUrl + "/private/orderbook/buy",
+			token
+		);
 	}
 
 	async getPrivateSellOrders(token: string) {
-		return await this.get(this.baseUrl + "/private/orderbook/sell");
+		return await this.getPrivate(
+			this.baseUrl + "/private/orderbook/sell",
+			token
+		);
 	}
 
 	async createOrder(params: OrderParams) {

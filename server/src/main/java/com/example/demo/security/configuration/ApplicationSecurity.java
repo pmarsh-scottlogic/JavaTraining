@@ -43,6 +43,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter { //todo c
         // to all http requests :(
         http.csrf().disable();
 
+        http.cors();
+
         // disables protection against the browser rendering a page in a or <iframe>.
         // we must disable it so that the h2-console can be rendered properly
         http.headers().frameOptions().disable();

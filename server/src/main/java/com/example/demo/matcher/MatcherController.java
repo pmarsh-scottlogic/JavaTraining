@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "")
 @AllArgsConstructor
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class MatcherController {
     @Autowired
     private final Matcher matcher;
@@ -63,13 +63,14 @@ public class MatcherController {
         return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL));
     }
 
-    @GetMapping(value = "/private/orderbook/sell/{username}")
+    @GetMapping(value = "/private/orderbook/sell")
     public ResponseEntity<List<OrderbookItem>> orderbook_sell(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         try {
             String username = getUsernameFromAuthHeader(authHeader);
             return ResponseEntity.ok(orderService.getOrderbook(OrderAction.SELL, username));
         }
         catch(Exception e) {
+            log.error(e.toString());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
